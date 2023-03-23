@@ -13,6 +13,13 @@ public class PoopStarter //Main class
 		int w = 2560;
 		int h = 1440;
 		
+		Hitbox h1, h2;
+		h1 = new Hitbox(100, 150, 200, 200);
+		h2 = new Hitbox(150, 100, 250, 250);
+		
+		double[] d = h1.intersects(h2);
+		System.out.println(d[0] + "\t" + d[1]);
+		
 		//sets up a JFrame object with title "Template"
 		JFrame frame = new JFrame("Poop Platform");
 		//make sure the jframe closes when you hit the 'x'

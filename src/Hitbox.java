@@ -7,42 +7,52 @@ public class Hitbox {
 		this.a = a;
 		this.b = b;
 		this.h = h;
-    this.k = k;
+		this.k = k;
 	}
 	
 	public double[] intersects(Hitbox h1)
 	{
-    double d[] = {-1, -1};
-		for(int q = (-1 * a)+h; q <= a; q += 0.1)
-      {
-        for(int w = (-1 * h1.getA()); w < h1.getA(); w += 0.1)
-          {
-            int ha = h1.getA();
-            int hb = h1.getB();
-            int hk = h1.getK();
-              
-            int ab = (a*a)*(b*b);
-            int bb = (b*b)*((q-h)*(q-h));
-            int y1 = k + Math.sqrt((ab*bb)/(a*a));
-            int negy1 = k - Math.sqrt((ab*bb)/(a*a));
-
-            ab = (ha*ha)*(hb*hb);
-            bb = (hb*hb)*((w-hk)*(w-hk));
-            int y2 = hk + Math.sqrt((ab*bb)/(ha*ha));
-            int negy2 = hk - Math.sqrt((ab*bb)/(ha*ha));
-            
-            if(Math.abs(q-w) < 0.1 && Math.abs(y2-y1) < 0.1 || Math.abs(q-w) < 0.1 && Math.abs(negy2-y1) < 0.1)
-            {
-              d[0] = q;
-              d[1] = y1;
-            }
-            if(Math.abs(q-w) < 0.1 && Math.abs(y2-negy1) < 0.1 || Math.abs(q-w) < 0.1 && Math.abs(y2-y1) < 0.1)
-            {
-              d[0] = q;
-              d[1] = negy1;
-            }
-          }
-      }
+		double d[] = {-1, -1};
+		for(double q = h-(a/2.0); q <= h+(a/2.0); q += 0.1)
+		{
+	        for(double w = h1.getH()-(h1.getA()/2.0); w <= h1.getH()+(h1.getA()/2.0); w += 0.1)
+	          {
+	            int ha = h1.getA();
+	            int hb = h1.getB();
+	            int hk = h1.getK();
+	              
+	            double ab = (a*a)*(b*b);
+	            System.out.println("ab\t" + ab);
+	            double bb = (int)((b*b)*((q-h)*(q-h)));
+	            System.out.println("bb\t" + bb);
+	            double y1 = k + Math.sqrt((ab-bb)/(a*a));
+	            System.out.println("y1\t" + y1);
+	            double negy1 = k - Math.sqrt((ab-bb)/(a*a));
+	            System.out.println("negy1\t" + negy1);
+	
+	            ab = (ha*ha)*(hb*hb);
+	            System.out.println("ab2\t" + ab);
+	            bb = (int)((hb*hb)*((w-hk)*(w-hk)));
+	            System.out.println("bb2\t" + bb);
+	            double y2 = hk + Math.sqrt((ab-bb)/(ha*ha));
+	            System.out.println("y2\t" + y2);
+	            double negy2 = hk - Math.sqrt((ab-bb)/(ha*ha));
+	            System.out.println("negy2\t" + negy2);
+	            
+	            if(Math.abs(q-w) < 0.1 && Math.abs(y2-y1) < 0.1 || Math.abs(q-w) < 0.1 && Math.abs(negy2-y1) < 0.1)
+	            {
+	              d[0] = q;
+	              d[1] = y1;
+	              return d;
+	            }
+	            if(Math.abs(q-w) < 0.1 && Math.abs(y2-negy1) < 0.1 || Math.abs(q-w) < 0.1 && Math.abs(y2-y1) < 0.1)
+	            {
+	              d[0] = q;
+	              d[1] = negy1;
+	              return d;
+	            }
+	          }
+		}
     return d;
 	}
 
