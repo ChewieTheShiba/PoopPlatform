@@ -3,12 +3,12 @@ public class Hitbox {
 	private int h, k, a, b, startx, starty;
 	private double[] latestIntersection = {-1,-1};
 	
-	public Hitbox(int a, int b, int h, int k)
+	public Hitbox(int h, int k, int a, int b)
 	{
 		this.a = a;
 		this.b = b;
 		this.h = h;
-		this.k = k;
+		this.k = k*-1;
 	}
 	
 	public double[] intersects(Hitbox h1)
@@ -20,11 +20,14 @@ public class Hitbox {
 	          {
 	            int ha = h1.getA();
 	            int hb = h1.getB();
+	            int hh = h1.getH();
 	            int hk = h1.getK();
+	            
 	              
-	            double ab = (a*a)*(b*b);
+	            long ab = (a*a)*(b*b);
+	            System.out.println( q + " \t" + w);
 	            System.out.println("ab\t" + ab);
-	            double bb = (int)((b*b)*((q-h)*(q-h)));
+	            long bb = (int)((b*b)*((q-h)*(q-h)));
 	            System.out.println("bb\t" + bb);
 	            double y1 = k + Math.sqrt((ab-bb)/(a*a));
 	            System.out.println("y1\t" + y1);
@@ -33,30 +36,38 @@ public class Hitbox {
 	
 	            ab = (ha*ha)*(hb*hb);
 	            System.out.println("ab2\t" + ab);
-	            bb = (int)((hb*hb)*((w-hk)*(w-hk)));
+	            bb = (int)((hb*hb)*((w-hh)*(w-hh)));
 	            System.out.println("bb2\t" + bb);
 	            double y2 = hk + Math.sqrt((ab-bb)/(ha*ha));
 	            System.out.println("y2\t" + y2);
 	            double negy2 = hk - Math.sqrt((ab-bb)/(ha*ha));
 	            System.out.println("negy2\t" + negy2);
 	            
-	            if(Math.abs(q-w) < 10 && Math.abs(y2-y1) < 10 || Math.abs(q-w) < 10 && Math.abs(negy2-y1) < 10)
+	            if(q == 170 && w == 175)
+	            {
+	            	System.out.println(y1 + "\t" + negy1 + "\t" + y2 + "\t" + negy2);
+	            }
+	            
+	            if(Math.abs(q-w) < 10 && Math.abs(y2-y1) < 20 || Math.abs(q-w) < 10 && Math.abs(negy2-y1) < 20)
 	            {
 	              d[0] = q;
 	              d[1] = y1;
 	              latestIntersection = d;
+	              System.out.println("fadonbhfabdfbnaodf");
 	              return d;
 	            }
-	            if(Math.abs(q-w) < 10 && Math.abs(y2-negy1) < 10 || Math.abs(q-w) < 10 && Math.abs(y2-y1) < 10)
+	            if(Math.abs(q-w) < 10 && Math.abs(y2-negy1) < 20 || Math.abs(q-w) < 10 && Math.abs(negy2-negy1) < 20)
 	            {
 	              d[0] = q;
 	              d[1] = negy1;
 	              latestIntersection = d;
+	              System.out.println("fadonbhfabdfbnaodf");
 	              return d;
 	            }
 	          }
 		}
-    return d;
+		latestIntersection = d;
+        return d;
 	}
 	
 	
@@ -116,4 +127,26 @@ public class Hitbox {
   {
     return this.k;
   }
+
+public void setH(int h)
+{
+	this.h = h;
+}
+
+public void setK(int k)
+{
+	this.k = k;
+}
+
+public void setA(int a)
+{
+	this.a = a;
+}
+
+public void setB(int b)
+{
+	this.b = b;
+}
+  
+  
 }
