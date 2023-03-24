@@ -1,24 +1,16 @@
 import java.util.*;
 
 public class characters {
-    double hitboxX, hitboxY;
+    Hitbox hitbox;
     String name, description, attack1name, attack2name, attack3name;
     int HP, attack1power, attack2power, attack3power, specialattackpower;
 
-    public double getHitboxX() {
-        return hitboxX;
+    public Hitbox getHitbox() {
+        return hitbox;
     }
 
-    public void setHitboxX(double hitboxX) {
-        this.hitboxX = hitboxX;
-    }
-
-    public double getHitboxY() {
-        return hitboxY;
-    }
-
-    public void setHitboxY(double hitboxY) {
-        this.hitboxY = hitboxY;
+    public void setHitbox(Hitbox hitbox) {
+        this.hitbox = hitbox;
     }
 
     public String getName() {
