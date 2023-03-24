@@ -14,56 +14,68 @@ public class Hitbox {
 	public double[] intersects(Hitbox h1)
 	{
 		double d[] = {-1, -1};
-		for(double q = h-(a/2.0); q <= h+(a/2.0); q += 10)
+		for(double q = 1; q <= 360; q+=.5)
 		{
-	        for(double w = h1.getH()-(h1.getA()/2.0); w <= h1.getH()+(h1.getA()/2.0); w += 10)
+			double f = 0;
+            if(a > b)
+            	f = Math.sqrt((a*a)-(b*b));
+            else
+            	f = Math.sqrt((b*b)-(a*a));
+            
+            double e = f/a;
+            
+            double top = (a*a)*(1-(e*e));
+            double bottom = 1-((e*e)*(Math.cos(q)*Math.cos(q)));
+            
+            double r1 = Math.sqrt(top/bottom);
+            
+            double x1 = r1*Math.cos(q);
+            double y1 = r1*Math.sin(q);
+            x1 += h;
+            y1 += k;
+            
+	        for(double w = 0; w <= 360; w+=.5)
 	          {
-	            int ha = h1.getA();
-	            int hb = h1.getB();
-	            int hh = h1.getH();
-	            int hk = h1.getK();
+	        	double a2 = h1.getA();
+	        	double b2 = h1.getB();
+	        	
+	        	double f2 = 0;
+	        	
+	        	if(a2 > b2)
+	            	f2 = Math.sqrt((a2*a2)-(b2*b2));
+	            else
+	            	f2 = Math.sqrt((b2*b2)-(a2*a2));
+	        	
+	        	double e2 = f2/a2;
+	        	
+	            double top2 = (a2*a2)*(1-(e2*e2));
+	            double bottom2 = 1-((e2*e2)*(Math.cos(w)*Math.cos(w)));
 	            
-	              
-	            long ab = (a*a)*(b*b);
-	            System.out.println( q + " \t" + w);
-	            System.out.println("ab\t" + ab);
-	            long bb = (int)((b*b)*((q-h)*(q-h)));
-	            System.out.println("bb\t" + bb);
-	            double y1 = k + Math.sqrt((ab-bb)/(a*a));
-	            System.out.println("y1\t" + y1);
-	            double negy1 = k - Math.sqrt((ab-bb)/(a*a));
-	            System.out.println("negy1\t" + negy1);
-	
-	            ab = (ha*ha)*(hb*hb);
-	            System.out.println("ab2\t" + ab);
-	            bb = (int)((hb*hb)*((w-hh)*(w-hh)));
-	            System.out.println("bb2\t" + bb);
-	            double y2 = hk + Math.sqrt((ab-bb)/(ha*ha));
-	            System.out.println("y2\t" + y2);
-	            double negy2 = hk - Math.sqrt((ab-bb)/(ha*ha));
-	            System.out.println("negy2\t" + negy2);
+	            double r2 = Math.sqrt(top2/bottom2);
 	            
-	            if(q == 170 && w == 175)
+	            double x2 = r2*Math.cos(w);
+	            double y2 = r2*Math.sin(w);
+	            x2 += h1.getH();
+	            y2 += h1.getK();
+	           
+	            
+	            if(Math.abs(x2-x1) < 1 && Math.abs(y2-y1) < 1)
 	            {
-	            	System.out.println(y1 + "\t" + negy1 + "\t" + y2 + "\t" + negy2);
+	            	d[0] = x1;
+	            	d[1] = y2;
+	            	System.out.println(r1 + "\t" + r2);
+	            	System.out.println("a" + "\t"+ a2);
+	            	System.out.println("b" + "\t"+ b2);
+	            	System.out.println("e" + "\t"+ e2);
+	            	System.out.println("f" + "\t"+ f2);
+	            	System.out.println(q+ "\t" + w);
+	            	System.out.println("xxxxx\t" + x1 + "\nyyyy\t" + y1);
+	            	System.out.println("xxxxx2\t" + x2 + "\nyyyy2\t" + y2);
+	            	latestIntersection = d;
+	            	return d;
 	            }
 	            
-	            if(Math.abs(q-w) < 10 && Math.abs(y2-y1) < 20 || Math.abs(q-w) < 10 && Math.abs(negy2-y1) < 20)
-	            {
-	              d[0] = q;
-	              d[1] = y1;
-	              latestIntersection = d;
-	              System.out.println("fadonbhfabdfbnaodf");
-	              return d;
-	            }
-	            if(Math.abs(q-w) < 10 && Math.abs(y2-negy1) < 20 || Math.abs(q-w) < 10 && Math.abs(negy2-negy1) < 20)
-	            {
-	              d[0] = q;
-	              d[1] = negy1;
-	              latestIntersection = d;
-	              System.out.println("fadonbhfabdfbnaodf");
-	              return d;
-	            }
+	            
 	          }
 		}
 		latestIntersection = d;

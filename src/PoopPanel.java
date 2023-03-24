@@ -22,7 +22,7 @@ public class PoopPanel extends JPanel
 		this.addKeyListener(new keyListen());
 		this.setFocusable(true);
 		
-		py = 100;
+		py = 600;
 		px = 300;
 		pw = 200;
 		ph = 100;
@@ -72,8 +72,17 @@ public class PoopPanel extends JPanel
 			g.drawString("" + v, v, 20);
 		}
 		
-		if(h1.intersects(h2)[0] != -1)
+		for(int v = 0; v < 1080; v+=30)
 		{
+			g.drawLine(0, v, 10, v);
+			g.drawString("" + v, 20, v);
+		}
+		
+		double intersection[] = h1.intersects(h2);
+		
+		if(intersection[0] != -1)
+		{
+			h2.intersects(h1);
 			System.out.println("fodsuhiufisbdf");
 			g.setColor(Color.red);
 			g.drawOval((int)h1.intersects(h2)[0], -1*(int)h1.intersects(h2)[1], 20, 20);
