@@ -34,8 +34,8 @@ public class PoopPanel extends JPanel
 		
 		
 		
-		h1 = new Hitbox(px+(pw/2), py+(ph/2), pw, ph);
-		h2 = new Hitbox(sx+(sw/2), sy+(sh/2), sw, sh);
+		h1 = new Hitbox(px+pw, py+ph, pw, ph);
+		h2 = new Hitbox(sx+sw, sy+sh, sw, sh);
 		
 		/*sets up startup animation and wait and then waiting screen
 		Animation will play and then once it stops screen will appear
@@ -58,8 +58,9 @@ public class PoopPanel extends JPanel
 		super.paintComponent(g);
 		
 		//all drawings below here:
-		g.drawOval(px, py, pw, ph);
-		g.drawOval(sx, sy, sw, sh);
+		g.setColor(Color.black);
+		g.drawOval(px, py, pw*2, ph*2);
+		g.drawOval(sx, sy, sw*2, sh*2);
 		System.out.println(px);
 		System.out.println(py);
 		System.out.println("y\t" + h1.getH());
@@ -74,6 +75,8 @@ public class PoopPanel extends JPanel
 		if(h1.intersects(h2)[0] != -1)
 		{
 			System.out.println("fodsuhiufisbdf");
+			g.setColor(Color.red);
+			g.drawOval((int)h1.intersects(h2)[0], -1*(int)h1.intersects(h2)[1], 20, 20);
 		}
 	}
 	
