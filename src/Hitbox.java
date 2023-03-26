@@ -63,14 +63,6 @@ public class Hitbox {
 	            {
 	            	d[0] = x1;
 	            	d[1] = y2;
-	            	System.out.println(r1 + "\t" + r2);
-	            	System.out.println("a" + "\t"+ a2);
-	            	System.out.println("b" + "\t"+ b2);
-	            	System.out.println("e" + "\t"+ e2);
-	            	System.out.println("f" + "\t"+ f2);
-	            	System.out.println(q+ "\t" + w);
-	            	System.out.println("xxxxx\t" + x1 + "\nyyyy\t" + y1);
-	            	System.out.println("xxxxx2\t" + x2 + "\nyyyy2\t" + y2);
 	            	latestIntersection = d;
 	            	return d;
 	            }

@@ -6,11 +6,12 @@ import javax.swing.Timer;
 public class PoopPanel extends JPanel
 {
 	//variables for the overall width and height
-	private int w, h, py, px, pw, ph, sx, sy, sw, sh;
+	private int w, h, py, px, pw, ph, sx, sy, sw, sh, yvelocity;
 	private Hitbox h1, h2;
 	private ImageIcon startUpAnimation, startUpScreen;
-	private JLabel startUpImage;
-	private Timer startUpWait;
+	private Timer startUpWait, ticker;
+	private boolean started, readyToPlay;
+	private final int GRAVITY;
 	
 	//sets up the initial panel for drawing with proper size
 	public PoopPanel(int w, int h)
@@ -19,6 +20,9 @@ public class PoopPanel extends JPanel
 		this.h = h;
 		this.setPreferredSize(new Dimension(w,h));
 		
+		//sets up listeners
+		this.addMouseMotionListener(new mouseListen());
+		this.addMouseListener(new mouseListen());
 		this.addKeyListener(new keyListen());
 		this.setFocusable(true);
 		
@@ -32,7 +36,13 @@ public class PoopPanel extends JPanel
 		sw = 200;
 		sh = 100;
 		
+		//sets up gravity stuff
+		yvelocity = 1;
+		GRAVITY = 2;
 		
+		//sets up stuff to start game and test if its ready to start
+		started = false;
+		readyToPlay = false;
 		
 		h1 = new Hitbox(px+pw, py+ph, pw, ph);
 		h2 = new Hitbox(sx+sw, sy+sh, sw, sh);
@@ -41,12 +51,12 @@ public class PoopPanel extends JPanel
 		Animation will play and then once it stops screen will appear
 		and wait for the player to press start
 		*/
-		startUpAnimation = new ImageIcon("assets/startUpAnimation.gif");
-		startUpScreen = new ImageIcon("assets/startUpScreen.png");
-		startUpImage = new JLabel(startUpAnimation);
+		startUpScreen = new ImageIcon("assets/startUpAnimation.gif");
 		startUpWait = new Timer(5000, new actionListen());
 		startUpWait.start();
-		this.add(startUpImage);
+		
+		//sets up timer for 1 tick of the game
+		ticker = new Timer(100, new actionListen());
 	}
 	
 	
@@ -57,36 +67,67 @@ public class PoopPanel extends JPanel
 		//this line sets up the graphics - always needed
 		super.paintComponent(g);
 		
-		//all drawings below here:
-		g.setColor(Color.black);
-		g.drawOval(px, py, pw*2, ph*2);
-		g.drawOval(sx, sy, sw*2, sh*2);
-		System.out.println(px);
-		System.out.println(py);
-		System.out.println("y\t" + h1.getH());
-		System.out.println("y\t" + h1.getK());
 		
-		for(int v = 0; v < 1920; v+=30)
+		if(started)
 		{
-			g.drawLine(v, 0, v, 10);
-			g.drawString("" + v, v, 20);
+			ticker.start();
+			//all drawings below here:
+			g.setColor(Color.black);
+			g.drawOval(px, py, pw*2, ph*2);
+			g.drawOval(sx, sy, sw*2, sh*2);
+			
+			for(int v = 0; v < 1920; v+=30)
+			{
+				g.drawLine(v, 0, v, 10);
+				g.drawString("" + v, v, 20);
+			}
+			
+			for(int v = 0; v < 1080; v+=30)
+			{
+				g.drawLine(0, v, 10, v);
+				g.drawString("" + v, 20, v);
+			}
+			
+			double intersection[] = h1.intersects(h2);
+			
+			if(intersection[0] != -1)
+			{
+				h2.intersects(h1);
+				g.setColor(Color.red);
+				g.drawOval((int)h1.intersects(h2)[0], -1*(int)h1.intersects(h2)[1], 20, 20);
+			}
 		}
-		
-		for(int v = 0; v < 1080; v+=30)
+		else
 		{
-			g.drawLine(0, v, 10, v);
-			g.drawString("" + v, 20, v);
+			startUpScreen.paintIcon(this,  g, 0, 0);
 		}
-		
-		double intersection[] = h1.intersects(h2);
-		
-		if(intersection[0] != -1)
+	}
+	
+	
+	//happens every time a tick occurs
+	public void update()
+	{
+		System.out.println(py+ph*2);
+		if(py+ph*2+yvelocity >= 1080)
+			updatePlayer1(px, 1080-ph*2);
+		else
 		{
-			h2.intersects(h1);
-			System.out.println("fodsuhiufisbdf");
-			g.setColor(Color.red);
-			g.drawOval((int)h1.intersects(h2)[0], -1*(int)h1.intersects(h2)[1], 20, 20);
+			if(yvelocity > 50)
+				yvelocity = 50;
+			else
+				yvelocity *= GRAVITY;
+			updatePlayer1(px, py+yvelocity);
 		}
+	}
+	
+	
+	
+	public void updatePlayer1(int x, int y)
+	{
+		px = x;
+		py = y;
+		h1.setH(x);
+		h1.setK(y);
 	}
 	
 	private class actionListen implements ActionListener
@@ -100,8 +141,67 @@ public class PoopPanel extends JPanel
 			if(source.equals(startUpWait))
 			{
 				startUpWait.stop();
-				startUpImage.setIcon(startUpScreen);
+				startUpScreen = new ImageIcon("assets/startUpScreen.png");
+				readyToPlay = true;
 			}
+			
+			if(source.equals(ticker))
+			{
+				update();
+			}
+			
+		}
+	}
+	
+	private class mouseListen implements MouseListener, MouseMotionListener
+	{
+
+		@Override
+		public void mouseDragged(MouseEvent e)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent e)
+		{
+			
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e)
+		{
+			if(!started && readyToPlay)
+				started = true;
+			
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e)
+		{
+			// TODO Auto-generated method stub
 			
 		}
 	}
@@ -119,21 +219,23 @@ public class PoopPanel extends JPanel
 		@Override
 		public void keyPressed(KeyEvent e)
 		{
+			System.out.println(e.getKeyCode());
+			
 			switch(e.getKeyCode())
 			{
-			case KeyEvent.VK_LEFT:
+			case KeyEvent.VK_A:
 				px -= 10;
 				h1.setH(h1.getH()-10);
 				break;
-			case KeyEvent.VK_RIGHT:
+			case KeyEvent.VK_D:
 				px += 10;
 				h1.setH(h1.getH()+10);
 				break;
-			case KeyEvent.VK_UP:
+			case KeyEvent.VK_W:
 				py -= 10;
 				h1.setK(h1.getK()+10);
 				break;
-			case KeyEvent.VK_DOWN:
+			case KeyEvent.VK_S:
 				py += 10;
 				h1.setK(h1.getK()-10);
 				break;
