@@ -13,13 +13,6 @@ public class PoopStarter //Main class
 		int w = 1920;
 		int h = 1080;
 		
-		/*Hitbox h1, h2;
-		h1 = new Hitbox(200, 200, 100, 150);
-		h2 = new Hitbox(250, 250, 150, 100);
-		
-		double[] d = h1.intersects(h2);
-		System.out.println(d[0] + "\t" + d[1]);*/
-		
 		
 		
 		//sets up a JFrame object with title "Template"

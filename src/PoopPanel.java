@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.*;
 import javax.swing.Timer;
 
 public class PoopPanel extends JPanel
@@ -44,8 +45,8 @@ public class PoopPanel extends JPanel
 		started = false;
 		readyToPlay = false;
 		
-		h1 = new Hitbox(px+pw, py+ph, pw, ph);
-		h2 = new Hitbox(sx+sw, sy+sh, sw, sh);
+		h1 = new OvalHitbox(px+pw, py+ph, pw, ph, 0);
+		h2 = new OvalHitbox(sx+sw, sy+sh, sw, sh, 0);
 		
 		/*sets up startup animation and wait and then waiting screen
 		Animation will play and then once it stops screen will appear
@@ -89,12 +90,14 @@ public class PoopPanel extends JPanel
 			}
 			
 			double intersection[] = h1.intersects(h2);
+			RectangleHitbox h3 = new RectangleHitbox(sx, sy, sw*2, sh*2, 0);
+			g.drawRect(h3.getH(), h3.getK(), h3.getA(), h3.getB());
+			double[] t = h1.intersects(h3);
 			
-			if(intersection[0] != -1)
+			if(t[0] != -1)
 			{
-				h2.intersects(h1);
 				g.setColor(Color.red);
-				g.drawOval((int)h1.intersects(h2)[0], -1*(int)h1.intersects(h2)[1], 20, 20);
+				g.drawOval((int)h1.intersects(h3)[0], -1*(int)h1.intersects(h3)[1], 20, 20);
 			}
 		}
 		else
@@ -147,7 +150,7 @@ public class PoopPanel extends JPanel
 			
 			if(source.equals(ticker))
 			{
-				update();
+				//update();
 			}
 			
 		}
