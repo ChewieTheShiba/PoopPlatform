@@ -12,7 +12,31 @@ public class RectangleHitbox extends Hitbox
 
 	public double[] intersects(Hitbox h1)
 	{
-		return null;
+    double d[] = {-1, -1};
+		if(this.getClass().equals(h1.getClass()))
+    {
+      Rectangle r = new Rectangle(h1.getH(), h1.getK(), h1.getA(), h1.getB());
+      for(int y = k; y < b+k; y++)
+        {
+          for(int x = h; x < h+a; x++)
+            {
+              if(r.contains(x, y))
+              {
+                d[0] = x;
+                d[1] = y;
+                latestIntersection = d;
+                return d;
+              }
+            }
+        }
+    }
+    else
+    {
+      //change me
+      return null;
+    }
+    latestIntersection = d;
+    return d;
 	}
 
 	public double[] getOppositeIntersection()
