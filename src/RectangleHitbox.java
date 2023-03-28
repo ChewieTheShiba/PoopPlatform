@@ -1,3 +1,5 @@
+import java.awt.*;
+
 public class RectangleHitbox extends Hitbox
 {
 	

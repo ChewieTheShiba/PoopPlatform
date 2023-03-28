@@ -24,7 +24,8 @@ public class OvalHitbox extends Hitbox
 				double f = 0;
 				int ta = a;
 				int tb = b;
-				double r1 = 0;
+				double top = 0, bottom = 0;
+				
 	            if(ta < tb)
 	            {
 	            	int temp = ta;
@@ -36,10 +37,10 @@ public class OvalHitbox extends Hitbox
 		            double e = f/ta;
 		            
 		            
-		            double top = (ta*ta)*(1-(e*e));
-		            double bottom = 1-((e*e)*(Math.sin(q)*Math.sin(q)));
+		            top = (ta*ta)*(1-(e*e));
+		            bottom = 1-((e*e)*(Math.sin(q)*Math.sin(q)));
 		            
-		            r1 = Math.sqrt(top/bottom);
+		            
 	            }
 	            else
 	            {
@@ -48,16 +49,14 @@ public class OvalHitbox extends Hitbox
 		            double e = f/ta;
 		            
 		            
-		            double top = (ta*ta)*(1-(e*e));
-		            double bottom = 1-((e*e)*(Math.cos(q)*Math.cos(q)));
+		            top = (ta*ta)*(1-(e*e));
+		            bottom = 1-((e*e)*(Math.cos(q)*Math.cos(q)));
 		            
-		            r1 = Math.sqrt(top/bottom);
 	            }
+	            
+	            double r1 = Math.sqrt(top/bottom);
+	            
 	            f = Math.sqrt((ta*ta)-(tb*tb));
-	            
-	            double e = f/ta;
-	            
-	            
 	            
 	            double x1 = r1*Math.cos(q);
 	            double y1 = r1*Math.sin(q);
@@ -103,7 +102,6 @@ public class OvalHitbox extends Hitbox
 		            top = (ta*ta)*(1-(e*e));
 		            bottom = 1-((e*e)*(Math.sin(q)*Math.sin(q)));
 		            
-		            r1 = Math.sqrt(top/bottom);
 	            }
 	            else
 	            {
@@ -115,14 +113,9 @@ public class OvalHitbox extends Hitbox
 		            top = (ta*ta)*(1-(e*e));
 		            bottom = 1-((e*e)*(Math.cos(q)*Math.cos(q)));
 		            
-		            r1 = Math.sqrt(top/bottom);
 	            }
 	            
 	            r1 = Math.sqrt(top/bottom);
-	            
-	            double e = f/ta;
-	            
-	            
 	            
 	            double x1 = r1*Math.cos(q);
 	            double y1 = r1*Math.sin(q);
