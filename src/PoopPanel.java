@@ -29,20 +29,20 @@ public class PoopPanel extends JPanel
 		
 		py = 600;
 		px = 300;
-		pw = 200;
-		ph = 100;
+		pw = 100;
+		ph = 200;
 		
 		sy = 100;
 		sx = 250;
-		sw = 200;
-		sh = 100;
+		sw = 100;
+		sh = 200;
 		
 		//sets up gravity stuff
 		yvelocity = 1;
 		GRAVITY = 2;
 		
 		//sets up stuff to start game and test if its ready to start
-		started = false;
+		started = true;
 		readyToPlay = false;
 		
 		h1 = new OvalHitbox(px+pw, py+ph, pw, ph, 0);
@@ -90,14 +90,11 @@ public class PoopPanel extends JPanel
 			}
 			
 			double intersection[] = h1.intersects(h2);
-			RectangleHitbox h3 = new RectangleHitbox(sx, sy, sw*2, sh*2, 0);
-			g.drawRect(h3.getH(), h3.getK(), h3.getA(), h3.getB());
-			double[] t = h1.intersects(h3);
 			
-			if(t[0] != -1)
+			if(intersection[0] != -1)
 			{
 				g.setColor(Color.red);
-				g.drawOval((int)h1.intersects(h3)[0], -1*(int)h1.intersects(h3)[1], 20, 20);
+				g.drawOval((int)intersection[0], -1*(int)intersection[1], 20, 20);
 			}
 		}
 		else
