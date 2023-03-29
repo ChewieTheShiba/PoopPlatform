@@ -6,8 +6,10 @@ The goal is simple. Make a better platform game then team Neff.
 - [ ] Brainstorm Stages
 - [Poop Defender, ...?] Brainstorm Characters
 - [ ] Make Assets
-- [ ] Write basic game
 - [ ] Figure out JavaFx
 - [ ] Audio for each stage
 - [ ] Animate the stages??
 - [ ] Animations for each character
+- [ ] Make Characters explode when they go off stage
+- [ ] Make Moves
+- [ ] Make Player 2
