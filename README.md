@@ -3,7 +3,7 @@
 The goal is simple. Make a better platform game then team Neff.
 
 ## To Do
-- [x] Brainstorm Stages
+- [ ] Brainstorm Stages
 - [Poop Defender, Kuma, Neff ...?] Brainstorm Characters
 - [ ] Make Assets
 - [ ] Figure out JavaFx
