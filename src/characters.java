@@ -2,17 +2,41 @@ import java.util.*;
 
 public class characters {
     Hitbox hitbox;
-    String name, description, attack1name, attack2name, attack3name;
-    int HP, attack1power, attack2power, attack3power, specialattackpower;
+    String name, description, attack1name, attack2name, attack3name, attack4name, specialattackname;
+    int HP, attack1power, attack2power, attack3power, attack4power, specialattackpower;
 
     public Hitbox getHitbox() {
         return hitbox;
     }
 
+    public String getAttack4name() {
+        return attack4name;
+    }
+
+    public void setAttack4name(String attack4name) {
+        this.attack4name = attack4name;
+    }
+
+    public String getSpecialattackname() {
+        return specialattackname;
+    }
+
+    public void setSpecialattackname(String specialattackname) {
+        this.specialattackname = specialattackname;
+    }
+
+    public int getAttack4power() {
+        return attack4power;
+    }
+
+    public void setAttack4power(int attack4power) {
+        this.attack4power = attack4power;
+    }
+
     public void setHitbox(Hitbox hitbox) {
         this.hitbox = hitbox;
     }
-
+ 
     public String getName() {
         return name;
     }
@@ -84,7 +108,7 @@ public class characters {
     public void setAttack3power(int attack3power) {
         this.attack3power = attack3power;
     }
-
+ 
     public int getSpecialattackpower() {
         return specialattackpower;
     }
