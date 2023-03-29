@@ -161,7 +161,7 @@ public class OvalHitbox extends Hitbox
 		            double x2 = r2*Math.cos(w);
 		            double y2 = r2*Math.sin(w);
 		            x2 += h1.getH();
-		            y2 += h1.getK();		           
+		            y2 += h1.getK();	
 		            
 		            if(Math.abs(x2-x1) < 1 && Math.abs(y2-y1) < 1)
 		            {
@@ -169,7 +169,7 @@ public class OvalHitbox extends Hitbox
 		            	d[1] = y2;
 		            	latestIntersection = d;
 		            	return d;
-		            } 
+		            }
 		          }
 			}
 		}

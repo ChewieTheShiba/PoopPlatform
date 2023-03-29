@@ -7,12 +7,13 @@ import javax.swing.Timer;
 public class PoopPanel extends JPanel
 {
 	//variables for the overall width and height
-	private int w, h, py, px, pw, ph, sx, sy, sw, sh, yvelocity;
+	private int w, h, py, px, pw, ph, sx, sy, sw, sh, p1YVelocity;
 	private Hitbox h1, h2;
 	private ImageIcon startUpAnimation, startUpScreen;
-	private Timer startUpWait, ticker;
-	private boolean started, readyToPlay;
-	private final int GRAVITY;
+	private Timer startUpWait, ticker, jumper;
+	private boolean started, readyToPlay, p1Jumping, p1DoubleJumping;
+	private boolean p1R, p1L;
+	private final int GRAVITY, JUMPHEIGHT;
 	
 	//sets up the initial panel for drawing with proper size
 	public PoopPanel(int w, int h)
@@ -27,18 +28,18 @@ public class PoopPanel extends JPanel
 		this.addKeyListener(new keyListen());
 		this.setFocusable(true);
 		
-		py = 600;
+		py = 100;
 		px = 300;
 		pw = 100;
 		ph = 200;
 		
-		sy = 100;
+		sy = 800;
 		sx = 250;
 		sw = 100;
 		sh = 200;
 		
 		//sets up gravity stuff
-		yvelocity = 1;
+		p1YVelocity = 1;
 		GRAVITY = 2;
 		
 		//sets up stuff to start game and test if its ready to start
@@ -57,7 +58,13 @@ public class PoopPanel extends JPanel
 		startUpWait.start();
 		
 		//sets up timer for 1 tick of the game
-		ticker = new Timer(100, new actionListen());
+		ticker = new Timer(1, new actionListen());
+		
+		//sets up jumping mechanism
+		jumper = new Timer(500, new actionListen());
+		p1Jumping = false;
+		p1DoubleJumping = false;
+		JUMPHEIGHT = 20;
 	}
 	
 	
@@ -103,31 +110,76 @@ public class PoopPanel extends JPanel
 		}
 	}
 	
-	
 	//happens every time a tick occurs
-	public void update()
+	public void updateP1()
 	{
-		System.out.println(py+ph*2);
-		if(py+ph*2+yvelocity >= 1080)
-			updatePlayer1(px, 1080-ph*2);
-		else
-		{
-			if(yvelocity > 50)
-				yvelocity = 50;
+			//jumping is if else is falling
+			if(p1Jumping || p1DoubleJumping)
+			{
+				updatePlayer1Position(px, py-p1YVelocity);
+				p1YVelocity -= GRAVITY;
+				System.out.println(h1.getK() + "\t" + py);
+				
+				if (p1YVelocity < -1*JUMPHEIGHT)
+				{
+					p1Jumping = false;
+					p1DoubleJumping = false;
+					p1YVelocity = JUMPHEIGHT;
+				}
+					
+			}
 			else
-				yvelocity *= GRAVITY;
-			updatePlayer1(px, py+yvelocity);
-		}
+			{
+				if(CoordIsTouching(py+ph*2+p1YVelocity).equals("bottom"))
+				{
+					p1YVelocity = GRAVITY;
+					updatePlayer1Position(px, 1080-ph*2);
+				}
+				else
+				{
+					if(p1YVelocity > 50)
+						p1YVelocity = 50;
+					else
+						p1YVelocity *= GRAVITY;
+					updatePlayer1Position(px, py+p1YVelocity);
+				}
+			}
+			
+			//does while moving left or right
+			if(p1R)
+			{
+				updatePlayer1Position(px+10, py);
+				//System.out.println("hi");
+			}
+			if(p1L)
+				updatePlayer1Position(px-10, py);
+	}
+	
+	//checks if p1 is touching ceiling or platform or wall
+	public String CoordIsTouching(int x) 
+	{
+		if(x >= 1080)
+			return "bottom";
+		if(x <= 0)
+			return "top";
+		
+		return "";
 	}
 	
 	
 	
-	public void updatePlayer1(int x, int y)
+	
+	public void updatePlayer1Position(int x, int y)
 	{
 		px = x;
 		py = y;
-		h1.setH(x);
-		h1.setK(y);
+		h1.setH(x+pw );
+		h1.setK((y+ph)*-1);
+	}
+	
+	public void p1Jump()
+	{
+		
 	}
 	
 	private class actionListen implements ActionListener
@@ -147,7 +199,10 @@ public class PoopPanel extends JPanel
 			
 			if(source.equals(ticker))
 			{
-				//update();
+				updateP1();
+				//updateP2();
+				
+				repaint();
 			}
 			
 		}
@@ -219,36 +274,46 @@ public class PoopPanel extends JPanel
 		@Override
 		public void keyPressed(KeyEvent e)
 		{
-			System.out.println(e.getKeyCode());
-			
-			switch(e.getKeyCode())
-			{
-			case KeyEvent.VK_A:
-				px -= 10;
-				h1.setH(h1.getH()-10);
-				break;
-			case KeyEvent.VK_D:
-				px += 10;
-				h1.setH(h1.getH()+10);
-				break;
-			case KeyEvent.VK_W:
-				py -= 10;
-				h1.setK(h1.getK()+10);
-				break;
-			case KeyEvent.VK_S:
-				py += 10;
-				h1.setK(h1.getK()-10);
-				break;
+
+				switch(e.getKeyCode())
+				{
+				case KeyEvent.VK_A:
+					p1L = true;
+					break;
+				case KeyEvent.VK_D:
+					p1R = true;
+					break;
+				case KeyEvent.VK_W:
+					if(!p1Jumping)
+					{
+						p1YVelocity = JUMPHEIGHT;
+						p1Jumping = true;
+					}
+					else if(p1Jumping && !p1DoubleJumping)
+					{
+						p1YVelocity = JUMPHEIGHT;
+						p1DoubleJumping = true;
+					}
+					break;
+				case KeyEvent.VK_S:
+					updatePlayer1Position(px, py+10);
+					break;
+				}
 			}
-			repaint();
 			
-		}
 
 		@Override
 		public void keyReleased(KeyEvent e)
 		{
-			// TODO Auto-generated method stub
-			
+			switch(e.getKeyCode())
+			{
+			case KeyEvent.VK_A:
+				p1L = false;
+				break;
+			case KeyEvent.VK_D:
+				p1R = false;
+				break;
+			}
 		}
 		
 	}
