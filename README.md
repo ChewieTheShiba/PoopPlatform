@@ -4,7 +4,7 @@ The goal is simple. Make a better platform game then team Neff.
 
 ## To Do
 - [ ] Brainstorm Stages
-- [Poop Defender, ...?] Brainstorm Characters
+- [Poop Defender, Kuma, Neff ...?] Brainstorm Characters
 - [ ] Make Assets
 - [ ] Figure out JavaFx
 - [ ] Audio for each stage
@@ -13,3 +13,10 @@ The goal is simple. Make a better platform game then team Neff.
 - [ ] Make Characters explode when they go off stage
 - [ ] Make Moves
 - [ ] Make Player 2
+
+Attack List
+
+Kuma
+  L/R - Just a like paw swing maybe
+  U - Extend Arms Upward
+  D - Swipe arms on ground like walking kinda
