@@ -12,7 +12,6 @@ public class PoopPanel extends JPanel
 	private ImageIcon startUpAnimation, startUpScreen;
 	private Timer startUpWait, ticker, jumper;
 	private boolean started, readyToPlay, p1Jumping, p1DoubleJumping;
-	private boolean p1R, p1L;
 	private final int GRAVITY, JUMPHEIGHT;
 	private Character c1, c2;
 	
@@ -63,8 +62,6 @@ public class PoopPanel extends JPanel
 		
 		//sets up jumping mechanism
 		jumper = new Timer(500, new actionListen());
-		p1Jumping = false;
-		p1DoubleJumping = false;
 		JUMPHEIGHT = 20;
 		
 		c1 = new Character();
