@@ -58,7 +58,7 @@ public class PoopPanel extends JPanel
 		startUpWait.start();
 		
 		//sets up timer for 1 tick of the game
-		ticker = new Timer(1, new actionListen());
+		ticker = new Timer(20, new actionListen());
 		
 		//sets up jumping mechanism
 		jumper = new Timer(500, new actionListen());
@@ -118,7 +118,7 @@ public class PoopPanel extends JPanel
 			{
 				updatePlayer1Position(px, py-p1YVelocity);
 				p1YVelocity -= GRAVITY;
-				System.out.println(h1.getK() + "\t" + py);
+				
 				
 				if (p1YVelocity < -1*JUMPHEIGHT)
 				{
