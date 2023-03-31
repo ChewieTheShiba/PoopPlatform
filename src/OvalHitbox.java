@@ -12,17 +12,27 @@ public class OvalHitbox extends Hitbox
 		this.damage = damage;
 	}
 	
-	public double[] intersects(Hitbox h1, boolean h1R, boolean h1L)
+	public double[] intersects(Hitbox h1, boolean h1R, boolean h1L, boolean jumping)
 	{
 		Hitbox checker = h1;
 		double d[] = {-1, -1};
 		
-		int theta = 0;
+		int theta = 0, thetaopp = 0;
 		
 		if(h1R)
+		{
 			theta = 90;
+			thetaopp = 180;
+		}
 		else if(h1L)
+		{
 			theta = 180;
+			thetaopp = 90;
+		}
+		else if(jumping)
+		{
+			theta = 180;
+		}
 			
 		
 		Rectangle rect = new Rectangle(h-a, k*-1-b, a*2, b*2);
@@ -35,7 +45,7 @@ public class OvalHitbox extends Hitbox
 			{
 				for(int m = 1; m > -1; m-=2)
 				{
-					for(double q = 1; q <= theta*m; q+=1)
+					for(double q = 0; q <= theta*m; q+=0.5*m)
 					{
 						double f = 0;
 						int ta = a;
@@ -100,7 +110,7 @@ public class OvalHitbox extends Hitbox
 			{
 				for(int m = 1; m > -1; m-=2)
 				{
-					for(double q = 1; q <= theta*m; q+=0.5)
+					for(double q = 1; q <= theta*m; q+=0.5*m)
 					{
 						double f = 0;
 						int ta = a;
@@ -144,7 +154,7 @@ public class OvalHitbox extends Hitbox
 			            
 			            
 			            
-				        for(double w = 0; w <= 360; w+=0.5)
+				        for(double w = 0; w <= thetaopp*m; w+=0.5*m)
 				          {
 				        	int a2 = h1.getA();
 				        	int b2 = h1.getB();

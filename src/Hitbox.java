@@ -6,7 +6,7 @@ public abstract class Hitbox {
 	protected int h, k, a, b, damage;
 	protected double[] latestIntersection = {-1,-1};
 	
-	public abstract double[] intersects(Hitbox h1, boolean h1R, boolean h1L);
+	public abstract double[] intersects(Hitbox h1, boolean h1R, boolean h1L, boolean jumping);
 	public abstract double[] getOppositeIntersection();
 	
 	public int getA()

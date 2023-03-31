@@ -14,6 +14,7 @@ public class PoopPanel extends JPanel
 	private boolean started, readyToPlay, p1Jumping, p1DoubleJumping;
 	private boolean p1R, p1L;
 	private final int GRAVITY, JUMPHEIGHT;
+	private Character c1, c2;
 	
 	//sets up the initial panel for drawing with proper size
 	public PoopPanel(int w, int h)
@@ -65,6 +66,13 @@ public class PoopPanel extends JPanel
 		p1Jumping = false;
 		p1DoubleJumping = false;
 		JUMPHEIGHT = 20;
+		
+		c1 = new Character();
+		c2 = new Character();
+		c1.setMoveLeft(false);
+		c1.setMoveRight(false);
+		c1.setJumping(false);
+		c1.setDoubleJumping(false);
 	}
 	
 	
@@ -95,7 +103,7 @@ public class PoopPanel extends JPanel
 				g.drawString("" + v, 20, v);
 			}
 			
-			double intersection[] = h1.intersects(h2, p1R, p1L);
+			double intersection[] = h1.intersects(h2, c1.getMoveRight(), c1.getMoveLeft(), c1.getJumping());
 			
 			if(intersection[0] != -1)
 			{
@@ -113,7 +121,7 @@ public class PoopPanel extends JPanel
 	public void updateP1()
 	{
 			//jumping is if else is falling
-			if(p1Jumping || p1DoubleJumping)
+			if(c1.getJumping() || c1.getDoubleJumping())
 			{
 				updatePlayer1Position(px, py-p1YVelocity);
 				p1YVelocity -= GRAVITY;
@@ -121,8 +129,8 @@ public class PoopPanel extends JPanel
 				
 				if (p1YVelocity < -1*JUMPHEIGHT)
 				{
-					p1Jumping = false;
-					p1DoubleJumping = false;
+					c1.setJumping(false);
+					c1.setDoubleJumping(false);
 					p1YVelocity = JUMPHEIGHT;
 				}
 					
@@ -145,12 +153,12 @@ public class PoopPanel extends JPanel
 			}
 			
 			//does while moving left or right
-			if(p1R)
+			if(c1.getMoveRight())
 			{
 				updatePlayer1Position(px+10, py);
 				//System.out.println("hi");
 			}
-			if(p1L)
+			if(c1.getMoveLeft())
 				updatePlayer1Position(px-10, py);
 	}
 	
@@ -277,21 +285,21 @@ public class PoopPanel extends JPanel
 				switch(e.getKeyCode())
 				{
 				case KeyEvent.VK_A:
-					p1L = true;
+					c1.setMoveLeft(true);
 					break;
 				case KeyEvent.VK_D:
-					p1R = true;
+					c1.setMoveRight(true);
 					break;
 				case KeyEvent.VK_W:
 					if(!p1Jumping)
 					{
 						p1YVelocity = JUMPHEIGHT;
-						p1Jumping = true;
+						c1.setJumping(true);
 					}
 					else if(p1Jumping && !p1DoubleJumping)
 					{
 						p1YVelocity = JUMPHEIGHT;
-						p1DoubleJumping = true;
+						c1.setDoubleJumping(true);
 					}
 					break;
 				case KeyEvent.VK_S:
@@ -307,10 +315,10 @@ public class PoopPanel extends JPanel
 			switch(e.getKeyCode())
 			{
 			case KeyEvent.VK_A:
-				p1L = false;
+				c1.setMoveLeft(false);
 				break;
 			case KeyEvent.VK_D:
-				p1R = false;
+				c1.setMoveRight(false);
 				break;
 			}
 		}

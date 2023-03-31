@@ -12,7 +12,7 @@ public class RectangleHitbox extends Hitbox
 		this.k = k;
 	}
 
-	public double[] intersects(Hitbox h1, boolean h1R, boolean h1L)
+	public double[] intersects(Hitbox h1, boolean h1R, boolean h1L, boolean jumping)
 	{
     double d[] = {-1, -1};
 		if(this.getClass().equals(h1.getClass()))
