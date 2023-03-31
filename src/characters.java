@@ -1,10 +1,46 @@
 import java.util.*;
 
 public class characters {
-    Hitbox hitbox;
+    OvalHitbox hitbox;
     String name, description, attack1name, attack2name, attack3name, attack4name, specialattackname;
     int HP, attack1power, attack2power, attack3power, attack4power, specialattackpower;
     Boolean moveLeft, moveRight, jumping, doubleJumping;
+
+    public void setHitbox(OvalHitbox hitbox) {
+        this.hitbox = hitbox;
+    }
+
+    public Boolean getMoveLeft() {
+        return moveLeft;
+    }
+
+    public void setMoveLeft(Boolean moveLeft) {
+        this.moveLeft = moveLeft;
+    }
+
+    public Boolean getMoveRight() {
+        return moveRight;
+    }
+
+    public void setMoveRight(Boolean moveRight) {
+        this.moveRight = moveRight;
+    }
+
+    public Boolean getJumping() {
+        return jumping;
+    }
+
+    public void setJumping(Boolean jumping) {
+        this.jumping = jumping;
+    }
+
+    public Boolean getDoubleJumping() {
+        return doubleJumping;
+    }
+
+    public void setDoubleJumping(Boolean doubleJumping) {
+        this.doubleJumping = doubleJumping;
+    }
 
     public Hitbox getHitbox() {
         return hitbox;
