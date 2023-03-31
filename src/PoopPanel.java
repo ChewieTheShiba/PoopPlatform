@@ -75,7 +75,6 @@ public class PoopPanel extends JPanel
 		//this line sets up the graphics - always needed
 		super.paintComponent(g);
 		
-		
 		if(started)
 		{
 			ticker.start();
@@ -96,7 +95,7 @@ public class PoopPanel extends JPanel
 				g.drawString("" + v, 20, v);
 			}
 			
-			double intersection[] = h1.intersects(h2);
+			double intersection[] = h1.intersects(h2, p1R, p1L);
 			
 			if(intersection[0] != -1)
 			{
