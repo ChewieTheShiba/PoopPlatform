@@ -1,11 +1,15 @@
 import java.util.*;
 
-public class characters {
+public class Character {
     OvalHitbox hitbox;
     String name, description, attack1name, attack2name, attack3name, attack4name, specialattackname;
     int HP, attack1power, attack2power, attack3power, attack4power, specialattackpower;
     Boolean moveLeft, moveRight, jumping, doubleJumping;
 
+    public Character()
+    {
+
+    }
 
     public Boolean getMoveLeft() {
         return moveLeft;
