@@ -105,7 +105,7 @@ public class PoopPanel extends JPanel
 			if(intersection[0] != -1)
 			{
 				g.setColor(Color.red);
-				g.drawOval((int)intersection[0], -1*(int)intersection[1], 20, 20);
+				g.drawOval((int)intersection[0], (int)intersection[1], 20, 20);
 			}
 		}
 		else

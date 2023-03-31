@@ -17,35 +17,49 @@ public class OvalHitbox extends Hitbox
 		Hitbox checker = h1;
 		double d[] = {-1, -1};
 		
-		int theta = 0, thetaopp = 0;
+		int theta = 0, thetaopp = 0, adder = 0, adderopp = 0;
 		
 		if(h1R)
 		{
 			theta = 90;
+			adderopp = 90;
 			thetaopp = 180;
 		}
 		else if(h1L)
 		{
 			theta = 180;
+			adder = 90;
 			thetaopp = 90;
 		}
 		else if(jumping)
 		{
 			theta = 180;
 		}
-			
 		
 		Rectangle rect = new Rectangle(h-a, k*-1-b, a*2, b*2);
-		Rectangle rect1 = new Rectangle(h1.getH()-h1.getA(), h1.getK()*-1-h1.getB(), h1.getA()*2, h1.getB()*2);
+		Rectangle rect1 = null;
 		
+		if(checker.getClass().equals(new RectangleHitbox(1, 1, 1, 1, 0).getClass()))
+	    	rect1 = new Rectangle(h1.getH(), h1.getK(), h1.getA(), h1.getB());
+	    else
+	    	rect1 = new Rectangle(h1.getH()-h1.getA(), h1.getK()*-1-h1.getB(), h1.getA()*2, h1.getB()*2);
 		
 		if(rect.intersects(rect1))
 		{
 			if(checker.getClass().equals(new RectangleHitbox(1, 1, 1, 1, 0).getClass()))
 			{
-				for(int m = 1; m > -1; m-=2)
+				for(int m = 1; m > -1; m--)
 				{
-					for(double q = 0; q <= theta*m; q+=0.5*m)
+					double q = adder;
+					double j = theta;
+					
+					if(m == 0)
+					{
+						q = -1*theta;
+						j = adder*-1;
+					}
+					
+					for(; q <= j; q+=0.5)
 					{
 						double f = 0;
 						int ta = a;
@@ -64,7 +78,7 @@ public class OvalHitbox extends Hitbox
 				            
 				            
 				            top = (ta*ta)*(1-(e*e));
-				            bottom = 1-((e*e)*(Math.sin(q)*Math.sin(q)));
+				            bottom = 1-((e*e)*(Math.sin(Math.toRadians(q))*Math.sin(Math.toRadians(q))));
 				            
 				            
 			            }
@@ -76,7 +90,7 @@ public class OvalHitbox extends Hitbox
 				            
 				            
 				            top = (ta*ta)*(1-(e*e));
-				            bottom = 1-((e*e)*(Math.cos(q)*Math.cos(q)));
+				            bottom = 1-((e*e)*(Math.cos(Math.toRadians(q))*Math.cos(Math.toRadians(q))));
 				            
 			            }
 			            
@@ -84,20 +98,18 @@ public class OvalHitbox extends Hitbox
 			            
 			            f = Math.sqrt((ta*ta)-(tb*tb));
 			            
-			            double x1 = r1*Math.cos(q);
-			            double y1 = r1*Math.sin(q);
+			            double x1 = r1*Math.cos(Math.toRadians(q));
+			            double y1 = r1*Math.sin(Math.toRadians(q));
 			            x1 += h;
 			            y1 += k;
 			            
 			            y1 *= -1;
 			            
-			            System.out.println((int)x1 + "\t" + (int)y1);
-			            
 			            Rectangle r = new Rectangle(h1.getH(), h1.getK(), h1.getA(), h1.getB());
 			            if(r.contains((int)x1, (int)y1))
 			            {
 			            	d[0] = x1;
-			            	d[1] = y1*-1;
+			            	d[1] = y1;
 			            	latestIntersection = d;
 			            	return d;
 			            }
@@ -108,9 +120,18 @@ public class OvalHitbox extends Hitbox
 			
 			else
 			{
-				for(int m = 1; m > -1; m-=2)
+				for(int m = 1; m > -1; m--)
 				{
-					for(double q = 1; q <= theta*m; q+=0.5*m)
+					double q = adder;
+					double j = theta;
+					
+					if(m == 0)
+					{
+						q = -1*theta;
+						j = adder*-1;
+					}
+					
+					for(; q <= j; q+=0.5)
 					{
 						double f = 0;
 						int ta = a;
@@ -130,8 +151,7 @@ public class OvalHitbox extends Hitbox
 				            
 				            
 				            top = (ta*ta)*(1-(e*e));
-				            bottom = 1-((e*e)*(Math.sin(q)*Math.sin(q)));
-				            
+				            bottom = 1-((e*e)*(Math.sin(Math.toRadians(q))*Math.sin(Math.toRadians(q))));
 			            }
 			            else
 			            {
@@ -141,66 +161,78 @@ public class OvalHitbox extends Hitbox
 				            
 				            
 				            top = (ta*ta)*(1-(e*e));
-				            bottom = 1-((e*e)*(Math.cos(q)*Math.cos(q)));
+				            bottom = 1-((e*e)*(Math.cos(Math.toRadians(q))*Math.cos(Math.toRadians(q))));
 				            
 			            }
 			            
 			            r1 = Math.sqrt(top/bottom);
 			            
-			            double x1 = r1*Math.cos(q);
-			            double y1 = r1*Math.sin(q);
+			            double x1 = r1*Math.cos(Math.toRadians(q));
+			            double y1 = r1*Math.sin(Math.toRadians(q));
 			            x1 += h;
 			            y1 += k;
 			            
 			            
-			            
-				        for(double w = 0; w <= thetaopp*m; w+=0.5*m)
-				          {
-				        	int a2 = h1.getA();
-				        	int b2 = h1.getB();
-				        	double r2 = 0;
-				        	double f2 = 0;
-				        	double top2 = 0, bottom2 = 0;
-				        	
-				        	if (a2 < b2)
-				        	{
-				        		int temp = a2;
-				        		a2 = b2;
-				        		b2 = temp;
-				        		
-					        	f2 = Math.sqrt((a2*a2)-(b2*b2));
+			            for(int l = 1; l > -1; l--) 
+			            {
+			            	double w = adderopp;
+							double p = thetaopp;
+							
+							if(l == 0)
+							{
+								w = -1*thetaopp;
+								p = adderopp*-1;
+							}
+			            	
+			            	for(; w <= p; w+=0.5)
+					          {
+					        	int a2 = h1.getA();
+					        	int b2 = h1.getB();
+					        	double r2 = 0;
+					        	double f2 = 0;
+					        	double top2 = 0, bottom2 = 0;
 					        	
-					        	double e2 = f2/a2;
-					        	
-					            top2 = (a2*a2)*(1-(e2*e2));
-					            bottom2 = 1-((e2*e2)*(Math.sin(w)*Math.sin(w)));
+					        	if (a2 < b2)
+					        	{
+					        		int temp = a2;
+					        		a2 = b2;
+					        		b2 = temp;
+					        		
+						        	f2 = Math.sqrt((a2*a2)-(b2*b2));
+						        	
+						        	double e2 = f2/a2;
+						        	
+						            top2 = (a2*a2)*(1-(e2*e2));
+						            bottom2 = 1-((e2*e2)*(Math.sin(Math.toRadians(w))*Math.sin(Math.toRadians(w))));
+						            
+					        	}
+					        	else
+					        	{
+						        	f2 = Math.sqrt((a2*a2)-(b2*b2));
+						        	
+						        	double e2 = f2/a2;
+						        	
+						            top2 = (a2*a2)*(1-(e2*e2));
+						            bottom2 = 1-((e2*e2)*(Math.cos(Math.toRadians(w))*Math.cos(Math.toRadians(w))));
+						          
+					        	}
 					            
-				        	}
-				        	else
-				        	{
-					        	f2 = Math.sqrt((a2*a2)-(b2*b2));
-					        	
-					        	double e2 = f2/a2;
-					        	
-					            top2 = (a2*a2)*(1-(e2*e2));
-					            bottom2 = 1-((e2*e2)*(Math.cos(w)*Math.cos(w)));
-					          
-				        	}
-				            
-				        	r2 = Math.sqrt(top2/bottom2);
-				            double x2 = r2*Math.cos(w);
-				            double y2 = r2*Math.sin(w);
-				            x2 += h1.getH();
-				            y2 += h1.getK();	
-				            
-				            if(Math.abs(x2-x1) < 1 && Math.abs(y2-y1) < 1)
-				            {
-				            	d[0] = x1;
-				            	d[1] = y2;
-				            	latestIntersection = d;
-				            	return d;
-				            }
-				          }
+					        	r2 = Math.sqrt(top2/bottom2);
+					            double x2 = r2*Math.cos(Math.toRadians(w));
+					            double y2 = r2*Math.sin(Math.toRadians(w));
+					         
+					            x2 += h1.getH();
+					            y2 += h1.getK();	
+					            
+					            if(Math.abs(x2-x1) < 1 && Math.abs(y2-y1) < 1)
+					            {
+					            	d[0] = x1;
+					            	d[1] = y2*-1;
+					            	latestIntersection = d;
+					            	return d;
+					            }
+					          }
+			            }
 					}
 				}
 			}
