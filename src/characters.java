@@ -6,9 +6,6 @@ public class characters {
     int HP, attack1power, attack2power, attack3power, attack4power, specialattackpower;
     Boolean moveLeft, moveRight, jumping, doubleJumping;
 
-    public void setHitbox(OvalHitbox hitbox) {
-        this.hitbox = hitbox;
-    }
 
     public Boolean getMoveLeft() {
         return moveLeft;
@@ -70,7 +67,7 @@ public class characters {
         this.attack4power = attack4power;
     }
 
-    public void setHitbox(Hitbox hitbox) {
+    public void setHitbox(OvalHitbox hitbox) {
         this.hitbox = hitbox;
     }
  
