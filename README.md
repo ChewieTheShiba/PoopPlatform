@@ -3,8 +3,10 @@
 The goal is simple. Make a better platform game then team Neff.
 
 ## To Do
+- [ ] Make Projectiles
+- [ ] Mob Psycho Charge?
 - [ ] Brainstorm Stages
-- [Poop Defender, Kuma, Neff ...?] Brainstorm Characters
+- [Poop Defender, Kuma, Neff, Mob Psycho?] Brainstorm Characters
 - [ ] Make Assets
 - [ ] Figure out JavaFx
 - [ ] Audio for each stage
