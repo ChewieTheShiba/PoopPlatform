@@ -3,6 +3,7 @@
 The goal is simple. Make a better platform game then team Neff.
 
 ## To Do
+- [ ] NOTE TO ME MAKE SURE HITBOX CHECKS WHAT KIND IT INTERSECTS WITH THE STRING THING
 - [ ] Make Projectiles
 - [ ] Mob Psycho Charge?
 - [ ] Brainstorm Stages
