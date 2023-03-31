@@ -288,12 +288,12 @@ public class PoopPanel extends JPanel
 					c1.setMoveRight(true);
 					break;
 				case KeyEvent.VK_W:
-					if(!p1Jumping)
+					if(!c1.getJumping())
 					{
 						p1YVelocity = JUMPHEIGHT;
 						c1.setJumping(true);
 					}
-					else if(p1Jumping && !p1DoubleJumping)
+					else if(c1.getJumping() && !c1.getDoubleJumping())
 					{
 						p1YVelocity = JUMPHEIGHT;
 						c1.setDoubleJumping(true);
