@@ -200,7 +200,12 @@ public class PoopPanel extends JPanel
 			if(source.equals(startUpWait))
 			{
 				startUpWait.stop();
-				startUpScreen = new ImageIcon(ImageIO.read(getClass().getResource("assets/startUpAnimation.gif")));
+				try {
+					startUpScreen = new ImageIcon(ImageIO.read(getClass().getResource("assets/startUpAnimation.gif")));
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				readyToPlay = true;
 			}
 			
