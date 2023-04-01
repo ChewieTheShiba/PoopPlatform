@@ -57,14 +57,14 @@ public class PoopPanel extends JPanel
 		and wait for the player to press start
 		*/
 		startUpScreen = new ImageIcon(ImageIO.read(getClass().getResource("assets/startUpAnimation.gif")));
-		startUpWait = new Timer(5000, new actionListen());
+		startUpWait = new Timer(5000, new actionListener());
 		startUpWait.start();
 		
 		//sets up timer for 1 tick of the game
-		ticker = new Timer(20, new actionListen());
+		ticker = new Timer(20, new actionListener());
 		
 		//sets up jumping mechanism
-		jumper = new Timer(500, new actionListen());
+		jumper = new Timer(500, new actionListener());
 		JUMPHEIGHT = 20;
 		
 		c1 = new Character();
