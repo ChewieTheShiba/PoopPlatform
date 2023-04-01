@@ -1,5 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.util.*;
 import javax.swing.Timer;
@@ -16,7 +19,7 @@ public class PoopPanel extends JPanel
 	private Character c1, c2;
 	
 	//sets up the initial panel for drawing with proper size
-	public PoopPanel(int w, int h)
+	public PoopPanel(int w, int h) throws IOException
 	{
 		this.w = w;
 		this.h = h;
@@ -53,7 +56,7 @@ public class PoopPanel extends JPanel
 		Animation will play and then once it stops screen will appear
 		and wait for the player to press start
 		*/
-		startUpScreen = new ImageIcon("assets/startUpAnimation.gif");
+		startUpScreen = new ImageIcon(ImageIO.read(getClass().getResource("assets/startUpAnimation.gif")));
 		startUpWait = new Timer(5000, new actionListen());
 		startUpWait.start();
 		
@@ -186,7 +189,7 @@ public class PoopPanel extends JPanel
 		
 	}
 	
-	private class actionListen implements ActionListener
+	private class actionListener implements ActionListener
 	{
 
 		public void actionPerformed(ActionEvent e)
@@ -197,7 +200,7 @@ public class PoopPanel extends JPanel
 			if(source.equals(startUpWait))
 			{
 				startUpWait.stop();
-				startUpScreen = new ImageIcon("assets/startUpScreen.png");
+				startUpScreen = new ImageIcon(ImageIO.read(getClass().getResource("assets/startUpAnimation.gif")));
 				readyToPlay = true;
 			}
 			
@@ -211,6 +214,8 @@ public class PoopPanel extends JPanel
 			
 		}
 	}
+	
+	
 	
 	private class mouseListen implements MouseListener, MouseMotionListener
 	{

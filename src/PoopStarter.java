@@ -1,12 +1,14 @@
 
 //import JFrame
+import java.io.IOException;
+
 import javax.swing.JFrame;
 
 
 public class PoopStarter //Main class
 {
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws IOException
 	{
 		//change to match your values for width/height
 		//these can be changed
