@@ -197,12 +197,24 @@ public class PoopPanel extends JPanel
 		
 		double d[] = new double[2];
 		
+		//ALL RECOMENDATIONS ARE VERY WORK IN PROGRESS IM MAKING A LARGE
+		//ESTIMATION FOR THE TIME BEING
+		
 		//recomended weights
 		//light is 50ish
 		//medium is 100ish
 		//heavy is 150-200ish
 		
 		//recomended knockback
+		//light is 100ish
+		//medium is 250-300ish
+		//killers are 400ish
+		
+		//when deciding how far to knock them in x and y take the distance from intersection to oppintersection
+		//then do x/dist and y/dist
+		//then multiply those ratios by knockback
+		//then add that knockbackx and knockbacky to the players x and y
+		
 		
 		double percentage = 0;
 		//double percentage = c1.getHP();
