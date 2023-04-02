@@ -5,6 +5,10 @@ public class Character {
     String name, description, attack1name, attack2name, attack3name, attack4name, specialattackname;
     int HP, attack1power, attack2power, attack3power, attack4power, specialattackpower;
     Boolean moveLeft, moveRight, jumping, doubleJumping;
+    
+    //change all int variables to doubles and make sure to update their setters parameters and return types and their getters return types
+    //add a weight variable and then variabeles for each attacks knockback since knockback and damage are different things
+    //then add a void method called setH and setK which take in an int parameter and then call hitbox.setH() and hitbox.setK() with those variables respectively
 
     public Character()
     {
