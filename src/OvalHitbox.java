@@ -10,11 +10,13 @@ public class OvalHitbox extends Hitbox
 		this.h = h;
 		this.k = k*-1;
 		this.damage = damage;
+		this.lastTouched = null;
 	}
 	
 	public double[] intersects(Hitbox h1, boolean h1R, boolean h1L, boolean jumping)
 	{
 		Hitbox checker = h1;
+		lastTouched = h1;
 		double d[] = {-1, -1};
 		
 		int theta = 0, thetaopp = 0, adder = 0, adderopp = 0;
@@ -227,7 +229,7 @@ public class OvalHitbox extends Hitbox
 					            if(Math.abs(x2-x1) < 1 && Math.abs(y2-y1) < 1)
 					            {
 					            	d[0] = x1;
-					            	d[1] = y2*-1;
+					            	d[1] = y1*-1;
 					            	latestIntersection = d;
 					            	return d;
 					            }
@@ -236,11 +238,10 @@ public class OvalHitbox extends Hitbox
 					}
 				}
 			}
-			latestIntersection = d;
-	        return d;
 		}
-		else
-			return d;
+		lastTouched = null;
+		latestIntersection = d;
+		return d;
 		
 		
 	}
@@ -249,32 +250,40 @@ public class OvalHitbox extends Hitbox
 	public double[] getOppositeIntersection()
 	{
 		double d[] = {-1,-1};
-		if(latestIntersection != d)
+		Hitbox Checker = lastTouched;
+		
+		double yThing = 0, xThing = 0;
+		
+		if(Checker != null)
 		{
-			if(latestIntersection[0]-h < 0)
+			yThing = latestIntersection[1] - lastTouched.getK()*-1;
+			xThing = latestIntersection[0] - lastTouched.getH();
+		}
+		
+		if(latestIntersection[0] != -1 && Checker.getClass().equals(new OvalHitbox(1,1,1,1,1).getClass()))
+		{
+			if(xThing < 0)
 			{
-				d[0] = latestIntersection[0]-h + (((latestIntersection[0]-h)*2)*-1);
-				System.out.println(d[0]);
-				d[0] += h;
+				d[0] = xThing - xThing*2;
+				d[0] += lastTouched.getH();
 			}
-			else if(latestIntersection[0]-h > 0)
+			else if(xThing > 0)
 			{
-				d[0] = latestIntersection[0]-h - ((latestIntersection[0]-h)*2);
-				System.out.println(d[0]);
-				d[0] += h;
+				d[0] = xThing - xThing*2;
+				d[0] += lastTouched.getH();
 			}
-			if(latestIntersection[1]-k < 0)
+			if(yThing < 0)
 			{
-				d[1] = latestIntersection[1]-k + (((latestIntersection[1]-k)*2)*-1);
-				System.out.println(d[1]);
-				d[1] += k;
+				System.out.println(yThing);
+				System.out.println(lastTouched.getK());
+				d[1] = yThing - yThing*2;
+				d[1] += lastTouched.getK()*-1;
 				return d;
 			}
-			else if(latestIntersection[1]-k > 0)
+			else if(yThing > 0)
 			{
-				d[1] = latestIntersection[1]-k - ((latestIntersection[1]-k)*2);
-				System.out.println(d[1]);
-				d[1] += k;
+				d[1] = yThing - yThing*2;
+				d[1] += lastTouched.getK()*-1;
 				return d;
 			}
 		}

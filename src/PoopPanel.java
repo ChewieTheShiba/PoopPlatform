@@ -36,7 +36,7 @@ public class PoopPanel extends JPanel
 		pw = 100;
 		ph = 200;
 		
-		sy = 800;
+		sy = 500;
 		sx = 250;
 		sw = 100;
 		sh = 200;
@@ -56,7 +56,8 @@ public class PoopPanel extends JPanel
 		Animation will play and then once it stops screen will appear
 		and wait for the player to press start
 		*/
-		startUpScreen = new ImageIcon(ImageIO.read(getClass().getResource("assets/startUpAnimation.gif")));
+		startUpScreen = new ImageIcon("assets/startUpAnimation.gif");
+		//startUpScreen = new ImageIcon(ImageIO.read(getClass().getResource("assets/startUpAnimation.gif")));
 		startUpWait = new Timer(5000, new actionListener());
 		startUpWait.start();
 		
@@ -104,11 +105,16 @@ public class PoopPanel extends JPanel
 			}
 			
 			double intersection[] = h1.intersects(h2, c1.getMoveRight(), c1.getMoveLeft(), c1.getJumping());
+			System.out.println("\nxvvvvv" + intersection[0] + "\tyvvvvv" + intersection[1]);
+			
+			double oppIntersection[] = h1.getOppositeIntersection();
+			System.out.println("\nx" + intersection[0] + "\ty" + intersection[1]);
 			
 			if(intersection[0] != -1)
 			{
 				g.setColor(Color.red);
 				g.drawOval((int)intersection[0], (int)intersection[1], 20, 20);
+				g.drawOval((int)oppIntersection[0], (int)oppIntersection[1], 20, 20);
 			}
 		}
 		else
@@ -200,12 +206,13 @@ public class PoopPanel extends JPanel
 			if(source.equals(startUpWait))
 			{
 				startUpWait.stop();
-				try {
-					startUpScreen = new ImageIcon(ImageIO.read(getClass().getResource("assets/startUpAnimation.gif")));
-				} catch (IOException e1) {
+				//try {
+					startUpScreen = new ImageIcon("assets/startUpAnimation.gif");
+					//startUpScreen = new ImageIcon(ImageIO.read(getClass().getResource("assets/startUpAnimation.gif")));
+				//} catch (IOException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+					//e1.printStackTrace();
+				//}
 				readyToPlay = true;
 			}
 			
