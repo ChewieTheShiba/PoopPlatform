@@ -8,7 +8,7 @@ public class Character {
     
     //change all int variables to doubles and make sure to update their setters parameters and return types and their getters return types
     //add a weight variable and then variabeles for each attacks knockback since knockback and damage are different things
-    //then add a void method called setH and setK which take in an int parameter and then call hitbox.setH() and hitbox.setK() with those variables respectively
+    //then add a void method called setH and setK which take in an int parameter then call hitbox.setH() and hitbox.setK() with those variables respectively
 
     public Character()
     {
