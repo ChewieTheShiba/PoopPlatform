@@ -105,16 +105,15 @@ public class PoopPanel extends JPanel
 			}
 			
 			double intersection[] = h1.intersects(h2, c1.getMoveRight(), c1.getMoveLeft(), c1.getJumping());
-			System.out.println("\nxvvvvv" + intersection[0] + "\tyvvvvv" + intersection[1]);
 			
 			double oppIntersection[] = h1.getOppositeIntersection();
-			System.out.println("\nx" + intersection[0] + "\ty" + intersection[1]);
 			
 			if(intersection[0] != -1)
 			{
 				g.setColor(Color.red);
 				g.drawOval((int)intersection[0], (int)intersection[1], 20, 20);
 				g.drawOval((int)oppIntersection[0], (int)oppIntersection[1], 20, 20);
+				getp1Knockback(10, 300);
 			}
 		}
 		else
@@ -190,8 +189,40 @@ public class PoopPanel extends JPanel
 		h1.setK((y+ph)*-1);
 	}
 	
-	public void p1Jump()
+	public double getp1Knockback(double attackPower, double baseKnockBack)
 	{
+		/*This formula is used off a wiki page for the smash bros formula for calculating distance based
+		based on weight, percentage, attack power, etc. since I figured instead of having a convoluted
+		bad formula thats weird it's better to use one that works well*/
+		
+		double d[] = new double[2];
+		
+		//recomended weights
+		//light is 50ish
+		//medium is 100ish
+		//heavy is 150-200ish
+		
+		//recomended knockback
+		
+		double percentage = 0;
+		//double percentage = c1.getHP();
+		double weight = 100;
+		//double weight = c1.getWeight();
+		
+		double knockBack = (percentage/10) + (percentage*attackPower/20);
+		System.out.println("1\t" + knockBack);
+		knockBack *= 200/(weight+100);
+		System.out.println("2\t" + knockBack);
+		knockBack *= 1.4;
+		System.out.println("3\t" + knockBack);
+		knockBack += 18;
+		System.out.println("4\t" + knockBack);
+		knockBack += baseKnockBack;
+		System.out.println("5\t" + knockBack);
+		
+		System.out.println("Knockback" + knockBack);
+		
+		return knockBack;
 		
 	}
 	

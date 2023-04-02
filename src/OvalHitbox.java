@@ -274,8 +274,6 @@ public class OvalHitbox extends Hitbox
 			}
 			if(yThing < 0)
 			{
-				System.out.println(yThing);
-				System.out.println(lastTouched.getK());
 				d[1] = yThing - yThing*2;
 				d[1] += lastTouched.getK()*-1;
 				return d;
