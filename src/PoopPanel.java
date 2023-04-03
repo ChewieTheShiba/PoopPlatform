@@ -11,10 +11,11 @@ public class PoopPanel extends JPanel
 {
 	//variables for the overall width and height
 	private int w, h, py, px, pw, ph, sx, sy, sw, sh, p1YVelocity;
+	private double p1XDist, p1YDist, p1Knockback, p1XDistDiv, p1YDistDiv;
 	private Hitbox h1, h2;
 	private ImageIcon startUpAnimation, startUpScreen;
-	private Timer startUpWait, ticker, jumper;
-	private boolean started, readyToPlay, p1Jumping, p1DoubleJumping;
+	private Timer startUpWait, ticker, p1Knockbacker;
+	private boolean started, readyToPlay, p1KnockingBack;
 	private final int GRAVITY, JUMPHEIGHT;
 	private Character c1, c2;
 	
@@ -32,12 +33,12 @@ public class PoopPanel extends JPanel
 		this.setFocusable(true);
 		
 		py = 100;
-		px = 300;
+		px = 500;
 		pw = 100;
 		ph = 200;
 		
 		sy = 500;
-		sx = 250;
+		sx = 100;
 		sw = 100;
 		sh = 200;
 		
@@ -52,6 +53,8 @@ public class PoopPanel extends JPanel
 		h1 = new OvalHitbox(px+pw, py+ph, pw, ph, 0);
 		h2 = new OvalHitbox(sx+sw, sy+sh, sw, sh, 0);
 		
+		p1KnockingBack = false;
+		
 		/*sets up startup animation and wait and then waiting screen
 		Animation will play and then once it stops screen will appear
 		and wait for the player to press start
@@ -65,15 +68,20 @@ public class PoopPanel extends JPanel
 		ticker = new Timer(20, new actionListener());
 		
 		//sets up jumping mechanism
-		jumper = new Timer(500, new actionListener());
+		p1Knockbacker = new Timer(1, new actionListener());
 		JUMPHEIGHT = 20;
 		
 		c1 = new Character();
-		c2 = new Character();
 		c1.setMoveLeft(false);
 		c1.setMoveRight(false);
 		c1.setJumping(false);
 		c1.setDoubleJumping(false);
+		
+		c2 = new Character();
+		c2.setMoveLeft(false);
+		c2.setMoveRight(false);
+		c2.setJumping(false);
+		c2.setDoubleJumping(false);
 	}
 	
 	
@@ -104,16 +112,37 @@ public class PoopPanel extends JPanel
 				g.drawString("" + v, 20, v);
 			}
 			
-			double intersection[] = h1.intersects(h2, c1.getMoveRight(), c1.getMoveLeft(), c1.getJumping());
+			double p1Intersection[] = h1.intersects(h2, c1.getMoveRight(), c1.getMoveLeft(), c1.getJumping());
+			double p1OppIntersection[] = h1.getOppositeIntersection();
 			
-			double oppIntersection[] = h1.getOppositeIntersection();
+			double p2Intersection[] = h2.intersects(h1, c2.getMoveRight(), c2.getMoveLeft(), c2.getJumping());
+			double p2OppIntersection[] = h2.getOppositeIntersection();
 			
-			if(intersection[0] != -1)
+			if(p2Intersection[0] != -1)
 			{
 				g.setColor(Color.red);
-				g.drawOval((int)intersection[0], (int)intersection[1], 20, 20);
-				g.drawOval((int)oppIntersection[0], (int)oppIntersection[1], 20, 20);
-				getp1Knockback(10, 300);
+				g.drawOval((int)p2Intersection[0], (int)p2Intersection[1], 20, 20);
+				g.drawOval((int)p2OppIntersection[0], (int)p2OppIntersection[1], 20, 20);
+				double p1Dist = Math.sqrt(Math.pow(Math.abs(p2Intersection[0]-p2OppIntersection[0]), 2) + Math.pow(Math.abs(p2Intersection[1]-p2OppIntersection[1]), 2));
+				p1Knockback = getp1Knockback(10, 300);
+				
+				p1XDist = Math.abs(p2Intersection[0]-p2OppIntersection[0])/p1Dist;
+				p1YDist = Math.abs(p2Intersection[1]-p2OppIntersection[1])/p1Dist;
+				
+				p1XDist *= p1Knockback;
+				p1YDist *= p1Knockback;
+				
+				if(p2OppIntersection[0] - h1.getH() < 0)
+					p1XDist *= -1;
+				if(p2OppIntersection[1] - h1.getK() < 0)
+					p1YDist *= -1;
+				
+				//what its being divided by is basically how many ticks of the knockback timer it takes to get launched
+				p1XDistDiv = p1XDist / 15;
+				p1YDistDiv = p1YDist / 15;
+				p1KnockingBack = true;
+				
+				p1Knockbacker.start();
 			}
 		}
 		else
@@ -140,7 +169,7 @@ public class PoopPanel extends JPanel
 				}
 					
 			}
-			else
+			else if(!(c1.getJumping() || c1.getDoubleJumping()) && !p1KnockingBack)
 			{
 				if(CoordIsTouching(py+ph*2+p1YVelocity).equals("bottom"))
 				{
@@ -159,10 +188,7 @@ public class PoopPanel extends JPanel
 			
 			//does while moving left or right
 			if(c1.getMoveRight())
-			{
 				updatePlayer1Position(px+10, py);
-				//System.out.println("hi");
-			}
 			if(c1.getMoveLeft())
 				updatePlayer1Position(px-10, py);
 	}
@@ -210,7 +236,7 @@ public class PoopPanel extends JPanel
 		//medium is 250-300ish
 		//killers are 400ish
 		
-		//when deciding how far to knock them in x and y take the distance from intersection to oppintersection
+		//when deciding how far to knock them in x and y take the distance from intersection to p1OppIntersection
 		//then do x/dist and y/dist
 		//then multiply those ratios by knockback
 		//then add that knockbackx and knockbacky to the players x and y
@@ -238,6 +264,28 @@ public class PoopPanel extends JPanel
 		
 	}
 	
+	public void updateP2()
+	{
+		System.out.println("X" + sx);
+		System.out.println(h2.getH());
+		if(c2.getMoveRight())
+		{
+			updatePlayer2Position(sx+10, sy);
+		}
+		if(c2.getMoveLeft())
+		{
+			updatePlayer2Position(sx-10, sy);
+		}
+	}
+	
+	public void updatePlayer2Position(int x, int y)
+	{
+		sx = x;
+		sy = y;
+		h2.setH(x+sw);
+		h2.setK((y+sh)*-1);
+	}
+	
 	private class actionListener implements ActionListener
 	{
 
@@ -262,9 +310,28 @@ public class PoopPanel extends JPanel
 			if(source.equals(ticker))
 			{
 				updateP1();
-				//updateP2();
+				updateP2();
 				
 				repaint();
+			}
+			
+			if(source.equals(p1Knockbacker))
+			{
+				System.out.println("p1x Div\t" + p1XDistDiv);
+				System.out.println("p1y Div\t" + p1YDistDiv);
+				
+				if(Math.abs(p1XDist) > Math.abs(p1XDistDiv) && Math.abs(p1YDist) > Math.abs(p1YDistDiv))
+					updatePlayer1Position((int)(px+p1XDistDiv),(int)(py+p1YDistDiv));
+				else
+				{
+					p1KnockingBack = false;
+					p1Knockbacker.stop();
+				}
+				
+				System.out.println("p1X Dist\t" + p1XDist);
+				System.out.println("p1Y Dist\t" + p1YDist);
+				p1XDist -= p1XDistDiv;
+				p1YDist -= p1YDistDiv;
 			}
 			
 		}
@@ -362,6 +429,14 @@ public class PoopPanel extends JPanel
 				case KeyEvent.VK_S:
 					updatePlayer1Position(px, py+10);
 					break;
+				
+				case KeyEvent.VK_SEMICOLON:
+					c2.setMoveRight(true);
+					break;
+				case KeyEvent.VK_K:
+					c2.setMoveLeft(true);
+					break;
+				
 				}
 			}
 			
@@ -376,6 +451,12 @@ public class PoopPanel extends JPanel
 				break;
 			case KeyEvent.VK_D:
 				c1.setMoveRight(false);
+				break;
+			case KeyEvent.VK_SEMICOLON:
+				c2.setMoveRight(false);
+				break;
+			case KeyEvent.VK_K:
+				c2.setMoveLeft(false);
 				break;
 			}
 		}
