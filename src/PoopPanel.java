@@ -138,6 +138,14 @@ public class PoopPanel extends JPanel
 					p1YDist *= -1;
 				
 				//what its being divided by is basically how many ticks of the knockback timer it takes to get launched
+				//NOTE TO SELF
+				//
+				//
+				//To determine how far a character is launched away, the numerical amount of knockback caused is multiplied
+				//by 0.03 to calculate launch speed, and the initial value of launch speed then decays by 0.051 every frame, 
+				//so that the character eventually loses all momentum from the knockback
+				//basically instead of calculating it by dividing by 15 here take the knockback and every tick in the knockback 
+				//thing make it go over that much then decay until its < 0
 				p1XDistDiv = p1XDist / 15;
 				p1YDistDiv = p1YDist / 15;
 				p1KnockingBack = true;
@@ -266,8 +274,6 @@ public class PoopPanel extends JPanel
 	
 	public void updateP2()
 	{
-		System.out.println("X" + sx);
-		System.out.println(h2.getH());
 		if(c2.getMoveRight())
 		{
 			updatePlayer2Position(sx+10, sy);
