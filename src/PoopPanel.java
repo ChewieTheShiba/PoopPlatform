@@ -34,13 +34,13 @@ public class PoopPanel extends JPanel
 		
 		py = 100;
 		px = 500;
-		pw = 100;
-		ph = 200;
+		pw = 50;
+		ph = 100;
 		
 		sy = 1000;
 		sx = 100;
-		sw = 100;
-		sh = 200;
+		sw = 50;
+		sh = 100;
 		
 		//sets up gravity stuff
 		p1YVelocity = 1;
@@ -124,7 +124,7 @@ public class PoopPanel extends JPanel
 				g.drawOval((int)p2Intersection[0], (int)p2Intersection[1], 20, 20);
 				g.drawOval((int)p2OppIntersection[0], (int)p2OppIntersection[1], 20, 20);
 				double p1Dist = Math.sqrt(Math.pow(Math.abs(p2Intersection[0]-p2OppIntersection[0]), 2) + Math.pow(Math.abs(p2Intersection[1]-p2OppIntersection[1]), 2));
-				p1Knockback = getp1Knockback(10, 400);
+				p1Knockback = getp1Knockback(10, 600);
 				
 				p1XDist = Math.abs(p2Intersection[0]-p2OppIntersection[0])/p1Dist;
 				p1YDist = Math.abs(p2Intersection[1]-p2OppIntersection[1])/p1Dist;
@@ -341,7 +341,7 @@ public class PoopPanel extends JPanel
 				
 				p1LaunchSpeed -= 1;
 				
-				if(Math.abs(tempXDist) <= 1)
+				if(p1LaunchSpeed <= 0)
 				{
 					p1KnockingBack = false;
 					p1Knockbacker.stop();
