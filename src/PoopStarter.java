@@ -13,7 +13,7 @@ public class PoopStarter //Main class
 		//change to match your values for width/height
 		//these can be changed
 		int w = 1920;
-		int h = 1080;
+		int h = 1500;
 		
 		
 		
