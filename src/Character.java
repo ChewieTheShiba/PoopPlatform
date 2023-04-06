@@ -3,11 +3,11 @@ import java.util.*;
 public class Character {
     OvalHitbox hitbox;
     String name, description, attack1name, attack2name, attack3name, attack4name, specialattackname;
-    Double HP, Weight, attack1power, attack1knockback, attack2power, attack2knockback, attack3power, attack3knockback, attack4power, attack4knockback, specialattackpower, spe;
-    Boolean moveLeft, moveRight, jumping, doubleJumping;
+    Double HP, Weight, attack1power, attack1knockback, attack2power, attack2knockback, attack3power, attack3knockback, attack4power, attack4knockback, specialattackpower, specialknockback;
+    Boolean jumping, doubleJumping;
 
     
-    public void setH(double wantedH){
+public void setH(double wantedH){
         
         int IntH = (int) wantedH;
         
@@ -20,9 +20,47 @@ public class Character {
         hitbox.setK(IntK);
     }
     
-    public Character()
-    {
+    public void setMoveRight(boolean moveRight){
+        hitbox.setMoveRight(moveRight);
+    }
 
+    public boolean getMoveRight(){
+    	
+    	return hitbox.getMoveRight();
+    }
+    
+    public void setMoveLeft(boolean moveLeft){
+        hitbox.setMoveLeft(moveLeft);
+    }
+
+    public boolean getMoveLeft(){
+    	
+    	return hitbox.getMoveLeft();
+    }
+    
+    public void setMoveUp(boolean moveUp){
+        hitbox.setMoveUp(moveUp);
+    }
+
+    public boolean getMoveUp(){
+    	
+    	return hitbox.getMoveUp();
+    }
+    
+    public void setMoveDown(boolean moveDown){
+        hitbox.setMoveDown(moveDown);
+    }
+
+    public boolean getMoveDown(){
+    	
+    	return hitbox.getMoveDown();
+    }
+    
+    public Character(OvalHitbox hitbox)
+    {
+    	this.hitbox = hitbox;
+    	hitbox.setKB(600);
+    	hitbox.setDamage(10);
     }
 
     
@@ -76,30 +114,13 @@ public class Character {
     }
 
 
-    public Double getSpe() {
-        return spe;
+    public Double getSpecialKnockback() {
+        return specialknockback;
     }
 
 
-    public void setSpe(Double spe) {
-        this.spe = spe;
-    }
-
-
-    public Boolean getMoveLeft() {
-        return moveLeft;
-    }
-
-    public void setMoveLeft(Boolean moveLeft) {
-        this.moveLeft = moveLeft;
-    }
-
-    public Boolean getMoveRight() {
-        return moveRight;
-    }
-
-    public void setMoveRight(Boolean moveRight) {
-        this.moveRight = moveRight;
+    public void setSpecialKnockback(Double spe) {
+        this.specialknockback = specialknockback;
     }
 
     public Boolean getJumping() {
@@ -108,6 +129,7 @@ public class Character {
 
     public void setJumping(Boolean jumping) {
         this.jumping = jumping;
+        hitbox.setMoveUp(jumping);
     }
 
     public Boolean getDoubleJumping() {

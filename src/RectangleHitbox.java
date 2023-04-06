@@ -12,25 +12,25 @@ public class RectangleHitbox extends Hitbox
 		this.k = k;
 	}
 
-	public double[] intersects(Hitbox h1, boolean h1R, boolean h1L, boolean jumping)
+	public double[] intersects(Hitbox h1)
 	{
 		Hitbox checker = h1;
 		
 		int theta = 0, thetaopp = 0, adder = 0, adderopp = 0;
 		
-		if(h1R)
+		if(moveRight)
 		{
 			theta = 90;
 			adderopp = 90;
 			thetaopp = 180;
 		}
-		else if(h1L)
+		else if(moveLeft)
 		{
 			theta = 180;
 			adder = 90;
 			thetaopp = 90;
 		}
-		else if(jumping)
+		else if(moveUp)
 		{
 			theta = 180;
 		}

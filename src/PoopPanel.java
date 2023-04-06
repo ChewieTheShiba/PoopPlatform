@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.util.*;
@@ -10,14 +9,14 @@ import javax.swing.Timer;
 public class PoopPanel extends JPanel
 {
 	//variables for the overall width and height
-	private int w, h, py, px, pw, ph, sx, sy, sw, sh, p1YVelocity, p1MoveSpeed, p1LaunchDirection, ogpx, ogpy;
-	private double p1XDist, p1YDist, p1Knockback, p1LaunchSpeed, p1EndXTraj, p1YTraj, p1KnockbackTheta;
-	private Hitbox h1, h2;
+	private int w, h, py, px, pw, ph, sx, sy, sw, sh, p1YVelocity, p1MoveSpeed, p1LaunchDirection, ogpx, ogpy, p1JumpStart;
+	private double p1Knockback, p1LaunchSpeed, p1EndXTraj, p1KnockbackTheta;
 	private ImageIcon startUpAnimation, startUpScreen;
 	private Timer startUpWait, ticker, p1Knockbacker;
 	private boolean started, readyToPlay, p1KnockingBack;
 	private final int GRAVITY, JUMPHEIGHT;
 	private Character c1, c2;
+	private ArrayList<Hitbox> hitboxes;
 	
 	//sets up the initial panel for drawing with proper size
 	public PoopPanel(int w, int h) throws IOException
@@ -50,9 +49,6 @@ public class PoopPanel extends JPanel
 		started = true;
 		readyToPlay = false;
 		
-		h1 = new OvalHitbox(px+pw, py+ph, pw, ph, 0);
-		h2 = new OvalHitbox(sx+sw, sy+sh, sw, sh, 0);
-		
 		p1KnockingBack = false;
 		
 		/*sets up startup animation and wait and then waiting screen
@@ -71,17 +67,25 @@ public class PoopPanel extends JPanel
 		p1Knockbacker = new Timer(20, new actionListener());
 		JUMPHEIGHT = 20;
 		
-		c1 = new Character();
+		c1 = new Character(new OvalHitbox(px+pw, py+ph, pw, ph, 0));
+		c1.setHP(0.0);
+		c1.setWeight(75.0);
 		c1.setMoveLeft(false);
 		c1.setMoveRight(false);
 		c1.setJumping(false);
 		c1.setDoubleJumping(false);
 		
-		c2 = new Character();
+		c2 = new Character(new OvalHitbox(sx+sw, sy+sh, sw, sh, 0));
+		c2.setHP(0.0);
+		c2.setWeight(75.0);
 		c2.setMoveLeft(false);
 		c2.setMoveRight(false);
 		c2.setJumping(false);
 		c2.setDoubleJumping(false);
+		
+		hitboxes = new ArrayList<Hitbox>();
+		hitboxes.add(c1.getHitbox());
+		hitboxes.add(c2.getHitbox());
 	}
 	
 	
@@ -94,6 +98,8 @@ public class PoopPanel extends JPanel
 		
 		if(started)
 		{
+			double[] p1Intersection = {-1,-1}, p2Intersection = {-1,-1}, p1OppIntersection = {-1,-1}, p2OppIntersection = {-1,-1};
+			
 			ticker.start();
 			//all drawings below here:
 			g.setColor(Color.black);
@@ -112,53 +118,71 @@ public class PoopPanel extends JPanel
 				g.drawString("" + v, 20, v);
 			}
 			
-			double p1Intersection[] = h1.intersects(h2, c1.getMoveRight(), c1.getMoveLeft(), c1.getJumping());
-			double p1OppIntersection[] = h1.getOppositeIntersection();
 			
-			double p2Intersection[] = h2.intersects(h1, c2.getMoveRight(), c2.getMoveLeft(), c2.getJumping());
-			double p2OppIntersection[] = h2.getOppositeIntersection();
-			
-			if(p2Intersection[0] != -1)
+			for(Hitbox h : hitboxes)
 			{
-				g.setColor(Color.red);
-				g.drawOval((int)p2Intersection[0], (int)p2Intersection[1], 20, 20);
-				g.drawOval((int)p2OppIntersection[0], (int)p2OppIntersection[1], 20, 20);
-				double p1Dist = Math.sqrt(Math.pow(Math.abs(p2Intersection[0]-p2OppIntersection[0]), 2) + Math.pow(Math.abs(p2Intersection[1]-p2OppIntersection[1]), 2));
-				p1Knockback = getp1Knockback(10, 600);
-				
-				p1XDist = Math.abs(p2Intersection[0]-p2OppIntersection[0])/p1Dist;
-				p1YDist = Math.abs(p2Intersection[1]-p2OppIntersection[1])/p1Dist;
-				
-				p1KnockbackTheta = Math.atan((p2Intersection[1]-p2OppIntersection[1])/(p2Intersection[0]-p2OppIntersection[0]));
-				
-				
-				//Sets the end of knockback trajectory halfway through the arc
-				p1EndXTraj = Math.pow(p1Knockback, 2)*Math.sin(p1KnockbackTheta*2);
-				p1EndXTraj /= p1YVelocity;
-				p1EndXTraj /= 2;
-				p1EndXTraj += p2Intersection[0];
-				
-				p1LaunchSpeed = p1Knockback * 0.03;
-				
-				p1LaunchDirection = 1;
-				
-				
-				if(p2OppIntersection[0] - h1.getH() < 0)
+				if(!h.equals(c1.getHitbox()))
 				{
-					p1EndXTraj = p2Intersection[0] - p1EndXTraj;
-					p1LaunchDirection = -1;
-					p1KnockbackTheta *= -1;
+					p1Intersection = h.intersects(c1.getHitbox());
+					p1OppIntersection = h.getOppositeIntersection();
 				}
-				if(p2OppIntersection[1] - h1.getK() < 0)
-					;
 				
-				ogpx = px;
-				ogpy = py;
+				if(!h.equals(c2.getHitbox()))
+				{
+					p2Intersection = h.intersects(c2.getHitbox());
+					p2OppIntersection = h.getOppositeIntersection();
+				}
 				
-				p1KnockingBack = true;
-				System.out.println("TTTTT\t" + p1KnockbackTheta);
-				p1Knockbacker.start();
+				if(p1Intersection[0] != -1 && h.getDamage() != 0)
+				{
+					g.setColor(Color.red);
+					g.drawOval((int)p1Intersection[0], (int)p1Intersection[1], 20, 20);
+					g.drawOval((int)p1OppIntersection[0], (int)p1OppIntersection[1], 20, 20);
+					double p1Dist = Math.sqrt(Math.pow(Math.abs(p1Intersection[0]-p1OppIntersection[0]), 2) + Math.pow(Math.abs(p1Intersection[1]-p1OppIntersection[1]), 2));
+					p1Knockback = getp1Knockback(h.getDamage(), h.getKB());
+					
+					p1KnockbackTheta = Math.atan((p1Intersection[1]-p1OppIntersection[1])/(p1Intersection[0]-p1OppIntersection[0]));
+					
+					//Sets the end of knockback trajectory halfway through the arc
+					p1EndXTraj = Math.pow(p1Knockback, 2)*Math.sin(p1KnockbackTheta*2);
+					p1EndXTraj /= p1YVelocity;
+					p1EndXTraj /= 2;
+					p1EndXTraj += p1Intersection[0];
+					
+					p1LaunchSpeed = p1Knockback * 0.03;
+					
+					p1LaunchDirection = 1;
+					
+					
+					if(p1OppIntersection[0] - c1.getHitbox().getH() < 0)
+					{
+						p1EndXTraj = p2Intersection[0] - p1EndXTraj;
+						p1LaunchDirection = -1;
+						p1KnockbackTheta *= -1;
+					}
+					if(p1OppIntersection[1] - c1.getHitbox().getK() < 0)
+						;
+					
+					ogpx = px;
+					ogpy = py;
+					
+					p1KnockingBack = true;
+					p1Knockbacker.start();
+				}
+				
+				else if(p1Intersection[0] != -1)
+				{
+					if(h.getMoveRight())
+						updatePlayer1Position(px+(int)h.getKB(), py);
+					if(h.getMoveLeft())
+						updatePlayer1Position(px-(int)h.getKB(), py);
+					if(h.getMoveUp())
+						updatePlayer1Position(px, py-(int)h.getKB());
+					if(h.getMoveDown())
+						updatePlayer1Position(px, py+(int)h.getKB());
+				}
 			}
+			
 		}
 		else
 		{
@@ -172,16 +196,22 @@ public class PoopPanel extends JPanel
 			//jumping is if else is falling
 			if(c1.getJumping() || c1.getDoubleJumping())
 			{
-				updatePlayer1Position(px, py-p1YVelocity);
-				p1YVelocity -= GRAVITY;
-				
-				
-				if (p1YVelocity < -1*JUMPHEIGHT)
+				if (CoordIsTouching((py+ph*2-p1YVelocity)).equals("bottom"))
 				{
 					c1.setJumping(false);
 					c1.setDoubleJumping(false);
+					py = p1JumpStart;
 					p1YVelocity = JUMPHEIGHT;
 				}
+				else
+				{
+					updatePlayer1Position(px, py-p1YVelocity);
+					p1YVelocity -= GRAVITY;
+					
+					if(p1YVelocity > JUMPHEIGHT)
+						p1YVelocity = JUMPHEIGHT;
+				}
+				
 					
 			}
 			else
@@ -226,8 +256,8 @@ public class PoopPanel extends JPanel
 	{
 		px = x;
 		py = y;
-		h1.setH(x+pw );
-		h1.setK((y+ph)*-1);
+		c1.setH(x+pw );
+		c1.setK((y+ph)*-1);
 	}
 	
 	public double getp1Knockback(double attackPower, double baseKnockBack)
@@ -255,10 +285,8 @@ public class PoopPanel extends JPanel
 		//then add that knockbackx and knockbacky to the players x and y
 		
 		
-		double percentage = 120;
-		//double percentage = c1.getHP();
-		double weight = 100;
-		//double weight = c1.getWeight();
+		double percentage = c1.getHP();
+		double weight = c1.getWeight();
 		
 		double knockBack = (percentage/10) + (percentage*attackPower/20);
 		System.out.println("1\t" + knockBack);
@@ -293,8 +321,8 @@ public class PoopPanel extends JPanel
 	{
 		sx = x;
 		sy = y;
-		h2.setH(x+sw);
-		h2.setK((y+sh)*-1);
+		c2.setH(x+sw);
+		c2.setK((y+sh)*-1);
 	}
 	
 	private class actionListener implements ActionListener
@@ -330,12 +358,20 @@ public class PoopPanel extends JPanel
 			{
 				
 				double tempXDist = p1LaunchSpeed*p1LaunchDirection;
-				double tempYDist = Math.abs(px-ogpx)*Math.tan(p1KnockbackTheta);
-				tempYDist -= (p1YVelocity*Math.pow(Math.abs(px-ogpx), 2))/(2*p1Knockback*p1Knockback*Math.pow(Math.cos(p1KnockbackTheta),2));
+				double tan = Math.tan(p1KnockbackTheta);
 				
-				System.out.println("x\t" + tempXDist);
-				System.out.println("T\t" + p1KnockbackTheta);
-				System.out.println(tempYDist);
+				//limiter so they dont get juggled into outer space
+				if (tan > 4)
+				{
+					tan = 4;
+				}
+				if (tan < -4)
+				{
+					tan = -4;
+				}
+		
+				double tempYDist = Math.abs((px+tempXDist)-ogpx)*tan;
+				tempYDist -= (GRAVITY*Math.pow(Math.abs((px+tempXDist)-ogpx), 2))/(2*p1Knockback*p1Knockback*Math.pow(Math.cos(p1KnockbackTheta),2));
 				
 				updatePlayer1Position((int)(px+tempXDist),(int) (ogpy+tempYDist));
 				
@@ -439,6 +475,7 @@ public class PoopPanel extends JPanel
 				case KeyEvent.VK_W:
 					if(!c1.getJumping())
 					{
+						p1JumpStart = py;
 						p1YVelocity = JUMPHEIGHT;
 						c1.setJumping(true);
 					}
