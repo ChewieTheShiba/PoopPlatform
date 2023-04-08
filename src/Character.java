@@ -3,9 +3,32 @@ import java.util.*;
 public class Character {
     OvalHitbox hitbox;
     String name, description, attack1name, attack2name, attack3name, attack4name, specialattackname;
-    Double HP, Weight, attack1power, attack1knockback, attack2power, attack2knockback, attack3power, attack3knockback, attack4power, attack4knockback, specialattackpower, specialknockback;
-    Boolean jumping, doubleJumping;
-
+    double HP, Weight, attack1power, attack1knockback, attack2power, attack2knockback, attack3power, attack3knockback, attack4power, attack4knockback, specialattackpower, specialknockback;
+    boolean jumping, doubleJumping;
+    
+    //For Charlie
+    //Make ImageIcon variables for each attack image (i.e. attack1Image, attack2Image, etc.), these don't need getters and setters
+    //Make constructor take in parameters in this order
+    //hitbox, attack1power, attack1knockback, attack1Image, (do this for each attack with special attack being at the end), HP, weight, name
+    //override the .equals method so that it compares the string names using string.equals() and if they're the same it returns true and if else return false
+    //make a String variable called currentAttack with setters and getters
+    
+    //Also leave this here for reference but
+    /*
+    attack 1 = left tilt
+    attack 2 = right tilt
+    attack 3 = up tilt
+    attack 4 = down tilt
+    special = special
+    */
+    
+    
+    public Character(OvalHitbox hitbox)
+    {
+    	this.hitbox = hitbox;
+    	hitbox.setKB(600);
+    	hitbox.setDamage(10);
+    }
     
 public void setH(double wantedH){
         
@@ -54,13 +77,6 @@ public void setH(double wantedH){
     public boolean getMoveDown(){
     	
     	return hitbox.getMoveDown();
-    }
-    
-    public Character(OvalHitbox hitbox)
-    {
-    	this.hitbox = hitbox;
-    	hitbox.setKB(600);
-    	hitbox.setDamage(10);
     }
 
     

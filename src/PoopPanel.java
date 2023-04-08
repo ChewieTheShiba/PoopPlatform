@@ -13,9 +13,12 @@ public class PoopPanel extends JPanel
 	private double p1Knockback, p1LaunchSpeed, p1EndXTraj, p1KnockbackTheta;
 	private ImageIcon startUpAnimation, startUpScreen;
 	private Timer startUpWait, ticker, p1Knockbacker;
-	private boolean started, readyToPlay, p1KnockingBack;
+	private boolean started, readyToPlay, p1KnockingBack, stageSelectReady, characterSelectReady, stagesSelected, charactersSelected;
 	private final int GRAVITY, JUMPHEIGHT;
 	private Character c1, c2;
+	private final Character PoopDefender, Neff, Kuma, Mob;
+	private Character[][] characterSelect;
+	private Stage[][] stageSelect;
 	private ArrayList<Hitbox> hitboxes;
 	
 	//sets up the initial panel for drawing with proper size
@@ -48,6 +51,10 @@ public class PoopPanel extends JPanel
 		//sets up stuff to start game and test if its ready to start
 		started = true;
 		readyToPlay = false;
+		characterSelectReady = false;
+		stageSelectReady = false;
+		charactersSelected = false;
+		stagesSelected = false;
 		
 		p1KnockingBack = false;
 		
@@ -66,7 +73,22 @@ public class PoopPanel extends JPanel
 		//sets up jumping mechanism
 		p1Knockbacker = new Timer(20, new actionListener());
 		JUMPHEIGHT = 20;
+
+		//sets up the object for each character you can select
+		PoopDefender = new Character(new OvalHitbox(0, 0, 0, 0, 0));
+		Neff = new Character(new OvalHitbox(0, 0, 0, 0, 0));
+		Kuma = new Character(new OvalHitbox(0, 0, 0, 0, 0));
+		Mob = new Character(new OvalHitbox(0, 0, 0, 0, 0));
 		
+		characterSelect = new Character[2][2];
+		stageSelect = new Stage[2][2];
+		
+		characterSelect[0][0] = PoopDefender;
+		characterSelect[0][1] = Neff;
+		characterSelect[1][0] = Kuma;
+		characterSelect[1][1] = Mob;
+		
+		//sets up character object for each player (later this will be moved out of constructor to a character select page in paintComponent)
 		c1 = new Character(new OvalHitbox(px+pw, py+ph, pw, ph, 0));
 		c1.setHP(0.0);
 		c1.setWeight(75.0);
@@ -186,7 +208,7 @@ public class PoopPanel extends JPanel
 		}
 		else
 		{
-			startUpScreen.paintIcon(this,  g, 0, 0);
+			startUpScreen.paintIcon(this, g, 0, 0);
 		}
 	}
 	
@@ -359,6 +381,7 @@ public class PoopPanel extends JPanel
 				
 				double tempXDist = p1LaunchSpeed*p1LaunchDirection;
 				double tan = Math.tan(p1KnockbackTheta);
+				double cos = Math.cos(p1KnockbackTheta);
 				
 				//limiter so they dont get juggled into outer space
 				if (tan > 4)
@@ -369,9 +392,13 @@ public class PoopPanel extends JPanel
 				{
 					tan = -4;
 				}
+				if(cos > -0.1 && cos < 0.1 )
+				{
+					cos = 0.1;
+				}
 		
 				double tempYDist = Math.abs((px+tempXDist)-ogpx)*tan;
-				tempYDist -= (GRAVITY*Math.pow(Math.abs((px+tempXDist)-ogpx), 2))/(2*p1Knockback*p1Knockback*Math.pow(Math.cos(p1KnockbackTheta),2));
+				tempYDist -= (GRAVITY*Math.pow(Math.abs((px+tempXDist)-ogpx), 2))/(2*p1Knockback*p1Knockback*Math.pow(cos,2));
 				
 				updatePlayer1Position((int)(px+tempXDist),(int) (ogpy+tempYDist));
 				
@@ -415,7 +442,11 @@ public class PoopPanel extends JPanel
 		@Override
 		public void mousePressed(MouseEvent e)
 		{
-			if(!started && readyToPlay)
+			if(!stageSelectReady && readyToPlay)
+				stageSelectReady = true;
+			else if(stageSelectReady && readyToPlay && stagesSelected && !characterSelectReady)
+				characterSelectReady = true;
+			else if(stageSelectReady && readyToPlay && characterSelectReady && charactersSelected)
 				started = true;
 			
 		}
