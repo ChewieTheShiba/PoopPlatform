@@ -166,7 +166,8 @@ public class PoopPanel extends JPanel
 					p1KnockbackTheta = Math.atan((p1Intersection[1]-p1OppIntersection[1])/(p1Intersection[0]-p1OppIntersection[0]));
 					
 					//Sets the end of knockback trajectory halfway through the arc
-					p1EndXTraj = Math.pow(p1Knockback, 2)*Math.sin(p1KnockbackTheta*2);
+					p1EndXTraj = 2*p1Knockback*Math.sin(p1KnockbackTheta);
+					System.out.println(Math.toDegrees(p1KnockbackTheta));
 					p1EndXTraj /= p1YVelocity;
 					p1EndXTraj /= 2;
 					p1EndXTraj += p1Intersection[0];
@@ -398,8 +399,8 @@ public class PoopPanel extends JPanel
 				}
 		
 				double tempYDist = Math.abs((px+tempXDist)-ogpx)*tan;
-				tempYDist -= (GRAVITY*Math.pow(Math.abs((px+tempXDist)-ogpx), 2))/(2*p1Knockback*p1Knockback*Math.pow(cos,2));
-				
+				tempYDist -= (p1YVelocity*Math.pow(Math.abs((px+tempXDist)-ogpx), 2))/(2*p1Knockback*p1Knockback*Math.pow(cos,2));
+
 				updatePlayer1Position((int)(px+tempXDist),(int) (ogpy+tempYDist));
 				
 				p1LaunchSpeed -= 1;
