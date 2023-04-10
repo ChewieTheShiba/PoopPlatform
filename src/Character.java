@@ -147,7 +147,7 @@ public void setH(double wantedH){
         return jumping;
     }
 
-    public void setJumping(Boolean jumping) {
+    public void setJumping(boolean jumping) {
         this.jumping = jumping;
         hitbox.setMoveUp(jumping);
     }
@@ -156,7 +156,7 @@ public void setH(double wantedH){
         return doubleJumping;
     }
 
-    public void setdoubleJumping(Boolean doubleJumping) {
+    public void setdoubleJumping(boolean doubleJumping) {
         this.doubleJumping = doubleJumping;
     }
 
@@ -291,11 +291,5 @@ public void setH(double wantedH){
 	{
 		this.facingRight = facingRight;
 	}
-
-	public void setJumping(boolean jumping)
-	{
-		this.jumping = jumping;
-	}
-    
     
 }

@@ -33,6 +33,14 @@ public class RectangleHitbox extends Hitbox
 		else if(moveUp)
 		{
 			theta = 180;
+			thetaopp = 360;
+			adderopp = 180;
+		}
+		else if(moveDown)
+		{
+			adder = 180;
+			theta = 360;
+			thetaopp = 180;
 		}
 
     Rectangle rect = new Rectangle(h, k, a, b);
@@ -71,7 +79,7 @@ public class RectangleHitbox extends Hitbox
 			  	double q = adder;
 				double j = theta;
 				
-				if(m == 0)
+				if(m == 0 && (moveRight || moveLeft))
 				{
 					q = -1*theta;
 					j = adder*-1;

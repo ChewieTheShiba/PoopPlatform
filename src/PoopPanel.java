@@ -48,8 +48,8 @@ public class PoopPanel extends JPanel
 		GRAVITY = 2;
 		
 		//sets up stuff to start game and test if its ready to start
-		started = false;
-		gettingReadyToPlay = true;
+		started = true;
+		gettingReadyToPlay = false;
 		readyToPlay = false;
 		characterSelectReady = false;
 		stageSelectReady = false;
@@ -177,7 +177,6 @@ public class PoopPanel extends JPanel
 					
 					//Sets the end of knockback trajectory halfway through the arc
 					p1EndXTraj = 2*p1Knockback*Math.sin(p1KnockbackTheta);
-					System.out.println(Math.toDegrees(p1KnockbackTheta));
 					p1EndXTraj /= p1YVelocity;
 					p1EndXTraj /= 2;
 					p1EndXTraj += p1Intersection[0];
@@ -248,15 +247,10 @@ public class PoopPanel extends JPanel
 			{
 				Random rand = new Random();
 				if(rand.nextInt(2) == 0)
-				{
 					stageSelected = stageSelect[p1SelectY][p1SelectX];
-					System.out.println("Hi");
-				}
 				else
-				{
 					stageSelected = stageSelect[p2SelectY][p2SelectX];
-					System.out.println("Bye");
-				}
+				
 				p1StageSelected = false;
 				p2StageSelected = false;
 				characterSelectReady = true;
@@ -283,6 +277,12 @@ public class PoopPanel extends JPanel
 					updatePlayer1Position(px, py-p1YVelocity);
 					p1YVelocity -= GRAVITY;
 					
+					if(p1YVelocity < 0)
+					{
+						c1.setMoveDown(true);
+						c1.setMoveUp(false);
+					}
+					
 					if(p1YVelocity > JUMPHEIGHT)
 						p1YVelocity = JUMPHEIGHT;
 				}
@@ -294,6 +294,7 @@ public class PoopPanel extends JPanel
 				if(CoordIsTouching(py+ph*2+p1YVelocity).equals("bottom"))
 				{
 					p1YVelocity = GRAVITY;
+					c1.setMoveDown(false);
 					updatePlayer1Position(px, 1080-ph*2);
 				}
 				else
@@ -303,6 +304,7 @@ public class PoopPanel extends JPanel
 					else
 						p1YVelocity *= GRAVITY;
 					updatePlayer1Position(px, py+p1YVelocity);
+					c1.setMoveDown(true);
 				}
 			}
 			
