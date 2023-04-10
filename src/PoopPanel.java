@@ -9,16 +9,17 @@ import javax.swing.Timer;
 public class PoopPanel extends JPanel
 {
 	//variables for the overall width and height
-	private int w, h, py, px, pw, ph, sx, sy, sw, sh, p1YVelocity, p1MoveSpeed, p1LaunchDirection, ogpx, ogpy, p1JumpStart;
+	private int w, h, py, px, pw, ph, sx, sy, sw, sh, p1YVelocity, p1MoveSpeed, p1LaunchDirection, ogpx, ogpy, p1JumpStart, p1SelectX, p1SelectY, p2SelectX, p2SelectY;
 	private double p1Knockback, p1LaunchSpeed, p1EndXTraj, p1KnockbackTheta;
-	private ImageIcon startUpAnimation, startUpScreen;
+	private ImageIcon startUpAnimation, startUpScreen, c1Image, c2Image;
 	private Timer startUpWait, ticker, p1Knockbacker;
-	private boolean started, readyToPlay, p1KnockingBack, stageSelectReady, characterSelectReady, stagesSelected, charactersSelected;
+	private boolean started, gettingReadyToPlay, readyToPlay, p1KnockingBack, stageSelectReady, characterSelectReady, p1StageSelected, p2StageSelected, p1CharacterSelected, p2CharacterSelected, characterReady;
 	private final int GRAVITY, JUMPHEIGHT;
 	private Character c1, c2;
 	private final Character PoopDefender, Neff, Kuma, Mob;
 	private Character[][] characterSelect;
 	private Stage[][] stageSelect;
+	private Stage stageSelected;
 	private ArrayList<Hitbox> hitboxes;
 	
 	//sets up the initial panel for drawing with proper size
@@ -29,8 +30,6 @@ public class PoopPanel extends JPanel
 		this.setPreferredSize(new Dimension(w,h));
 		
 		//sets up listeners
-		this.addMouseMotionListener(new mouseListen());
-		this.addMouseListener(new mouseListen());
 		this.addKeyListener(new keyListen());
 		this.setFocusable(true);
 		
@@ -49,12 +48,16 @@ public class PoopPanel extends JPanel
 		GRAVITY = 2;
 		
 		//sets up stuff to start game and test if its ready to start
-		started = true;
+		started = false;
+		gettingReadyToPlay = true;
 		readyToPlay = false;
 		characterSelectReady = false;
 		stageSelectReady = false;
-		charactersSelected = false;
-		stagesSelected = false;
+		p1StageSelected = false;
+		p1CharacterSelected = false;
+		p2StageSelected = false;
+		p2CharacterSelected = false;
+		characterReady = false;
 		
 		p1KnockingBack = false;
 		
@@ -87,6 +90,13 @@ public class PoopPanel extends JPanel
 		characterSelect[0][1] = Neff;
 		characterSelect[1][0] = Kuma;
 		characterSelect[1][1] = Mob;
+		
+		//filler stage objects for test runs while we dont have a stage
+		stageSelect[0][0] = new Stage(new ImageIcon("t"), hitboxes, hitboxes);
+		stageSelect[0][1] = new Stage(new ImageIcon("t"), hitboxes, hitboxes);
+		stageSelect[1][0] = new Stage(new ImageIcon("t"), hitboxes, hitboxes);
+		stageSelect[1][1] = new Stage(new ImageIcon("t"), hitboxes, hitboxes);
+		stageSelected = null;
 		
 		//sets up character object for each player (later this will be moved out of constructor to a character select page in paintComponent)
 		c1 = new Character(new OvalHitbox(px+pw, py+ph, pw, ph, 0));
@@ -207,9 +217,51 @@ public class PoopPanel extends JPanel
 			}
 			
 		}
-		else
+		else if(readyToPlay || gettingReadyToPlay)
 		{
 			startUpScreen.paintIcon(this, g, 0, 0);
+		}
+		else if(stageSelectReady)
+		{
+			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, 0, 0);
+			g.setFont(new Font("Comic Sans", Font.PLAIN, 40));
+			g.setColor(Color.ORANGE);
+			g.fillRect(0, h/2-200, w/2, 200);
+			g.setColor(Color.BLACK);
+			g.drawString("Poop Defender", w/4-135, 2*h/5);
+			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, w/2, 0);
+			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, 0, h/2);
+			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, w/2, h/2);
+			
+			g.setColor(Color.GREEN);
+			g.drawRect(p1SelectX*w/2, p1SelectY*h/2, w/2, h/2);
+			g.setFont(new Font("Comic Sans", Font.PLAIN, 15));
+			g.setColor(Color.BLACK);
+			g.drawString("Player 1", p1SelectX*w/2, p1SelectY*h/2+15);
+			
+			g.setColor(Color.BLUE);
+			g.drawRect(p2SelectX*w/2, p2SelectY*h/2, w/2, h/2);
+			g.setColor(Color.BLACK);
+			g.drawString("Player 2", p2SelectX*w/2, p2SelectY*h/2+15);
+			
+			if(p1StageSelected && p2StageSelected)
+			{
+				Random rand = new Random();
+				if(rand.nextInt(2) == 0)
+				{
+					stageSelected = stageSelect[p1SelectY][p1SelectX];
+					System.out.println("Hi");
+				}
+				else
+				{
+					stageSelected = stageSelect[p2SelectY][p2SelectX];
+					System.out.println("Bye");
+				}
+				p1StageSelected = false;
+				p2StageSelected = false;
+				characterSelectReady = true;
+				stageSelectReady = false;
+			}
 		}
 	}
 	
@@ -360,7 +412,7 @@ public class PoopPanel extends JPanel
 			{
 				startUpWait.stop();
 				//try {
-					startUpScreen = new ImageIcon("assets/startUpAnimation.gif");
+					startUpScreen = new ImageIcon("assets/startUpScreen.png");
 					//startUpScreen = new ImageIcon(ImageIO.read(getClass().getResource("assets/startUpAnimation.gif")));
 				//} catch (IOException e1) {
 					// TODO Auto-generated catch block
@@ -416,64 +468,6 @@ public class PoopPanel extends JPanel
 	}
 	
 	
-	
-	private class mouseListen implements MouseListener, MouseMotionListener
-	{
-
-		@Override
-		public void mouseDragged(MouseEvent e)
-		{
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mouseMoved(MouseEvent e)
-		{
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mouseClicked(MouseEvent e)
-		{
-			
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e)
-		{
-			if(!stageSelectReady && readyToPlay)
-				stageSelectReady = true;
-			else if(stageSelectReady && readyToPlay && stagesSelected && !characterSelectReady)
-				characterSelectReady = true;
-			else if(stageSelectReady && readyToPlay && characterSelectReady && charactersSelected)
-				started = true;
-			
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e)
-		{
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mouseEntered(MouseEvent e)
-		{
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mouseExited(MouseEvent e)
-		{
-			// TODO Auto-generated method stub
-			
-		}
-	}
-	
 	private class keyListen implements KeyListener
 	{
 
@@ -487,7 +481,8 @@ public class PoopPanel extends JPanel
 		@Override
 		public void keyPressed(KeyEvent e)
 		{
-
+			if(started)
+			{
 				switch(e.getKeyCode())
 				{
 				case KeyEvent.VK_A:
@@ -533,6 +528,81 @@ public class PoopPanel extends JPanel
 				
 				}
 			}
+			else if(!started && e.getKeyCode() == KeyEvent.VK_X)
+			{
+				if(!stageSelectReady && readyToPlay)
+				{
+					stageSelectReady = true;
+					readyToPlay = false;
+					gettingReadyToPlay = false;
+				}
+				else if(characterSelectReady && characterReady)
+				{
+					started = true;
+					characterSelectReady = false;
+					characterReady = false;
+					p1CharacterSelected = false;
+					p2CharacterSelected = false;
+					p1SelectY = 0;
+					p1SelectX = 0;
+					p2SelectY = 0;
+					p2SelectX = 0;
+				}
+			}
+			if(characterSelectReady || stageSelectReady)
+			{
+				if(!p1StageSelected)
+				{
+					switch(e.getKeyCode())
+					{
+						case KeyEvent.VK_D:
+							if(p1SelectX == 1);
+							else p1SelectX++;
+							break;
+						case KeyEvent.VK_A:
+							if(p1SelectX == 0);
+							else p1SelectX--;
+							break;
+						case KeyEvent.VK_W:
+							if(p1SelectY == 0);
+							else p1SelectY--;
+							break;
+						case KeyEvent.VK_S:
+							if(p1SelectY == 1);
+							else p1SelectY++;
+							break;
+						case KeyEvent.VK_C:
+							p1StageSelected = true;
+							break;
+					}
+				}
+				if(!p2StageSelected)
+				{
+					switch(e.getKeyCode())
+					{
+						case KeyEvent.VK_SEMICOLON:
+							if(p2SelectX == 1);
+							else p2SelectX++;
+							break;
+						case KeyEvent.VK_K:
+							if(p2SelectX == 0);
+							else p2SelectX--;
+							break;
+						case KeyEvent.VK_O:
+							if(p2SelectY == 0);
+							else p2SelectY--;
+							break;
+						case KeyEvent.VK_L:
+							if(p2SelectY == 1);
+							else p2SelectY++;
+							break;
+						case KeyEvent.VK_PERIOD:
+							p2StageSelected = true;
+							break;
+					}
+				}
+			}
+		}
 			
 
 		@Override
