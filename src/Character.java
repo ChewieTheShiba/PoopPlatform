@@ -1,16 +1,21 @@
 import java.util.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.util.*;
+import javax.swing.Timer;
 
-public class Character {
-    OvalHitbox hitbox;
-    String name, description, attack1name, attack2name, attack3name, attack4name, specialattackname;
-    double HP, Weight, attack1power, attack1knockback, attack2power, attack2knockback, attack3power, attack3knockback, attack4power, attack4knockback, specialattackpower, specialknockback;
-    boolean jumping, doubleJumping, facingRight;
+
+public abstract class Character {
+    protected OvalHitbox hitbox;
+    protected String name, description, attack1name, attack2name, attack3name, attack4name, specialattackname;
+    protected double HP, Weight, attack1power, attack1knockback, attack2power, attack2knockback, attack3power, attack3knockback, attack4power, attack4knockback, specialattackpower, specialknockback;
+    protected boolean jumping, doubleJumping, facingRight;
+    protected ImageIcon attack1Image, attack2Image, attack3Image, attack4Image, specialAttackImage;
     
     //For Charlie
-    //Make ImageIcon variables for each attack image (i.e. attack1Image, attack2Image, etc.), these don't need getters and setters
-    //Make constructor take in parameters in this order
-    //hitbox, attack1power, attack1knockback, attack1Image, (do this for each attack with special attack being at the end), HP, weight, name
-    //override the .equals method so that it compares the string names using string.equals() and if they're the same it returns true and if else return false
     //make a String variable called currentAttack with setters and getters
     
     //Also leave this here for reference but
@@ -22,13 +27,35 @@ public class Character {
     special = special
     */
     
-    
-    public Character(OvalHitbox hitbox)
-    {
-    	this.hitbox = hitbox;
-    	hitbox.setKB(600);
-    	hitbox.setDamage(10);
-    }
+public boolean equals(Object c)
+{
+	if(c.getClass().equals(Character.class) & ((Character) c).getName().equals(getName()) && hitbox.equals(((Character) c).getHitbox()))
+		return true;
+	else return false;
+}
+
+public void copy(Character c)
+{
+	this.hitbox = c.getHitbox();
+	this.HP = c.getHP();
+	this.Weight = c.getWeight();
+	this.attack1power = c.getAttack1Power();
+	this.attack1knockback = c.getAttack1Knockback();
+	this.attack1name = c.getAttack1Name();
+	this.attack2power = c.getAttack2Power();
+	this.attack2knockback = c.getAttack2Knockback();
+	this.attack2name = c.getAttack2Name();
+	this.attack3power = c.getAttack3Power();
+	this.attack3knockback = c.getAttack3Knockback();
+	this.attack3name = c.getAttack3Name();
+	this.attack4power = c.getAttack4Power();
+	this.attack4knockback = c.getAttack4Knockback();
+	this.attack4name = c.getAttack4Name();
+	this.specialattackpower = c.getSpecialAttackPower();
+	this.specialknockback = c.getSpecialKnockback();
+	this.specialattackname = c.getSpecialAttackName();
+	
+}
     
 public void setH(double wantedH){
         
@@ -94,42 +121,42 @@ public void setH(double wantedH){
     }
 
 
-    public double getAttack1knockback() {
+    public double getAttack1Knockback() {
         return attack1knockback;
     }
 
 
-    public void setAttack1knockback(double attack1knockback) {
+    public void setAttack1Knockback(double attack1knockback) {
         this.attack1knockback = attack1knockback;
     }
 
 
-    public double getAttack2knockback() {
+    public double getAttack2Knockback() {
         return attack2knockback;
     }
 
 
-    public void setAttack2knockback(double attack2knockback) {
+    public void setAttack2Knockback(double attack2knockback) {
         this.attack2knockback = attack2knockback;
     }
 
 
-    public double getAttack3knockback() {
+    public double getAttack3Knockback() {
         return attack3knockback;
     }
 
 
-    public void setAttack3knockback(double attack3knockback) {
+    public void setAttack3Knockback(double attack3knockback) {
         this.attack3knockback = attack3knockback;
     }
 
 
-    public double getAttack4knockback() {
+    public double getAttack4Knockback() {
         return attack4knockback;
     }
 
 
-    public void setAttack4knockback(double attack4knockback) {
+    public void setAttack4Knockback(double attack4knockback) {
         this.attack4knockback = attack4knockback;
     }
 
@@ -160,11 +187,11 @@ public void setH(double wantedH){
         this.doubleJumping = doubleJumping;
     }
 
-    public Hitbox getHitbox() {
+    public OvalHitbox getHitbox() {
         return hitbox;
     }
 
-    public String getAttack4name() {
+    public String getAttack4Name() {
         return attack4name;
     }
 
@@ -172,19 +199,19 @@ public void setH(double wantedH){
         this.attack4name = attack4name;
     }
 
-    public String getSpecialattackname() {
+    public String getSpecialAttackName() {
         return specialattackname;
     }
 
-    public void setSpecialattackname(String specialattackname) {
+    public void setSpecialAttackname(String specialattackname) {
         this.specialattackname = specialattackname;
     }
 
-    public double getAttack4power() {
+    public double getAttack4Power() {
         return attack4power;
     }
 
-    public void setAttack4power(double attack4power) {
+    public void setAttack4Power(double attack4power) {
         this.attack4power = attack4power;
     }
 
@@ -208,27 +235,27 @@ public void setH(double wantedH){
         this.description = description;
     }
 
-    public String getAttack1name() {
+    public String getAttack1Name() {
         return attack1name;
     }
 
-    public void setAttack1name(String attack1name) {
+    public void setAttack1Name(String attack1name) {
         this.attack1name = attack1name;
     }
 
-    public String getAttack2name() {
+    public String getAttack2Name() {
         return attack2name;
     }
 
-    public void setAttack2name(String attack2name) {
+    public void setAttack2Name(String attack2name) {
         this.attack2name = attack2name;
     }
 
-    public String getAttack3name() {
+    public String getAttack3Name() {
         return attack3name;
     }
 
-    public void setAttack3name(String attack3name) {
+    public void setAttack3Name(String attack3name) {
         this.attack3name = attack3name;
     }
 
@@ -240,35 +267,35 @@ public void setH(double wantedH){
         HP = hP;
     }
 
-    public double getAttack1power() {
+    public double getAttack1Power() {
         return attack1power;
     }
 
-    public void setAttack1power(double attack1power) {
+    public void setAttack1Power(double attack1power) {
         this.attack1power = attack1power;
     }
 
-    public double getAttack2power() {
+    public double getAttack2Power() {
         return attack2power;
     }
 
-    public void setAttack2power(double attack2power) {
+    public void setAttack2Power(double attack2power) {
         this.attack2power = attack2power;
     }
 
-    public double getAttack3power() {
+    public double getAttack3Power() {
         return attack3power;
     }
 
-    public void setAttack3power(double attack3power) {
+    public void setAttack3Power(double attack3power) {
         this.attack3power = attack3power;
     }
  
-    public double getSpecialattackpower() {
+    public double getSpecialAttackPower() {
         return specialattackpower;
     }
 
-    public void setSpecialattackpower(double specialattackpower) {
+    public void setSpecialAttackPower(double specialattackpower) {
         this.specialattackpower = specialattackpower;
     }
 
@@ -291,5 +318,10 @@ public void setH(double wantedH){
 	{
 		this.facingRight = facingRight;
 	}
-    
+	
+	public abstract void rightTilt();
+	public abstract void leftTilt();
+	public abstract void upTilt();
+	public abstract void downTilt();
+	public abstract void special();    
 }

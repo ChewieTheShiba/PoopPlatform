@@ -17,8 +17,8 @@ public class PoopPanel extends JPanel
 	private final int GRAVITY, JUMPHEIGHT;
 	private Character c1, c2;
 	private final Character PoopDefender, Neff, Kuma, Mob;
-	private Character[][] characterSelect;
-	private Stage[][] stageSelect;
+	private final Character[][] characterSelect;
+	private final Stage[][] stageSelect;
 	private Stage stageSelected;
 	private ArrayList<Hitbox> hitboxes;
 	
@@ -48,8 +48,8 @@ public class PoopPanel extends JPanel
 		GRAVITY = 2;
 		
 		//sets up stuff to start game and test if its ready to start
-		started = true;
-		gettingReadyToPlay = false;
+		started = false;
+		gettingReadyToPlay = true;
 		readyToPlay = false;
 		characterSelectReady = false;
 		stageSelectReady = false;
@@ -67,7 +67,7 @@ public class PoopPanel extends JPanel
 		*/
 		startUpScreen = new ImageIcon("assets/startUpAnimation.gif");
 		//startUpScreen = new ImageIcon(ImageIO.read(getClass().getResource("assets/startUpAnimation.gif")));
-		startUpWait = new Timer(5000, new actionListener());
+		startUpWait = new Timer(100, new actionListener());
 		startUpWait.start();
 		
 		//sets up timer for 1 tick of the game
@@ -78,13 +78,19 @@ public class PoopPanel extends JPanel
 		JUMPHEIGHT = 20;
 
 		//sets up the object for each character you can select
-		PoopDefender = new Character(new OvalHitbox(0, 0, 0, 0, 0));
-		Neff = new Character(new OvalHitbox(0, 0, 0, 0, 0));
-		Kuma = new Character(new OvalHitbox(0, 0, 0, 0, 0));
-		Mob = new Character(new OvalHitbox(0, 0, 0, 0, 0));
+		/*PoopDefender = new PoopDefender();
+		Neff = new Neff();
+		Kuma = new Kuma();
+		Mob = new Mob();*/
 		
 		characterSelect = new Character[2][2];
 		stageSelect = new Stage[2][2];
+		
+		//temporary instansiations 
+		PoopDefender = new Neff();
+		Neff = new Neff();
+		Kuma = new Neff();
+		Mob = new Neff();
 		
 		characterSelect[0][0] = PoopDefender;
 		characterSelect[0][1] = Neff;
@@ -99,25 +105,16 @@ public class PoopPanel extends JPanel
 		stageSelected = null;
 		
 		//sets up character object for each player (later this will be moved out of constructor to a character select page in paintComponent)
-		c1 = new Character(new OvalHitbox(px+pw, py+ph, pw, ph, 0));
-		c1.setHP(0.0);
-		c1.setWeight(75.0);
-		c1.setMoveLeft(false);
-		c1.setMoveRight(false);
-		c1.setJumping(false);
-		c1.setDoubleJumping(false);
+		c1 = new Neff();
+		/*c1.setHP(0.0);
+		c1.setWeight(75.0);*/
 		
-		c2 = new Character(new OvalHitbox(sx+sw, sy+sh, sw, sh, 0));
-		c2.setHP(0.0);
-		c2.setWeight(75.0);
-		c2.setMoveLeft(false);
-		c2.setMoveRight(false);
-		c2.setJumping(false);
-		c2.setDoubleJumping(false);
+		c2 = new Neff();
+		/*c2.setHP(0.0);
+		c2.setWeight(75.0);*/
 		
 		hitboxes = new ArrayList<Hitbox>();
-		hitboxes.add(c1.getHitbox());
-		hitboxes.add(c2.getHitbox());
+		hitboxes.add(new OvalHitbox(-100, -100, 1, 1, 0));
 	}
 	
 	
@@ -171,7 +168,9 @@ public class PoopPanel extends JPanel
 					g.drawOval((int)p1Intersection[0], (int)p1Intersection[1], 20, 20);
 					g.drawOval((int)p1OppIntersection[0], (int)p1OppIntersection[1], 20, 20);
 					double p1Dist = Math.sqrt(Math.pow(Math.abs(p1Intersection[0]-p1OppIntersection[0]), 2) + Math.pow(Math.abs(p1Intersection[1]-p1OppIntersection[1]), 2));
-					p1Knockback = getp1Knockback(h.getDamage(), h.getKB());
+					
+					//change to h.getKB());
+					p1Knockback = getp1Knockback(h.getDamage(), 600);
 					
 					p1KnockbackTheta = Math.atan((p1Intersection[1]-p1OppIntersection[1])/(p1Intersection[0]-p1OppIntersection[0]));
 					
@@ -223,11 +222,6 @@ public class PoopPanel extends JPanel
 		else if(stageSelectReady)
 		{
 			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, 0, 0);
-			g.setFont(new Font("Comic Sans", Font.PLAIN, 40));
-			g.setColor(Color.ORANGE);
-			g.fillRect(0, h/2-200, w/2, 200);
-			g.setColor(Color.BLACK);
-			g.drawString("Poop Defender", w/4-135, 2*h/5);
 			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, w/2, 0);
 			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, 0, h/2);
 			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, w/2, h/2);
@@ -255,6 +249,57 @@ public class PoopPanel extends JPanel
 				p2StageSelected = false;
 				characterSelectReady = true;
 				stageSelectReady = false;
+				p1SelectX = 0;
+				p1SelectY = 0;
+				p2SelectX = 0;
+				p2SelectY = 0;
+			}
+		}
+		else if(characterSelectReady)
+		{
+			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, 0, 0);
+			g.setFont(new Font("Comic Sans", Font.PLAIN, 40));
+			g.setColor(Color.ORANGE);
+			g.fillRect(0, h/2-200, w/2, 200);
+			g.setColor(Color.BLACK);
+			g.drawString("Poop Defender", w/4-135, 2*h/5);
+			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, w/2, 0);
+			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, 0, h/2);
+			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, w/2, h/2);
+			
+			g.setColor(Color.GREEN);
+			g.drawRect(p1SelectX*w/2, p1SelectY*h/2, w/2, h/2);
+			g.setFont(new Font("Comic Sans", Font.PLAIN, 15));
+			g.setColor(Color.BLACK);
+			g.drawString("Player 1", p1SelectX*w/2, p1SelectY*h/2+15);
+			
+			g.setColor(Color.BLUE);
+			g.drawRect(p2SelectX*w/2, p2SelectY*h/2, w/2, h/2);
+			g.setColor(Color.BLACK);
+			g.drawString("Player 2", p2SelectX*w/2, p2SelectY*h/2+15);
+			
+			if(p1CharacterSelected && p2CharacterSelected)
+			{
+					c1.copy(characterSelect[p1SelectY][p1SelectX]);
+					c1.setName("Player 1");
+					c1.setMoveLeft(false);
+					c1.setMoveRight(false);
+					c1.setJumping(false);
+					c1.setDoubleJumping(false);
+					c1.setHitbox(new OvalHitbox(px+pw, py+ph, pw, ph, 20));
+					c2.setName("Player 2");
+					c2.setMoveLeft(false);
+					c2.setMoveRight(false);
+					c2.setJumping(false);
+					c2.setDoubleJumping(false);
+					c2.setHitbox(new OvalHitbox(sx+sw, sy+sh, sw, sh, 20));
+					hitboxes.add(c1.getHitbox());
+					hitboxes.add(c2.getHitbox());
+				
+				p1CharacterSelected = false;
+				p2CharacterSelected = false;
+				started = true;
+				characterSelectReady = false;
 			}
 		}
 	}
@@ -289,7 +334,7 @@ public class PoopPanel extends JPanel
 				
 					
 			}
-			else
+			else if(!p1KnockingBack)
 			{
 				if(CoordIsTouching(py+ph*2+p1YVelocity).equals("bottom"))
 				{
@@ -310,7 +355,10 @@ public class PoopPanel extends JPanel
 			
 			//does while moving left or right
 			if(c1.getMoveRight())
+			{
 				updatePlayer1Position(px+p1MoveSpeed, py);
+			}
+				//updatePlayer1Position(px+p1MoveSpeed, py);
 			if(c1.getMoveLeft())
 				updatePlayer1Position(px-p1MoveSpeed, py);
 	}
@@ -476,7 +524,6 @@ public class PoopPanel extends JPanel
 		@Override
 		public void keyTyped(KeyEvent e)
 		{
-			// TODO Auto-generated method stub
 			
 		}
 
@@ -514,9 +561,6 @@ public class PoopPanel extends JPanel
 						c1.setDoubleJumping(true);
 					}
 					break;
-				case KeyEvent.VK_S:
-					updatePlayer1Position(px, py+10);
-					break;
 				
 				case KeyEvent.VK_SEMICOLON:
 					c2.setMoveRight(true);
@@ -530,28 +574,31 @@ public class PoopPanel extends JPanel
 				
 				}
 			}
-			else if(!started && e.getKeyCode() == KeyEvent.VK_X)
+		}
+			
+
+		@Override
+		public void keyReleased(KeyEvent e)
+		{
+			if(started)
 			{
-				if(!stageSelectReady && readyToPlay)
+				switch(e.getKeyCode())
 				{
-					stageSelectReady = true;
-					readyToPlay = false;
-					gettingReadyToPlay = false;
-				}
-				else if(characterSelectReady && characterReady)
-				{
-					started = true;
-					characterSelectReady = false;
-					characterReady = false;
-					p1CharacterSelected = false;
-					p2CharacterSelected = false;
-					p1SelectY = 0;
-					p1SelectX = 0;
-					p2SelectY = 0;
-					p2SelectX = 0;
+				case KeyEvent.VK_A:
+					c1.setMoveLeft(false);
+					break;
+				case KeyEvent.VK_D:
+					c1.setMoveRight(false);
+					break;
+				case KeyEvent.VK_SEMICOLON:
+					c2.setMoveRight(false);
+					break;
+				case KeyEvent.VK_K:
+					c2.setMoveLeft(false);
+					break;
 				}
 			}
-			if(characterSelectReady || stageSelectReady)
+			if(stageSelectReady)
 			{
 				if(!p1StageSelected)
 				{
@@ -573,7 +620,7 @@ public class PoopPanel extends JPanel
 							if(p1SelectY == 1);
 							else p1SelectY++;
 							break;
-						case KeyEvent.VK_C:
+						case KeyEvent.VK_X:
 							p1StageSelected = true;
 							break;
 					}
@@ -604,26 +651,70 @@ public class PoopPanel extends JPanel
 					}
 				}
 			}
-		}
+				if(characterSelectReady)
+				{
+					if(!p1CharacterSelected)
+					{
+						switch(e.getKeyCode())
+						{
+							case KeyEvent.VK_D:
+								if(p1SelectX == 1);
+								else p1SelectX++;
+								break;
+							case KeyEvent.VK_A:
+								if(p1SelectX == 0);
+								else p1SelectX--;
+								break;
+							case KeyEvent.VK_W:
+								if(p1SelectY == 0);
+								else p1SelectY--;
+								break;
+							case KeyEvent.VK_S:
+								if(p1SelectY == 1);
+								else p1SelectY++;
+								break;
+							case KeyEvent.VK_X:
+								p1CharacterSelected = true;
+								break;
+						}
+					}
+					if(!p2CharacterSelected)
+					{
+						switch(e.getKeyCode())
+						{
+							case KeyEvent.VK_SEMICOLON:
+								if(p2SelectX == 1);
+								else p2SelectX++;
+								break;
+							case KeyEvent.VK_K:
+								if(p2SelectX == 0);
+								else p2SelectX--;
+								break;
+							case KeyEvent.VK_O:
+								if(p2SelectY == 0);
+								else p2SelectY--;
+								break;
+							case KeyEvent.VK_L:
+								if(p2SelectY == 1);
+								else p2SelectY++;
+								break;
+							case KeyEvent.VK_PERIOD:
+								p2CharacterSelected = true;
+								break;
+						}
+					}
+			}
 			
-
-		@Override
-		public void keyReleased(KeyEvent e)
-		{
-			switch(e.getKeyCode())
+			
+			//MAKE SURE THIS IS ON BOTTOM IT CAUSES PROBLEMS IF NOT
+			if(!started && e.getKeyCode() == KeyEvent.VK_X)
 			{
-			case KeyEvent.VK_A:
-				c1.setMoveLeft(false);
-				break;
-			case KeyEvent.VK_D:
-				c1.setMoveRight(false);
-				break;
-			case KeyEvent.VK_SEMICOLON:
-				c2.setMoveRight(false);
-				break;
-			case KeyEvent.VK_K:
-				c2.setMoveLeft(false);
-				break;
+				if(!stageSelectReady && readyToPlay)
+				{
+					stageSelectReady = true;
+					readyToPlay = false;
+					gettingReadyToPlay = false;
+				}
 			}
 		}
 		
@@ -631,3 +722,4 @@ public class PoopPanel extends JPanel
 	
 	
 }
+
