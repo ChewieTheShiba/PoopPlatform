@@ -8,12 +8,13 @@ import java.util.*;
 import javax.swing.Timer;
 
 
-public abstract class Character {
+public class Character {
     protected OvalHitbox hitbox;
     protected String name, description, attack1name, attack2name, attack3name, attack4name, specialattackname;
     protected double HP, Weight, attack1power, attack1knockback, attack2power, attack2knockback, attack3power, attack3knockback, attack4power, attack4knockback, specialattackpower, specialknockback;
     protected boolean jumping, doubleJumping, facingRight;
-    protected ImageIcon attack1Image, attack2Image, attack3Image, attack4Image, specialAttackImage;
+    protected ImageIcon attack1Image, attack2Image, attack3Image, attack4Image, idleRight, idleLeft, currentPlayerImage;
+    protected RectangleHitbox attack1Hitbox, attack2Hitbox, attack3Hitbox, attack4Hitbox;
     
     //For Charlie
     //make a String variable called currentAttack with setters and getters
@@ -36,7 +37,7 @@ public boolean equals(Object c)
 
 public void copy(Character c)
 {
-	this.hitbox = c.getHitbox();
+	this.hitbox = c.getDupeHitbox();
 	this.HP = c.getHP();
 	this.Weight = c.getWeight();
 	this.attack1power = c.getAttack1Power();
@@ -68,6 +69,11 @@ public void setH(double wantedH){
         int IntK = (int) wantedK;
 
         hitbox.setK(IntK);
+    }
+    
+    public OvalHitbox getDupeHitbox()
+    {
+    	return new OvalHitbox(hitbox.getH(), hitbox.getK()*-1, hitbox.getA(), hitbox.getB(), hitbox.getDamage(), hitbox.getKB());
     }
     
     public void setMoveRight(boolean moveRight){
@@ -319,9 +325,109 @@ public void setH(double wantedH){
 		this.facingRight = facingRight;
 	}
 	
-	public abstract void rightTilt();
-	public abstract void leftTilt();
-	public abstract void upTilt();
-	public abstract void downTilt();
-	public abstract void special();    
+	public ImageIcon getAttack1Image()
+	{
+		return attack1Image;
+	}
+
+	public void setAttack1Image(ImageIcon attack1Image)
+	{
+		this.attack1Image = attack1Image;
+	}
+
+	public ImageIcon getAttack2Image()
+	{
+		return attack2Image;
+	}
+
+	public void setAttack2Image(ImageIcon attack2Image)
+	{
+		this.attack2Image = attack2Image;
+	}
+
+	public ImageIcon getAttack3Image()
+	{
+		return attack3Image;
+	}
+
+	public void setAttack3Image(ImageIcon attack3Image)
+	{
+		this.attack3Image = attack3Image;
+	}
+
+	public ImageIcon getAttack4Image()
+	{
+		return attack4Image;
+	}
+
+	public void setAttack4Image(ImageIcon attack4Image)
+	{
+		this.attack4Image = attack4Image;
+	}
+
+	public ImageIcon getIdleRight()
+	{
+		return idleRight;
+	}
+
+	public void setIdleRight(ImageIcon idleRight)
+	{
+		this.idleRight = idleRight;
+	}
+
+	public ImageIcon getIdleLeft()
+	{
+		return idleLeft;
+	}
+
+	public void setIdleLeft(ImageIcon idleLeft)
+	{
+		this.idleLeft = idleLeft;
+	}
+
+	public RectangleHitbox getAttack1Hitbox()
+	{
+		return attack1Hitbox;
+	}
+
+	public void setAttack1Hitbox(RectangleHitbox attack1Hitbox)
+	{
+		this.attack1Hitbox = attack1Hitbox;
+	}
+
+	public RectangleHitbox getAttack2Hitbox()
+	{
+		return attack2Hitbox;
+	}
+
+	public void setAttack2Hitbox(RectangleHitbox attack2Hitbox)
+	{
+		this.attack2Hitbox = attack2Hitbox;
+	}
+
+	public RectangleHitbox getAttack3Hitbox()
+	{
+		return attack3Hitbox;
+	}
+
+	public void setAttack3Hitbox(RectangleHitbox attack3Hitbox)
+	{
+		this.attack3Hitbox = attack3Hitbox;
+	}
+
+	public RectangleHitbox getAttack4Hitbox()
+	{
+		return attack4Hitbox;
+	}
+
+	public void setAttack4Hitbox(RectangleHitbox attack4Hitbox)
+	{
+		this.attack4Hitbox = attack4Hitbox;
+	}
+
+	public void rightTilt() {};
+	public void leftTilt() {};
+	public void upTilt() {};
+	public void downTilt() {};
+	public void special() {};    
 }

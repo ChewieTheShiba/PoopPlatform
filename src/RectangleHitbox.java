@@ -3,13 +3,16 @@ import java.awt.*;
 public class RectangleHitbox extends Hitbox
 {
 	
-	public RectangleHitbox(int h, int k, int a, int b, int damage)
+	public RectangleHitbox(int h, int k, int a, int b, int damage, double KB)
 	{
 		this.a = a;
 		this.b = b;
 		this.h = h;
 		this.damage = damage;
+		this.KB = KB;
+		this.id = "" + nothingsTheSame;
 		this.k = k;
+		nothingsTheSame++;
 	}
 
 	public double[] intersects(Hitbox h1)
@@ -46,7 +49,7 @@ public class RectangleHitbox extends Hitbox
     Rectangle rect = new Rectangle(h, k, a, b);
     Rectangle rect1 = null;
     
-    if(checker.getClass().equals(new RectangleHitbox(1, 1, 1, 1, 0).getClass()))
+    if(checker.getClass().equals(new RectangleHitbox(1, 1, 1, 1, 0, 0).getClass()))
     	rect1 = new Rectangle(h1.getH(), h1.getK(), h1.getA(), h1.getB());
     else
     	rect1 = new Rectangle(h1.getH()-h1.getA(), h1.getK()*-1-h1.getB(), h1.getA()*2, h1.getB()*2);

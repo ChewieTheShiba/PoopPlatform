@@ -3,14 +3,17 @@ import java.awt.*;
 public class OvalHitbox extends Hitbox
 {
 	
-	public OvalHitbox(int h, int k, int a, int b, int damage)
+	public OvalHitbox(int h, int k, int a, int b, int damage, double KB)
 	{
 		this.a = a;
 		this.b = b;
 		this.h = h;
 		this.k = k*-1;
 		this.damage = damage;
+		this.KB = KB;
+		this.id = "" + nothingsTheSame;
 		this.lastTouched = null;
+		nothingsTheSame++;
 	}
 	
 	public double[] intersects(Hitbox h1)
@@ -49,14 +52,14 @@ public class OvalHitbox extends Hitbox
 		Rectangle rect = new Rectangle(h-a, k*-1-b, a*2, b*2);
 		Rectangle rect1 = null;
 		
-		if(checker.getClass().equals(new RectangleHitbox(1, 1, 1, 1, 0).getClass()))
+		if(checker.getClass().equals(new RectangleHitbox(1, 1, 1, 1, 0, 0).getClass()))
 	    	rect1 = new Rectangle(h1.getH(), h1.getK(), h1.getA(), h1.getB());
 	    else
 	    	rect1 = new Rectangle(h1.getH()-h1.getA(), h1.getK()*-1-h1.getB(), h1.getA()*2, h1.getB()*2);
 		
 		if(rect.intersects(rect1))
 		{
-			if(checker.getClass().equals(new RectangleHitbox(1, 1, 1, 1, 0).getClass()))
+			if(checker.getClass().equals(new RectangleHitbox(1, 1, 1, 1, 0, 0).getClass()))
 			{
 				for(int m = 1; m > -1; m--)
 				{
@@ -268,7 +271,7 @@ public class OvalHitbox extends Hitbox
 			xThing = latestIntersection[0] - lastTouched.getH();
 		}
 		
-		if(latestIntersection[0] != -1 && Checker.getClass().equals(new OvalHitbox(1,1,1,1,1).getClass()))
+		if(latestIntersection[0] != -1 && Checker.getClass().equals(new OvalHitbox(1,1,1,1,1, 1).getClass()))
 		{
 			if(xThing < 0)
 			{

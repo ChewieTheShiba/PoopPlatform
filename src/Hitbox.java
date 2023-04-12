@@ -4,10 +4,12 @@ import java.awt.*;
 public abstract class Hitbox {
 
 	protected int h, k, a, b, damage;
+	protected static int nothingsTheSame;
 	protected double KB;
 	protected double[] latestIntersection = {-1,-1};
 	protected Hitbox lastTouched;
 	protected boolean moveRight, moveLeft, moveUp, moveDown;
+	protected String id;
 	
 	public abstract double[] intersects(Hitbox h1);
 	public abstract double[] getOppositeIntersection();
@@ -49,6 +51,14 @@ public abstract class Hitbox {
 	public void setB(int b)
 	{
 		this.b = b;
+	}
+	public void setId(String id)
+	{
+		this.id = id;
+	}
+	public String getId()
+	{
+		return id;
 	}
 	public int getDamage()
 	{

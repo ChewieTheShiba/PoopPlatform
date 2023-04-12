@@ -9,7 +9,7 @@ import javax.swing.Timer;
 public class PoopPanel extends JPanel
 {
 	//variables for the overall width and height
-	private int w, h, py, px, pw, ph, sx, sy, sw, sh, p1YVelocity, p1MoveSpeed, p1LaunchDirection, ogpx, ogpy, p1JumpStart, p1SelectX, p1SelectY, p2SelectX, p2SelectY;
+	private int w, h, px, py, pw, ph, sx, sy, sw, sh, p1YVelocity, p1MoveSpeed, p1LaunchDirection, ogpx, ogpy, p1JumpStart, p1SelectX, p1SelectY, p2SelectX, p2SelectY;
 	private double p1Knockback, p1LaunchSpeed, p1EndXTraj, p1KnockbackTheta;
 	private ImageIcon startUpAnimation, startUpScreen, c1Image, c2Image;
 	private Timer startUpWait, ticker, p1Knockbacker;
@@ -32,16 +32,6 @@ public class PoopPanel extends JPanel
 		//sets up listeners
 		this.addKeyListener(new keyListen());
 		this.setFocusable(true);
-		
-		py = 100;
-		px = 500;
-		pw = 50;
-		ph = 100;
-		
-		sy = 1000;
-		sx = 100;
-		sw = 50;
-		sh = 100;
 		
 		//sets up gravity stuff
 		p1YVelocity = 1;
@@ -87,7 +77,7 @@ public class PoopPanel extends JPanel
 		stageSelect = new Stage[2][2];
 		
 		//temporary instansiations 
-		PoopDefender = new Neff();
+		PoopDefender = new PoopDefender();
 		Neff = new Neff();
 		Kuma = new Neff();
 		Mob = new Neff();
@@ -97,6 +87,10 @@ public class PoopPanel extends JPanel
 		characterSelect[1][0] = Kuma;
 		characterSelect[1][1] = Mob;
 		
+		//instantiates characters
+		c1 = new Character();
+		c2 = new Character();
+		
 		//filler stage objects for test runs while we dont have a stage
 		stageSelect[0][0] = new Stage(new ImageIcon("t"), hitboxes, hitboxes);
 		stageSelect[0][1] = new Stage(new ImageIcon("t"), hitboxes, hitboxes);
@@ -104,17 +98,8 @@ public class PoopPanel extends JPanel
 		stageSelect[1][1] = new Stage(new ImageIcon("t"), hitboxes, hitboxes);
 		stageSelected = null;
 		
-		//sets up character object for each player (later this will be moved out of constructor to a character select page in paintComponent)
-		c1 = new Neff();
-		/*c1.setHP(0.0);
-		c1.setWeight(75.0);*/
-		
-		c2 = new Neff();
-		/*c2.setHP(0.0);
-		c2.setWeight(75.0);*/
-		
 		hitboxes = new ArrayList<Hitbox>();
-		hitboxes.add(new OvalHitbox(-100, -100, 1, 1, 0));
+		hitboxes.add(new OvalHitbox(-100, -100, 1, 1, 0, 0));
 	}
 	
 	
@@ -128,6 +113,14 @@ public class PoopPanel extends JPanel
 		if(started)
 		{
 			double[] p1Intersection = {-1,-1}, p2Intersection = {-1,-1}, p1OppIntersection = {-1,-1}, p2OppIntersection = {-1,-1};
+			px = c1.getHitbox().getH()-c1.getHitbox().getA();
+			py = c1.getHitbox().getK()*-1-c1.getHitbox().getB();
+			pw = c1.getHitbox().getA();
+			ph = c1.getHitbox().getB();
+			sx = c2.getHitbox().getH()-c2.getHitbox().getA();
+			sy = c2.getHitbox().getK()*-1-c2.getHitbox().getB();
+			sw = c2.getHitbox().getA();
+			sh = c2.getHitbox().getB();
 			
 			ticker.start();
 			//all drawings below here:
@@ -152,6 +145,16 @@ public class PoopPanel extends JPanel
 			{
 				if(!h.equals(c1.getHitbox()))
 				{
+					 /*System.out.println("\n\n\n\n");
+					System.out.println("\th1" + h.getH());
+					System.out.println("\tk1" + h.getK());
+					System.out.println("\ta1" + h.getA());
+					System.out.println("\tb1" + h.getB());
+					System.out.println("\th2" + c1.getHitbox().getH());
+					System.out.println("\tk2" + c1.getHitbox().getK());
+					System.out.println("\ta2" + c1.getHitbox().getA());
+					System.out.println("\tb2" + c1.getHitbox().getB());
+					System.out.println(h.getMoveRight());*/
 					p1Intersection = h.intersects(c1.getHitbox());
 					p1OppIntersection = h.getOppositeIntersection();
 				}
@@ -162,8 +165,11 @@ public class PoopPanel extends JPanel
 					p2OppIntersection = h.getOppositeIntersection();
 				}
 				
+				
 				if(p1Intersection[0] != -1 && h.getDamage() != 0)
 				{
+					System.out.println(p1Intersection[0]);
+					System.out.println(p1Intersection[1]);
 					g.setColor(Color.red);
 					g.drawOval((int)p1Intersection[0], (int)p1Intersection[1], 20, 20);
 					g.drawOval((int)p1OppIntersection[0], (int)p1OppIntersection[1], 20, 20);
@@ -286,15 +292,20 @@ public class PoopPanel extends JPanel
 					c1.setMoveRight(false);
 					c1.setJumping(false);
 					c1.setDoubleJumping(false);
-					c1.setHitbox(new OvalHitbox(px+pw, py+ph, pw, ph, 20));
+					c1.setH(500);
+					c1.setK(-500);
+					c2.copy(characterSelect[p2SelectY][p2SelectX]);
 					c2.setName("Player 2");
 					c2.setMoveLeft(false);
 					c2.setMoveRight(false);
 					c2.setJumping(false);
 					c2.setDoubleJumping(false);
-					c2.setHitbox(new OvalHitbox(sx+sw, sy+sh, sw, sh, 20));
+					c2.setH(300);
+					c2.setK(-1100);
 					hitboxes.add(c1.getHitbox());
 					hitboxes.add(c2.getHitbox());
+					System.out.println(c1.getHitbox());
+					System.out.println(c2.getHitbox());
 				
 				p1CharacterSelected = false;
 				p2CharacterSelected = false;
