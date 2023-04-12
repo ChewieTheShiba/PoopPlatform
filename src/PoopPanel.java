@@ -122,9 +122,15 @@ public class PoopPanel extends JPanel
 			sw = c2.getHitbox().getA();
 			sh = c2.getHitbox().getB();
 			
+			c1Image = c1.getCurrentPlayerImage();
+			c2Image = c2.getCurrentPlayerImage();
+			
 			ticker.start();
 			//all drawings below here:
 			g.setColor(Color.black);
+			
+			c1Image.paintIcon(this, g, px-c1.getXOffPut(), py);
+			c2Image.paintIcon(this, g, sx-c2.getXOffPut(), sy);
 			g.drawOval(px, py, pw*2, ph*2);
 			g.drawOval(sx, sy, sw*2, sh*2);
 			
@@ -143,23 +149,13 @@ public class PoopPanel extends JPanel
 			
 			for(Hitbox h : hitboxes)
 			{
-				if(!h.equals(c1.getHitbox()))
+				if(h != null && !h.equals(c1.getHitbox()))
 				{
-					 /*System.out.println("\n\n\n\n");
-					System.out.println("\th1" + h.getH());
-					System.out.println("\tk1" + h.getK());
-					System.out.println("\ta1" + h.getA());
-					System.out.println("\tb1" + h.getB());
-					System.out.println("\th2" + c1.getHitbox().getH());
-					System.out.println("\tk2" + c1.getHitbox().getK());
-					System.out.println("\ta2" + c1.getHitbox().getA());
-					System.out.println("\tb2" + c1.getHitbox().getB());
-					System.out.println(h.getMoveRight());*/
 					p1Intersection = h.intersects(c1.getHitbox());
 					p1OppIntersection = h.getOppositeIntersection();
 				}
 				
-				if(!h.equals(c2.getHitbox()))
+				if(h != null && !h.equals(c2.getHitbox()))
 				{
 					p2Intersection = h.intersects(c2.getHitbox());
 					p2OppIntersection = h.getOppositeIntersection();
@@ -294,6 +290,10 @@ public class PoopPanel extends JPanel
 					c1.setDoubleJumping(false);
 					c1.setH(500);
 					c1.setK(-500);
+					hitboxes.add(c1.attack1Hitbox);
+					hitboxes.add(c1.attack2Hitbox);
+					hitboxes.add(c1.attack3Hitbox);
+					hitboxes.add(c1.attack4Hitbox);
 					c2.copy(characterSelect[p2SelectY][p2SelectX]);
 					c2.setName("Player 2");
 					c2.setMoveLeft(false);
@@ -302,6 +302,10 @@ public class PoopPanel extends JPanel
 					c2.setDoubleJumping(false);
 					c2.setH(300);
 					c2.setK(-1100);
+					hitboxes.add(c2.attack1Hitbox);
+					hitboxes.add(c2.attack2Hitbox);
+					hitboxes.add(c2.attack3Hitbox);
+					hitboxes.add(c2.attack4Hitbox);
 					hitboxes.add(c1.getHitbox());
 					hitboxes.add(c2.getHitbox());
 					System.out.println(c1.getHitbox());
@@ -365,13 +369,22 @@ public class PoopPanel extends JPanel
 			}
 			
 			//does while moving left or right
-			if(c1.getMoveRight())
+			if(c1.getMoveRight() && !c1.getTryTilt())
 			{
 				updatePlayer1Position(px+p1MoveSpeed, py);
 			}
 				//updatePlayer1Position(px+p1MoveSpeed, py);
-			if(c1.getMoveLeft())
+			if(c1.getMoveLeft() && !c1.getTryTilt())
 				updatePlayer1Position(px-p1MoveSpeed, py);
+			
+			if(c1.getTryTilt())
+			{
+				if(c1.getMoveRight())
+				{
+					c1.rightTilt();
+					c1Image = c1.getCurrentPlayerImage();
+				}
+			}
 	}
 	
 	//checks if p1 is touching ceiling or platform or wall
@@ -572,6 +585,9 @@ public class PoopPanel extends JPanel
 						c1.setDoubleJumping(true);
 					}
 					break;
+				case KeyEvent.VK_X:
+					c1.setTryTilt(true);
+					break;
 				
 				case KeyEvent.VK_SEMICOLON:
 					c2.setMoveRight(true);
@@ -606,6 +622,9 @@ public class PoopPanel extends JPanel
 					break;
 				case KeyEvent.VK_K:
 					c2.setMoveLeft(false);
+					break;
+				case KeyEvent.VK_X:
+					c1.setTryTilt(false);
 					break;
 				}
 			}

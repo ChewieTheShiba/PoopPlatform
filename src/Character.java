@@ -12,9 +12,11 @@ public class Character {
     protected OvalHitbox hitbox;
     protected String name, description, attack1name, attack2name, attack3name, attack4name, specialattackname;
     protected double HP, Weight, attack1power, attack1knockback, attack2power, attack2knockback, attack3power, attack3knockback, attack4power, attack4knockback, specialattackpower, specialknockback;
-    protected boolean jumping, doubleJumping, facingRight;
+    protected boolean jumping, doubleJumping, facingRight, attacking, tryTilt, trySpecial;
     protected ImageIcon attack1Image, attack2Image, attack3Image, attack4Image, idleRight, idleLeft, currentPlayerImage;
     protected RectangleHitbox attack1Hitbox, attack2Hitbox, attack3Hitbox, attack4Hitbox;
+    protected Timer tiltTime, specialTime;
+    protected int xOffPut;
     
     //For Charlie
     //make a String variable called currentAttack with setters and getters
@@ -37,6 +39,14 @@ public boolean equals(Object c)
 
 public void copy(Character c)
 {
+	this.xOffPut = c.getXOffPut();
+	this.attack1Image = c.getAttack1Image();
+	this.attack2Image = c.getAttack2Image();
+	this.attack3Image = c.getAttack3Image();
+	this.attack4Image = c.getAttack4Image();
+	this.idleRight = c.getIdleRight();
+	this.idleLeft = c.getIdleLeft();
+	this.currentPlayerImage = c.getCurrentPlayerImage();
 	this.hitbox = c.getDupeHitbox();
 	this.HP = c.getHP();
 	this.Weight = c.getWeight();
@@ -57,7 +67,41 @@ public void copy(Character c)
 	this.specialattackname = c.getSpecialAttackName();
 	
 }
+
+
     
+public boolean getTryTilt()
+{
+	return tryTilt;
+}
+
+public void setTryTilt(boolean tryTilt)
+{
+	this.tryTilt = tryTilt;
+}
+
+public boolean getTrySpecial()
+{
+	return trySpecial;
+}
+
+public void setTrySpecial(boolean trySpecial)
+{
+	this.trySpecial = trySpecial;
+}
+
+
+
+public int getXOffPut()
+{
+	return xOffPut;
+}
+
+public void setxOffPut(int xOffPut)
+{
+	this.xOffPut = xOffPut;
+}
+
 public void setH(double wantedH){
         
         int IntH = (int) wantedH;
@@ -79,7 +123,11 @@ public void setH(double wantedH){
     public void setMoveRight(boolean moveRight){
         hitbox.setMoveRight(moveRight);
         if(moveRight)
+        {
+        	currentPlayerImage = idleRight;
         	facingRight = true;
+        }
+        	
     }
 
     public boolean getMoveRight(){
@@ -90,7 +138,10 @@ public void setH(double wantedH){
     public void setMoveLeft(boolean moveLeft){
         hitbox.setMoveLeft(moveLeft);
         if(moveLeft)
+        {
+        	currentPlayerImage = idleLeft;
         	facingRight = false;
+        }
     }
 
     public boolean getMoveLeft(){
@@ -423,6 +474,17 @@ public void setH(double wantedH){
 	public void setAttack4Hitbox(RectangleHitbox attack4Hitbox)
 	{
 		this.attack4Hitbox = attack4Hitbox;
+	}
+	
+
+	public ImageIcon getCurrentPlayerImage()
+	{
+		return currentPlayerImage;
+	}
+
+	public void setCurrentPlayerImage(ImageIcon currentPlayerImage)
+	{
+		this.currentPlayerImage = currentPlayerImage;
 	}
 
 	public void rightTilt() {};

@@ -3,7 +3,7 @@ import java.awt.*;
 public class OvalHitbox extends Hitbox
 {
 	
-	public OvalHitbox(int h, int k, int a, int b, int damage, double KB)
+	public OvalHitbox(int h, int k, int a, int b, double damage, double KB)
 	{
 		this.a = a;
 		this.b = b;

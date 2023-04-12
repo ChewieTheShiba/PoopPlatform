@@ -3,9 +3,9 @@ import java.awt.*;
 
 public abstract class Hitbox {
 
-	protected int h, k, a, b, damage;
+	protected int h, k, a, b;
 	protected static int nothingsTheSame;
-	protected double KB;
+	protected double KB, damage;
 	protected double[] latestIntersection = {-1,-1};
 	protected Hitbox lastTouched;
 	protected boolean moveRight, moveLeft, moveUp, moveDown;
@@ -60,11 +60,11 @@ public abstract class Hitbox {
 	{
 		return id;
 	}
-	public int getDamage()
+	public double getDamage()
 	{
 		return damage;
 	}
-	public void setDamage(int damage)
+	public void setDamage(double damage)
 	{
 		this.damage = damage;
 	}
