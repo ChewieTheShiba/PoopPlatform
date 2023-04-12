@@ -44,8 +44,11 @@ public class PoopDefender extends Character
 
 	public void leftTilt()
 	{
-		// TODO Auto-generated method stub
-		
+		attack1Hitbox.setH(hitbox.getH()-hitbox.getA()-1);
+		attack2Hitbox.setK((hitbox.getK()+7)*-1);
+		currentPlayerImage = attack1Image;
+		attacking = true;
+		tiltTime.start();
 	}
 
 	public void upTilt()
@@ -85,6 +88,11 @@ public class PoopDefender extends Character
 				attack3Hitbox.setK(-100);
 				attack4Hitbox.setH(-100);
 				attack4Hitbox.setK(-100);
+				
+				if(facingRight)
+					currentImage = idleRight;
+				else
+					currentImage = idleLeft;
 			}
 			
 		}
