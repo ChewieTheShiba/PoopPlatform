@@ -193,7 +193,6 @@ public class PoopPanel extends JPanel
 					p1EndXTraj = 2*p1Knockback*Math.sin(p1KnockbackTheta);
 					p1EndXTraj /= p1YVelocity;
 					p1EndXTraj /= 2;
-					p1EndXTraj += p1Intersection[0];
 					
 					p1LaunchSpeed = p1Knockback * 0.03;
 					
@@ -206,6 +205,8 @@ public class PoopPanel extends JPanel
 						p1LaunchDirection = -1;
 						p1KnockbackTheta *= -1;
 					}
+					else
+						p1EndXTraj = p1Intersection[0] - p1EndXTraj;
 					if(p1OppIntersection[1] - c1.getHitbox().getK() < 0)
 						;
 					
@@ -243,13 +244,12 @@ public class PoopPanel extends JPanel
 					//p2Knockback = getp2Knockback(h.getDamage(), 600);
 					p2Knockback = 600;
 					
-					p2KnockbackTheta = Math.atan((p2Intersection[1]-p1OppIntersection[1])/(p2Intersection[0]-p1OppIntersection[0]));
+					p2KnockbackTheta = Math.atan((p2Intersection[1]-p2OppIntersection[1])/(p2Intersection[0]-p2OppIntersection[0]));
 					
 					//Sets the end of knockback trajectory halfway through the arc
 					p2EndXTraj = 2*p2Knockback*Math.sin(p2KnockbackTheta);
 					p2EndXTraj /= p2YVelocity;
 					p2EndXTraj /= 2;
-					p2EndXTraj += p2Intersection[0];
 					
 					p2LaunchSpeed = p2Knockback * 0.03;
 					
@@ -262,6 +262,8 @@ public class PoopPanel extends JPanel
 						p2LaunchDirection = -1;
 						p2KnockbackTheta *= -1;
 					}
+					else
+						p2EndXTraj = p2Intersection[0] + p2EndXTraj;
 					if(p2OppIntersection[1] - c2.getHitbox().getK() < 0)
 						;
 		
