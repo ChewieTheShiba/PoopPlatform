@@ -21,7 +21,13 @@ public class RectangleHitbox extends Hitbox
 		
 		int theta = 0, thetaopp = 0, adder = 0, adderopp = 0;
 		
-		if(moveRight)
+		
+		if(moveRight && moveLeft && moveUp && moveDown)
+		{
+			theta = 360;
+			thetaopp = 360;
+		}
+		else if(moveRight)
 		{
 			theta = 90;
 			adderopp = 90;
@@ -69,6 +75,7 @@ public class RectangleHitbox extends Hitbox
                 {
                   d[0] = x;
                   d[1] = y;
+                  lastTouched = null;
                   latestIntersection = d;
                   return d;
                 }
@@ -77,15 +84,16 @@ public class RectangleHitbox extends Hitbox
       }
 	  else
 	  {
+		  lastTouched = h1;
 		  for(int m = 1; m > -1; m--)
 			{
-			  	double q = adder;
-				double j = theta;
+			  	double q = adderopp;
+				double j = thetaopp;
 				
 				if(m == 0 && (moveRight || moveLeft))
 				{
-					q = -1*theta;
-					j = adder*-1;
+					q = -1*thetaopp;
+					j = adderopp*-1;
 				}
 				
 			  
@@ -127,8 +135,6 @@ public class RectangleHitbox extends Hitbox
 		            
 		            double r1 = Math.sqrt(top/bottom);
 		            
-		            f = Math.sqrt((ta*ta)-(tb*tb));
-		            
 		            double x1 = r1*Math.cos(Math.toRadians(q));
 		            double y1 = r1*Math.sin(Math.toRadians(q));
 		            x1 += h1.getH();
@@ -149,13 +155,51 @@ public class RectangleHitbox extends Hitbox
 			}
     }
 	}
+  lastTouched = null;
   latestIntersection = d;
   return d;
   }
 
 	public double[] getOppositeIntersection()
 	{
-		return null;
+		double d[] = {-1,-1};
+		Hitbox Checker = lastTouched;
+		
+		double yThing = 0, xThing = 0;
+		
+		if(Checker != null)
+		{
+			yThing = latestIntersection[1] - lastTouched.getK()*-1;
+			xThing = latestIntersection[0] - lastTouched.getH();
+		}
+		
+		if(latestIntersection[0] != -1 && Checker.getClass().equals(new OvalHitbox(1,1,1,1,1, 1).getClass()))
+		{
+			if(xThing < 0)
+			{
+				d[0] = xThing - xThing*2;
+				d[0] += lastTouched.getH();
+			}
+			else if(xThing > 0)
+			{
+				d[0] = xThing - xThing*2;
+				d[0] += lastTouched.getH();
+			}
+			if(yThing < 0)
+			{
+				d[1] = yThing - yThing*2;
+				d[1] += lastTouched.getK()*-1;
+				return d;
+			}
+			else if(yThing > 0)
+			{
+				d[1] = yThing - yThing*2;
+				d[1] += lastTouched.getK()*-1;
+				return d;
+			}
+		}
+		
+		return d;
 	}
 	
 }

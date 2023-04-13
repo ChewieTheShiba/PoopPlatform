@@ -10,13 +10,14 @@ import javax.swing.Timer;
 
 public class Character {
     protected OvalHitbox hitbox;
-    protected String name, description, attack1name, attack2name, attack3name, attack4name, specialattackname;
+    protected String name, description, attack1name, attack2name, attack3name, attack4name, specialattackname, currentAttack;
     protected double HP, Weight, attack1power, attack1knockback, attack2power, attack2knockback, attack3power, attack3knockback, attack4power, attack4knockback, specialattackpower, specialknockback;
-    protected boolean jumping, doubleJumping, facingRight, attacking, tryTilt, trySpecial;
+    protected boolean jumping, doubleJumping, facingRight, tiltAttacking, specialAttacking, tryTilt, trySpecial;
     protected ImageIcon attack1Image, attack2Image, attack3Image, attack4Image, idleRight, idleLeft, currentPlayerImage;
     protected RectangleHitbox attack1Hitbox, attack2Hitbox, attack3Hitbox, attack4Hitbox;
-    protected Timer tiltTime, specialTime;
-    protected int xOffPut;
+    protected Timer tiltTime, specialTime, stopChecker;
+    protected int xOffPut, yOffPut;
+    protected ArrayList<Hitbox> specialProjectiles;
     
     //For Charlie
     //make a String variable called currentAttack with setters and getters
@@ -100,6 +101,16 @@ public int getXOffPut()
 public void setxOffPut(int xOffPut)
 {
 	this.xOffPut = xOffPut;
+}
+
+public int getYOffPut()
+{
+	return yOffPut;
+}
+
+public void setYOffPut(int yOffPut)
+{
+	this.yOffPut = yOffPut;
 }
 
 public void setH(double wantedH){
@@ -282,6 +293,13 @@ public void setH(double wantedH){
 
     public void setName(String name) {
         this.name = name;
+        
+        if(attack1Hitbox != null)
+        	attack1Hitbox.setId(getName());
+        if(attack2Hitbox != null)
+        	attack2Hitbox.setId(getName());
+        if(attack3Hitbox != null)
+        	attack3Hitbox.setId(getName());
     }
 
     public String getDescription() {
@@ -486,8 +504,19 @@ public void setH(double wantedH){
 	{
 		this.currentPlayerImage = currentPlayerImage;
 	}
+	
 
-	public void rightTilt() {};
+	public ArrayList<Hitbox> getSpecialProjectiles()
+	{
+		return specialProjectiles;
+	}
+
+	public void setSpecialProjectiles(ArrayList<Hitbox> specialProjectiles)
+	{
+		this.specialProjectiles = specialProjectiles;
+	}
+
+	public void rightTilt() {System.out.println("you shouldnt be seeing this");};
 	public void leftTilt() {};
 	public void upTilt() {};
 	public void downTilt() {};

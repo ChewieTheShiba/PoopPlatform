@@ -9,18 +9,18 @@ import javax.swing.Timer;
 public class PoopPanel extends JPanel
 {
 	//variables for the overall width and height
-	private int bruh, w, h, px, py, pw, ph, sx, sy, sw, sh, p1YVelocity, p2YVelocity, p1MoveSpeed, p2MoveSpeed, p1LaunchDirection, p2LaunchDirection, ogpx, ogpy, ogsx, ogsy, p1JumpStart, p2JumpStart, p1SelectX, p1SelectY, p2SelectX, p2SelectY;
-	private double p1Knockback, p2Knockback, p1LaunchSpeed, p2LaunchSpeed, p1EndXTraj, p2EndXTraj, p1KnockbackTheta, p2KnockbackTheta;
+	private int w, h, px, py, pw, ph, sx, sy, sw, sh, p1YVelocity, p1MoveSpeed, p1LaunchDirection, ogpx, ogpy, p1JumpStart, p1SelectX, p1SelectY, p2SelectX, p2SelectY;
+	private double p1Knockback, p1LaunchSpeed, p1EndXTraj, p1KnockbackTheta;
 	private ImageIcon startUpAnimation, startUpScreen, c1Image, c2Image, projectile;
-	private Timer startUpWait, ticker, p1Knockbacker, p2Knockbacker;
-	private boolean started, gettingReadyToPlay, readyToPlay, p1KnockingBack, p2KnockingBack, stageSelectReady, characterSelectReady, p1StageSelected, p2StageSelected, p1CharacterSelected, p2CharacterSelected, characterReady;
+	private Timer startUpWait, ticker, p1Knockbacker;
+	private boolean p1Falling, started, gettingReadyToPlay, readyToPlay, p1KnockingBack, stageSelectReady, characterSelectReady, p1StageSelected, p2StageSelected, p1CharacterSelected, p2CharacterSelected, characterReady;
 	private final int GRAVITY, JUMPHEIGHT;
 	private Character c1, c2;
 	private final Character PoopDefender, Neff, Kuma, Mob;
 	private final Character[][] characterSelect;
 	private final Stage[][] stageSelect;
 	private Stage stageSelected;
-	private ArrayList<Hitbox> hitboxes; 
+	private ArrayList<Hitbox> hitboxes;
 	
 	//sets up the initial panel for drawing with proper size
 	public PoopPanel(int w, int h) throws IOException
@@ -35,7 +35,6 @@ public class PoopPanel extends JPanel
 		
 		//sets up gravity stuff
 		p1YVelocity = 1;
-		p2YVelocity = 1;
 		GRAVITY = 2;
 		
 		//sets up stuff to start game and test if its ready to start
@@ -49,6 +48,7 @@ public class PoopPanel extends JPanel
 		p2StageSelected = false;
 		p2CharacterSelected = false;
 		characterReady = false;
+		p1Falling = true;
 		
 		p1KnockingBack = false;
 		
@@ -66,7 +66,6 @@ public class PoopPanel extends JPanel
 		
 		//sets up jumping mechanism
 		p1Knockbacker = new Timer(20, new actionListener());
-		p2Knockbacker = new Timer(20, new actionListener());
 		JUMPHEIGHT = 20;
 
 		//sets up the object for each character you can select
@@ -128,14 +127,18 @@ public class PoopPanel extends JPanel
 			c1Image = c1.getCurrentPlayerImage();
 			c2Image = c2.getCurrentPlayerImage();
 			
-			c1Image.paintIcon(this, g, px-c1.getXOffPut(), py-c1.getYOffPut());
-			c2Image.paintIcon(this, g, sx-c2.getXOffPut(), sy-c2.getYOffPut());
-			
 			ticker.start();
 			//all drawings below here:
 			g.setColor(Color.black);
+			
+			c1Image.paintIcon(this, g, px-c1.getXOffPut(), py-c1.getYOffPut());
+			c2Image.paintIcon(this, g, sx-c2.getXOffPut(), sy-c2.getYOffPut());
 			g.drawOval(px, py, pw*2, ph*2);
 			g.drawOval(sx, sy, sw*2, sh*2);
+			/*if(((PoopDefender) c1).getSpecialHitbox() != null)
+			{
+				g.drawRect(((PoopDefender) c1).getSpecialHitbox().getH(), ((PoopDefender) c1).getSpecialHitbox().getK(), ((PoopDefender) c1).getSpecialHitbox().getA(), ((PoopDefender) c1).getSpecialHitbox().getB());
+			}*/
 			
 			for(int v = 0; v < 1920; v+=30)
 			{
@@ -152,12 +155,6 @@ public class PoopPanel extends JPanel
 			
 			for(Hitbox h : hitboxes)
 			{
-				
-				if(((PoopDefender) c1).getSpecialHitbox() != null)
-				{
-					g.drawRect(c1.getAttack2Hitbox().getH(), c1.getAttack2Hitbox().getK(), c1.getAttack2Hitbox().getA(), c1.getAttack2Hitbox().getB());
-				}
-				
 				if(h != null && h.getId().equals("Projectile"))
 					projectile.paintIcon(this, g, h.getH(), h.getK());
 				
@@ -174,8 +171,7 @@ public class PoopPanel extends JPanel
 				}
 				
 				
-				
-				if(p1Intersection[0] != -1 && h.getDamage() != 0)
+				if(h != null && p1Intersection[0] != -1 && h.getDamage() != 0)
 				{
 					System.out.println(p1Intersection[0]);
 					System.out.println(p1Intersection[1]);
@@ -202,7 +198,7 @@ public class PoopPanel extends JPanel
 					
 					if(p1OppIntersection[0] - c1.getHitbox().getH() < 0)
 					{
-						p1EndXTraj = p1Intersection[0] - p1EndXTraj;
+						p1EndXTraj = p2Intersection[0] - p1EndXTraj;
 						p1LaunchDirection = -1;
 						p1KnockbackTheta *= -1;
 					}
@@ -216,7 +212,7 @@ public class PoopPanel extends JPanel
 					p1Knockbacker.start();
 				}
 				
-				else if(p1Intersection[0] != -1)
+				else if(p1Intersection[0] != -1 && h != null)
 				{
 					if(h.getMoveRight())
 						updatePlayer1Position(px+(int)h.getKB(), py);
@@ -226,65 +222,6 @@ public class PoopPanel extends JPanel
 						updatePlayer1Position(px, py-(int)h.getKB());
 					if(h.getMoveDown())
 						updatePlayer1Position(px, py+(int)h.getKB());
-				}  
-				
-				
-				if(h != null && p2Intersection[0] != -1 && h.getDamage() != 0)
-				{
-					System.out.println("intersect");
-					System.out.println(p2Intersection[0]);
-					System.out.println(p2Intersection[1]);
-					g.setColor(Color.red);
-					g.drawOval((int)p2Intersection[0], (int)p2Intersection[1], 20, 20);
-					g.drawOval((int)p2OppIntersection[0], (int)p2OppIntersection[1], 20, 20);
-					double p2Dist = Math.sqrt(Math.pow(Math.abs(p2Intersection[0]-p2OppIntersection[0]), 2) + Math.pow(Math.abs(p2Intersection[1]-p2OppIntersection[1]), 2));
-					
-					//change to h.getKB());
-					//p2Knockback = getp2Knockback(h.getDamage(), 600);
-					p2Knockback = 600;
-					
-					p2KnockbackTheta = Math.atan((p2Intersection[1]-p1OppIntersection[1])/(p2Intersection[0]-p1OppIntersection[0]));
-					
-					//Sets the end of knockback trajectory halfway through the arc
-					p2EndXTraj = 2*p2Knockback*Math.sin(p2KnockbackTheta);
-					p2EndXTraj /= p2YVelocity;
-					p2EndXTraj /= 2;
-					p2EndXTraj += p2Intersection[0];
-					
-					p2LaunchSpeed = p2Knockback * 0.03;
-					
-					p2LaunchDirection = 1;
-					
-					
-					if(p2OppIntersection[0] - c2.getHitbox().getH() < 0)
-					{
-						p2EndXTraj = p2Intersection[0] - p2EndXTraj;
-						p2LaunchDirection = -1;
-						p2KnockbackTheta *= -1;
-					}
-					if(p2OppIntersection[1] - c2.getHitbox().getK() < 0)
-						;
-		
-					
-					ogsx = sx;
-					ogsy = sy;
-					
-					p2KnockingBack = true;
-					p2Knockbacker.start();
-				}
-				
-				else if(h != null && p2Intersection[0] != -1)
-				{
-					g.drawOval((int)p2Intersection[0], (int)p2Intersection[1], 20, 20);
-					g.drawOval((int)p2OppIntersection[0], (int)p2OppIntersection[1], 20, 20);
-					if(h.getMoveRight())
-						updatePlayer2Position(sx+(int)h.getKB(), sy);
-					if(h.getMoveLeft())
-						updatePlayer2Position(sx-(int)h.getKB(), sy);
-					if(h.getMoveUp())
-						updatePlayer2Position(sx, sy-(int)h.getKB());
-					if(h.getMoveDown())
-						updatePlayer2Position(sx, sy+(int)h.getKB());
 				}
 			}
 			
@@ -355,52 +292,52 @@ public class PoopPanel extends JPanel
 			
 			if(p1CharacterSelected && p2CharacterSelected)
 			{
-				if(characterSelect[p1SelectY][p1SelectX].getClass().equals(PoopDefender.class))
-					c1 = new PoopDefender();
-				if(characterSelect[p1SelectY][p1SelectX].getClass().equals(Neff.class))
-					c1 = new Neff();
-				if(characterSelect[p1SelectY][p1SelectX].getClass().equals(PoopDefender.class))
-					c1 = new PoopDefender();
-				if(characterSelect[p1SelectY][p1SelectX].getClass().equals(PoopDefender.class))
-					c1 = new PoopDefender();
-				c1.setName("Player 1");
-				c1.setMoveLeft(false);
-				c1.setMoveRight(false);
-				c1.setJumping(false);
-				c1.setDoubleJumping(false);
-				c1.setH(500);
-				c1.setK(-500);
-				hitboxes.add(c1.attack1Hitbox);
-				hitboxes.add(c1.attack2Hitbox);
-				hitboxes.add(c1.attack3Hitbox);
-				hitboxes.add(c1.attack4Hitbox);
-				if(characterSelect[p2SelectY][p2SelectX].getClass().equals(PoopDefender.class))
-					c2 = new PoopDefender();
-				if(characterSelect[p2SelectY][p2SelectX].getClass().equals(Neff.class))
-					c2 = new Neff();
-				if(characterSelect[p2SelectY][p2SelectX].getClass().equals(PoopDefender.class))
-					c2 = new PoopDefender();
-				if(characterSelect[p2SelectY][p2SelectX].getClass().equals(PoopDefender.class))
-					c2 = new PoopDefender();
-				c2.setName("Player 2");
-				c2.setMoveLeft(false);
-				c2.setMoveRight(false);
-				c2.setJumping(false);
-				c2.setDoubleJumping(false);
-				c2.setH(300);
-				c2.setK(-1000);
-				hitboxes.add(c2.attack1Hitbox);
-				hitboxes.add(c2.attack2Hitbox);
-				hitboxes.add(c2.attack3Hitbox);
-				hitboxes.add(c2.attack4Hitbox);
-				hitboxes.add(c1.getHitbox());
-				hitboxes.add(c2.getHitbox());
-			
-			p1CharacterSelected = false;
-			p2CharacterSelected = false;
-			started = true;
-			characterSelectReady = false;
-			repaint();
+					if(characterSelect[p1SelectY][p1SelectX].getClass().equals(PoopDefender.class))
+						c1 = new PoopDefender();
+					if(characterSelect[p1SelectY][p1SelectX].getClass().equals(Neff.class))
+						c1 = new Neff();
+					if(characterSelect[p1SelectY][p1SelectX].getClass().equals(PoopDefender.class))
+						c1 = new PoopDefender();
+					if(characterSelect[p1SelectY][p1SelectX].getClass().equals(PoopDefender.class))
+						c1 = new PoopDefender();
+					c1.setName("Player 1");
+					c1.setMoveLeft(false);
+					c1.setMoveRight(false);
+					c1.setJumping(false);
+					c1.setDoubleJumping(false);
+					c1.setH(500);
+					c1.setK(-500);
+					hitboxes.add(c1.attack1Hitbox);
+					hitboxes.add(c1.attack2Hitbox);
+					hitboxes.add(c1.attack3Hitbox);
+					hitboxes.add(c1.attack4Hitbox);
+					if(characterSelect[p2SelectY][p2SelectX].getClass().equals(PoopDefender.class))
+						c2 = new PoopDefender();
+					if(characterSelect[p2SelectY][p2SelectX].getClass().equals(Neff.class))
+						c2 = new Neff();
+					if(characterSelect[p2SelectY][p2SelectX].getClass().equals(PoopDefender.class))
+						c2 = new PoopDefender();
+					if(characterSelect[p2SelectY][p2SelectX].getClass().equals(PoopDefender.class))
+						c2 = new PoopDefender();
+					c2.setName("Player 2");
+					c2.setMoveLeft(false);
+					c2.setMoveRight(false);
+					c2.setJumping(false);
+					c2.setDoubleJumping(false);
+					c2.setH(300);
+					c2.setK(-1100);
+					hitboxes.add(c2.attack1Hitbox);
+					hitboxes.add(c2.attack2Hitbox);
+					hitboxes.add(c2.attack3Hitbox);
+					hitboxes.add(c2.attack4Hitbox);
+					hitboxes.add(c1.getHitbox());
+					hitboxes.add(c2.getHitbox());
+				
+				p1CharacterSelected = false;
+				p2CharacterSelected = false;
+				started = true;
+				characterSelectReady = false;
+				repaint();
 			}
 		}
 	}
@@ -437,11 +374,13 @@ public class PoopPanel extends JPanel
 			}
 			else if(!p1KnockingBack)
 			{
+				p1Falling = true;
 				if(CoordIsTouching(py+ph*2+p1YVelocity).equals("bottom"))
 				{
 					p1YVelocity = GRAVITY;
 					c1.setMoveDown(false);
 					updatePlayer1Position(px, 1080-ph*2);
+					p1Falling = false;
 				}
 				else
 				{
@@ -573,38 +512,6 @@ public class PoopPanel extends JPanel
 		{
 			updatePlayer2Position(sx-10, sy);
 		}
-		
-		if(c2.getTryTilt() && !p2KnockingBack)
-		{
-			if(c2.getMoveRight())
-			{
-				c2.setMoveRight(false);
-				c2.setTryTilt(false);
-				c2.rightTilt();
-				c2Image = c2.getCurrentPlayerImage();
-			}
-			if(c2.getMoveLeft())
-			{
-				c2.setMoveLeft(false);
-				c2.setTryTilt(false);
-				c2.leftTilt();
-				c2Image = c2.getCurrentPlayerImage();
-			}
-			if(c2.getMoveUp()) 
-			{
-				c2.setMoveLeft(false);
-				c2.setTryTilt(false);
-				c2.upTilt();
-				c2Image = c2.getCurrentPlayerImage();
-			}
-		}
-		if(c2.getTrySpecial())
-		{
-			c2.special();
-			hitboxes.add(c2.getSpecialProjectiles().get(c2.getSpecialProjectiles().size()-1));
-			c2.setTrySpecial(false);
-			c2Image = c2.getCurrentPlayerImage();
-		}
 	}
 	
 	public void updatePlayer2Position(int x, int y)
@@ -641,6 +548,13 @@ public class PoopPanel extends JPanel
 				updateP1();
 				updateP2();
 				
+				for(int x = 0; x < hitboxes.size(); x++)
+				{
+					Hitbox h = hitboxes.get(x);
+					if(h != null && (h.getH() < -150 || h.getH() > 2000 || h.getK() > 1200 || h.getK() < -100) && !h.equals(c1.getHitbox()) && !h.equals(c2.getHitbox()))
+						hitboxes.remove(h);
+				}
+				
 				repaint();
 			}
 			
@@ -676,45 +590,6 @@ public class PoopPanel extends JPanel
 				{
 					p1KnockingBack = false;
 					p1Knockbacker.stop();
-				}
-			}
-			
-			if(source.equals(p2Knockbacker))
-			{
-				
-				double tempXDist = p2LaunchSpeed*p2LaunchDirection;
-				double tan = Math.tan(p2KnockbackTheta);
-				double cos = Math.cos(p2KnockbackTheta);
-				
-				//limiter so they dont get juggled into outer space
-				if (tan > 4)
-				{
-					tan = 4;
-				}
-				if (tan < -4)
-				{
-					tan = -4;
-				}
-				if(cos > -0.1 && cos < 0.1 )
-				{
-					cos = 0.1;
-				}
-		
-				double tempYDist = Math.abs((sx+tempXDist)-ogsx)*tan;
-				tempYDist -= (p2YVelocity*Math.pow(Math.abs((sx+tempXDist)-ogsx), 2))/(2*p2Knockback*p2Knockback*Math.pow(cos,2));
-
-				updatePlayer2Position((int)(sx+tempXDist),(int) (ogsy+tempYDist));
-				System.out.println("y" + tempYDist);
-				System.out.println(tempXDist);
-				System.out.println(bruh);
-				System.out.println();
-				
-				p2LaunchSpeed -= 1;
-				
-				if(p2LaunchSpeed <= 0)
-				{
-					p2KnockingBack = false;
-					p2Knockbacker.stop();
 				}
 			}
 			
@@ -781,15 +656,6 @@ public class PoopPanel extends JPanel
 					break;
 				case KeyEvent.VK_O:
 					updatePlayer2Position(sx, sy-10);
-					break;
-				case KeyEvent.VK_L:
-					updatePlayer2Position(sx, sy+10);
-					break;
-				case KeyEvent.VK_PERIOD:
-					c2.setTryTilt(true);
-					break;
-				case KeyEvent.VK_COMMA:
-					c2.setTrySpecial(true);
 					break;
 				
 				}

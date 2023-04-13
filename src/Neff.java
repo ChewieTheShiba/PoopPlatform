@@ -10,7 +10,7 @@ public class Neff extends Character
 
 	public Neff()
 	{
-		hitbox = new OvalHitbox(200, 200, 100, 200, 0, 0);
+		//hitbox = new OvalHitbox(200, 200, 100, 200, 0, 0);
 	}
 	
 	public void rightTilt()
