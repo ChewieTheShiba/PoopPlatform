@@ -9,18 +9,18 @@ import javax.swing.Timer;
 public class PoopPanel extends JPanel
 {
 	//variables for the overall width and height
-	private int w, h, px, py, pw, ph, sx, sy, sw, sh, p1YVelocity, p1MoveSpeed, p1LaunchDirection, ogpx, ogpy, p1JumpStart, p1SelectX, p1SelectY, p2SelectX, p2SelectY;
-	private double p1Knockback, p1LaunchSpeed, p1EndXTraj, p1KnockbackTheta;
+	private int w, h, px, py, pw, ph, sx, sy, sw, sh, p1YVelocity, p2YVelocity, p1MoveSpeed, p2MoveSpeed, p1LaunchDirection, p2LaunchDirection ogpx, ogpy, p1JumpStart, p2JumpStart, p1SelectX, p1SelectY, p2SelectX, p2SelectY;
+	private double p1Knockback, p2Knockback, p1LaunchSpeed, p2LaunchSpeed, p1EndXTraj, p2EndXTraj, p1KnockbackTheta, p2KockbackTheta;
 	private ImageIcon startUpAnimation, startUpScreen, c1Image, c2Image;
-	private Timer startUpWait, ticker, p1Knockbacker;
-	private boolean started, gettingReadyToPlay, readyToPlay, p1KnockingBack, stageSelectReady, characterSelectReady, p1StageSelected, p2StageSelected, p1CharacterSelected, p2CharacterSelected, characterReady;
+	private Timer startUpWait, ticker, p1Knockbacker, p2Knockbacker;
+	private boolean started, gettingReadyToPlay, readyToPlay, p1KnockingBack, p2KnockingBack, stageSelectReady, characterSelectReady, p1StageSelected, p2StageSelected, p1CharacterSelected, p2CharacterSelected, characterReady;
 	private final int GRAVITY, JUMPHEIGHT;
 	private Character c1, c2;
 	private final Character PoopDefender, Neff, Kuma, Mob;
 	private final Character[][] characterSelect;
 	private final Stage[][] stageSelect;
 	private Stage stageSelected;
-	private ArrayList<Hitbox> hitboxes;
+	private ArrayList<Hitbox> hitboxes; 
 	
 	//sets up the initial panel for drawing with proper size
 	public PoopPanel(int w, int h) throws IOException
@@ -213,6 +213,60 @@ public class PoopPanel extends JPanel
 						updatePlayer1Position(px, py-(int)h.getKB());
 					if(h.getMoveDown())
 						updatePlayer1Position(px, py+(int)h.getKB());
+				}  
+				
+				
+				if(p2Intersection[0] != -1 && h.getDamage() != 0)
+				{
+					System.out.println(p2Intersection[0]);
+					System.out.println(p2Intersection[1]);
+					g.setColor(Color.red);
+					g.drawOval((int)p2Intersection[0], (int)p2Intersection[1], 20, 20);
+					g.drawOval((int)p2OppIntersection[0], (int)p2OppIntersection[1], 20, 20);
+					double p2Dist = Math.sqrt(Math.pow(Math.abs(p2Intersection[0]-p2OppIntersection[0]), 2) + Math.pow(Math.abs(p2Intersection[1]-p2OppIntersection[1]), 2));
+					
+					//change to h.getKB());
+					p2Knockback = getp2Knockback(h.getDamage(), 600);
+					
+					p2KnockbackTheta = Math.atan((p2Intersection[1]-p1OppIntersection[1])/(p2Intersection[0]-p1OppIntersection[0]));
+					
+					//Sets the end of knockback trajectory halfway through the arc
+					p2EndXTraj = 2*p1Knockback*Math.sin(p1KnockbackTheta);
+					p2EndXTraj /= p1YVelocity;
+					p2EndXTraj /= 2;
+					p2EndXTraj += p1Intersection[0];
+					
+					p2LaunchSpeed = p2Knockback * 0.03;
+					
+					p2LaunchDirection = 1;
+					
+					
+					if(p2OppIntersection[0] - c1.getHitbox().getH() < 0)
+					{
+						p2EndXTraj = p2Intersection[0] - p1EndXTraj;
+						p2LaunchDirection = -1;
+						p2KnockbackTheta *= -1;
+					}
+					if(p1OppIntersection[1] - c1.getHitbox().getK() < 0)
+		
+					
+					ogsx = sx;
+					ogsy = sy;
+					
+					p2KnockingBack = true;
+					p2Knockbacker.start();
+				}
+				
+				else if(p2Intersection[0] != -1)
+				{
+					if(h.getMoveRight())
+						updatePlayer2Position(sx+(int)h.getKB(), sy);
+					if(h.getMoveLeft())
+						updatePlayer2Position(sx-(int)h.getKB(), sy);
+					if(h.getMoveUp())
+						updatePlayer2Position(sx, sy-(int)h.getKB());
+					if(h.getMoveDown())
+						updatePlayer2Position(sx, sy+(int)h.getKB());
 				}
 			}
 			
