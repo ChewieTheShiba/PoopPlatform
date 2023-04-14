@@ -605,52 +605,103 @@ public class PoopPanel extends JPanel
 	
 	public void updateP2()
 	{
-		if(c2.getMoveRight())
-		{
-			updatePlayer2Position(sx+10, sy);
-		}
-		if(c2.getMoveLeft())
-		{
-			updatePlayer2Position(sx-10, sy);
-		}
-		
-		if(c2.getTryTilt() && !p2KnockingBack)
-		{
-			if(c2.getMoveRight())
+		if(c2.getJumping() || c2.getDoubleJumping())
 			{
-				c2.setMoveRight(false);
-				c2.setTryTilt(false);
-				c2.rightTilt();
+				if (p2YCoordIsTouching((sy+sh*2-p2YVelocity)) != -1)
+				{
+					System.out.println("stop jumpinh");
+					c2.setJumping(false);
+					c2.setDoubleJumping(false);
+					sy = p2JumpStart;
+					p2YVelocity = JUMPHEIGHT;
+				}
+				else
+				{
+					updatePlayer2Position(sx, sy-p2YVelocity);
+					p2YVelocity -= GRAVITY;
+					
+					if(p2YVelocity < 0)
+					{
+						c2.setFalling(true);
+						c2.setMoveUp(false);
+					}
+					
+					if(p2YVelocity > JUMPHEIGHT)
+						p2YVelocity = JUMPHEIGHT;
+				}
+				
+					
+			}
+			else if(!p2KnockingBack)
+			{
+				int ogy = c2.getHitbox().getK()*-1-c2.getHitbox().getB();
+				int thingy = p2YCoordIsTouching(ogy);
+				System.out.println("thingy\t" + thingy);
+				System.out.println(ogy);
+				if(thingy != -1)
+				{
+					System.out.println(c2.getHitbox().getK()*-1);
+					System.out.println(ogy);
+					p2YVelocity = GRAVITY;
+					c2.setFalling(false);
+					updatePlayer2Position(sx, thingy);
+				}
+				else
+				{
+					if(p2YVelocity > 10)
+						p2YVelocity = 10;
+					else
+						p2YVelocity *= GRAVITY;
+					updatePlayer2Position(sx, sy+p2YVelocity);
+					c2.setFalling(true);
+				}
+			}
+			
+			//does while moving left or right
+			if(c2.getMoveRight() && !c2.getTryTilt())
+			{
+				updatePlayer2Position(sx+p2MoveSpeed, sy);
+			}
+				//updatePlayer1Position(px+p1MoveSpeed, py);
+			if(c2.getMoveLeft() && !c2.getTryTilt())
+				updatePlayer2Position(sx-p2MoveSpeed, sy);
+			
+			if(c2.getTryTilt() && !p2KnockingBack)
+			{
+				if(c2.getMoveRight())
+				{
+					c2.setMoveRight(false);
+					c2.setTryTilt(false);
+					c2.rightTilt();
+					c2Image = c2.getCurrentPlayerImage();
+				}
+				if(c2.getMoveLeft())
+				{
+					c2.setMoveLeft(false);
+					c2.setTryTilt(false);
+					c2.leftTilt();
+					c2Image = c2.getCurrentPlayerImage();
+				}
+				if(c2.getMoveUp()) 
+				{
+					c2.setTryTilt(false);
+					c2.upTilt();
+					c2Image = c2.getCurrentPlayerImage();
+				}
+				if(c2.getMoveDown()) 
+				{
+					c2.setTryTilt(false);
+					c2.downTilt();
+					c2Image = c2.getCurrentPlayerImage();
+				}
+			}
+			if(c2.getTrySpecial())
+			{
+				c2.special();
+				hitboxes.add(c2.getSpecialProjectiles().get(c2.getSpecialProjectiles().size()-1));
+				c2.setTrySpecial(false);
 				c2Image = c2.getCurrentPlayerImage();
 			}
-			if(c2.getMoveLeft())
-			{
-				c2.setMoveLeft(false);
-				c2.setTryTilt(false);
-				c2.leftTilt();
-				c2Image = c2.getCurrentPlayerImage();
-			}
-			if(c2.getMoveUp()) 
-			{
-				c2.setMoveLeft(false);
-				c2.setTryTilt(false);
-				c2.upTilt();
-				c2Image = c2.getCurrentPlayerImage();
-			}
-			if(c2.getMoveDown()) 
-			{
-				c2.setTryTilt(false);
-				c2.downTilt();
-				c2Image = c2.getCurrentPlayerImage();
-			}
-		}
-		if(c2.getTrySpecial())
-		{
-			c2.special();
-			hitboxes.add(c2.getSpecialProjectiles().get(c2.getSpecialProjectiles().size()-1));
-			c2.setTrySpecial(false);
-			c2Image = c2.getCurrentPlayerImage();
-		}
 	}
 	
 	public void updatePlayer2Position(int x, int y)
