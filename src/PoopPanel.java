@@ -21,6 +21,7 @@ public class PoopPanel extends JPanel
 	private final Stage[][] stageSelect;
 	private Stage stageSelected;
 	private ArrayList<Hitbox> hitboxes; 
+	private ArrayList<RectangleHitbox> stageHitboxes;
 	
 	//sets up the initial panel for drawing with proper size
 	public PoopPanel(int w, int h) throws IOException
@@ -95,11 +96,15 @@ public class PoopPanel extends JPanel
 		projectile = new ImageIcon("assets/Poop Defender/SpecialProjectile.png");
 		
 		//filler stage objects for test runs while we dont have a stage
-		stageSelect[0][0] = new Stage(new ImageIcon("t"), hitboxes, hitboxes);
-		stageSelect[0][1] = new Stage(new ImageIcon("t"), hitboxes, hitboxes);
-		stageSelect[1][0] = new Stage(new ImageIcon("t"), hitboxes, hitboxes);
-		stageSelect[1][1] = new Stage(new ImageIcon("t"), hitboxes, hitboxes);
-		stageSelected = null;
+		stageSelect[0][0] = new Stage(new ImageIcon("t"), null, null);
+		stageSelect[0][1] = new Stage(new ImageIcon("t"), null, null);
+		stageSelect[1][0] = new Stage(new ImageIcon("t"), null, null);
+		stageSelect[1][1] = new Stage(new ImageIcon("t"), null, null);
+		//stageSelected = null;
+		//temporary stageDeclaration
+		stageHitboxes = new ArrayList<RectangleHitbox>();
+		stageHitboxes.add(new RectangleHitbox(600, 400, 400, 30, 0, 0));
+		stageSelected = new Stage(projectile, stageHitboxes, null);
 		
 		hitboxes = new ArrayList<Hitbox>();
 		hitboxes.add(new OvalHitbox(-100, -100, 1, 1, 0, 0));
@@ -136,6 +141,12 @@ public class PoopPanel extends JPanel
 			g.setColor(Color.black);
 			g.drawOval(px, py, pw*2, ph*2);
 			g.drawOval(sx, sy, sw*2, sh*2);
+			
+			if(c1.getAttack4Hitbox() != null)
+			{
+				Hitbox l = c1.getAttack4Hitbox();
+				g.drawRect(l.getH(), l.getK(), l.getA(), l.getB());
+			}
 			
 			for(int v = 0; v < 1920; v+=30)
 			{
@@ -177,8 +188,6 @@ public class PoopPanel extends JPanel
 				
 				if(p1Intersection[0] != -1 && h.getDamage() != 0)
 				{
-					System.out.println(p1Intersection[0]);
-					System.out.println(p1Intersection[1]);
 					g.setColor(Color.red);
 					g.drawOval((int)p1Intersection[0], (int)p1Intersection[1], 20, 20);
 					g.drawOval((int)p1OppIntersection[0], (int)p1OppIntersection[1], 20, 20);
@@ -232,9 +241,6 @@ public class PoopPanel extends JPanel
 				
 				if(h != null && p2Intersection[0] != -1 && h.getDamage() != 0)
 				{
-					System.out.println("intersect");
-					System.out.println(p2Intersection[0]);
-					System.out.println(p2Intersection[1]);
 					g.setColor(Color.red);
 					g.drawOval((int)p2Intersection[0], (int)p2Intersection[1], 20, 20);
 					g.drawOval((int)p2OppIntersection[0], (int)p2OppIntersection[1], 20, 20);
@@ -288,8 +294,13 @@ public class PoopPanel extends JPanel
 					if(h.getMoveDown())
 						updatePlayer2Position(sx, sy+(int)h.getKB());
 				}
+				
+				for(RectangleHitbox rh : stageHitboxes)
+				{
+					g.setColor(Color.BLACK);
+					g.fillRect(rh.getH(), rh.getK(), rh.getA(), rh.getB());
+				}
 			}
-			
 		}
 		else if(readyToPlay || gettingReadyToPlay)
 		{
@@ -315,11 +326,11 @@ public class PoopPanel extends JPanel
 			
 			if(p1StageSelected && p2StageSelected)
 			{
-				Random rand = new Random();
+				/*Random rand = new Random();
 				if(rand.nextInt(2) == 0)
 					stageSelected = stageSelect[p1SelectY][p1SelectX];
 				else
-					stageSelected = stageSelect[p2SelectY][p2SelectX];
+					stageSelected = stageSelect[p2SelectY][p2SelectX];*/
 				
 				p1StageSelected = false;
 				p2StageSelected = false;
@@ -370,8 +381,8 @@ public class PoopPanel extends JPanel
 				c1.setMoveRight(false);
 				c1.setJumping(false);
 				c1.setDoubleJumping(false);
-				c1.setH(500);
-				c1.setK(-500);
+				c1.setH(700);
+				c1.setK(-100);
 				hitboxes.add(c1.attack1Hitbox);
 				hitboxes.add(c1.attack2Hitbox);
 				hitboxes.add(c1.attack3Hitbox);
@@ -413,8 +424,9 @@ public class PoopPanel extends JPanel
 			//jumping is if else is falling
 			if(c1.getJumping() || c1.getDoubleJumping())
 			{
-				if (CoordIsTouching((py+ph*2-p1YVelocity)).equals("bottom"))
+				if (p1YCoordIsTouching((py+ph*2-p1YVelocity)) != -1)
 				{
+					System.out.println("stop jumpinh");
 					c1.setJumping(false);
 					c1.setDoubleJumping(false);
 					py = p1JumpStart;
@@ -427,7 +439,7 @@ public class PoopPanel extends JPanel
 					
 					if(p1YVelocity < 0)
 					{
-						c1.setMoveDown(true);
+						c1.setFalling(true);
 						c1.setMoveUp(false);
 					}
 					
@@ -439,11 +451,17 @@ public class PoopPanel extends JPanel
 			}
 			else if(!p1KnockingBack)
 			{
-				if(CoordIsTouching(py+ph*2+p1YVelocity).equals("bottom"))
+				int ogy = c1.getHitbox().getK()*-1-c1.getHitbox().getB();
+				int thingy = p1YCoordIsTouching(ogy);
+				System.out.println("thingy\t" + thingy);
+				System.out.println(ogy);
+				if(thingy != -1)
 				{
+					System.out.println(c1.getHitbox().getK()*-1);
+					System.out.println(ogy);
 					p1YVelocity = GRAVITY;
-					c1.setMoveDown(false);
-					updatePlayer1Position(px, 1080-ph*2);
+					c1.setFalling(false);
+					updatePlayer1Position(px, thingy);
 				}
 				else
 				{
@@ -452,7 +470,7 @@ public class PoopPanel extends JPanel
 					else
 						p1YVelocity *= GRAVITY;
 					updatePlayer1Position(px, py+p1YVelocity);
-					c1.setMoveDown(true);
+					c1.setFalling(true);
 				}
 			}
 			
@@ -483,9 +501,14 @@ public class PoopPanel extends JPanel
 				}
 				if(c1.getMoveUp()) 
 				{
-					c1.setMoveLeft(false);
 					c1.setTryTilt(false);
 					c1.upTilt();
+					c1Image = c1.getCurrentPlayerImage();
+				}
+				if(c1.getMoveDown()) 
+				{
+					c1.setTryTilt(false);
+					c1.downTilt();
 					c1Image = c1.getCurrentPlayerImage();
 				}
 			}
@@ -499,14 +522,29 @@ public class PoopPanel extends JPanel
 	}
 	
 	//checks if p1 is touching ceiling or platform or wall
-	public String CoordIsTouching(int x) 
+	public int p1YCoordIsTouching(int x) 
 	{
-		if(x >= 1080)
-			return "bottom";
+		//if(x+c1.getHitbox().getB()*2 >= 1080)
+			//return 1080;
 		if(x <= 0)
-			return "top";
+		{
+			System.out.println("x\t" + x);
+			//return 0;
+		}
 		
-		return "";
+		for(RectangleHitbox h : stageHitboxes)
+		{
+			if(Math.abs(h.getK()-(x+c1.getHitbox().getB()*2)) < p1YVelocity)
+			{
+				c1.setFalling(false);
+				p1KnockingBack = false;
+				c1.setJumping(false);
+				c1.setDoubleJumping(false);
+				return x;
+			}
+		}
+		
+		return -1;
 	}
 	
 	
@@ -597,6 +635,12 @@ public class PoopPanel extends JPanel
 				c2.setMoveLeft(false);
 				c2.setTryTilt(false);
 				c2.upTilt();
+				c2Image = c2.getCurrentPlayerImage();
+			}
+			if(c2.getMoveDown()) 
+			{
+				c2.setTryTilt(false);
+				c2.downTilt();
 				c2Image = c2.getCurrentPlayerImage();
 			}
 		}
@@ -706,10 +750,6 @@ public class PoopPanel extends JPanel
 				tempYDist -= (p2YVelocity*Math.pow(Math.abs((sx+tempXDist)-ogsx), 2))/(2*p2Knockback*p2Knockback*Math.pow(cos,2));
 
 				updatePlayer2Position((int)(sx+tempXDist),(int) (ogsy+tempYDist));
-				System.out.println("y" + tempYDist);
-				System.out.println(tempXDist);
-				System.out.println(bruh);
-				System.out.println();
 				
 				p2LaunchSpeed -= 1;
 				
@@ -768,6 +808,9 @@ public class PoopPanel extends JPanel
 						c1.setDoubleJumping(true);
 					}
 					break;
+				case KeyEvent.VK_S:
+					c1.setMoveDown(true);
+					break;
 				case KeyEvent.VK_X:
 					c1.setTryTilt(true);
 					break;
@@ -783,9 +826,11 @@ public class PoopPanel extends JPanel
 					break;
 				case KeyEvent.VK_O:
 					updatePlayer2Position(sx, sy-10);
+					c2.setMoveUp(true);
 					break;
 				case KeyEvent.VK_L:
 					updatePlayer2Position(sx, sy+10);
+					c2.setMoveDown(true);
 					break;
 				case KeyEvent.VK_PERIOD:
 					c2.setTryTilt(true);
@@ -816,11 +861,20 @@ public class PoopPanel extends JPanel
 				case KeyEvent.VK_W:
 					c1.setMoveUp(false);
 					break;
+				case KeyEvent.VK_S:
+					c1.setMoveDown(false);
+					break;
 				case KeyEvent.VK_SEMICOLON:
 					c2.setMoveRight(false);
 					break;
 				case KeyEvent.VK_K:
 					c2.setMoveLeft(false);
+					break;
+				case KeyEvent.VK_O:
+					c2.setMoveUp(false);
+					break;
+				case KeyEvent.VK_L:
+					c2.setMoveDown(false);
 					break;
 				case KeyEvent.VK_X:
 					c1.setTryTilt(false);

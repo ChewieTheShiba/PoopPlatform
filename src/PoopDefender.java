@@ -7,12 +7,13 @@ import javax.swing.Timer;
 
 public class PoopDefender extends Character
 {
-	private ImageIcon specialProjectile, specialLeft, specialRight, attack3Image1, attack3Image2;
+	private ImageIcon specialProjectile, specialLeft, specialRight, attack3Image1, attack3Image2, attack4Image1, attack4Image2;
 	private RectangleHitbox specialHitbox;
 	
 	public PoopDefender()
 	{
 		tiltTime = new Timer(500, new actionListener());
+		name = "";
 		stopChecker = new Timer(20, new actionListener());
 		specialProjectiles = new ArrayList<Hitbox>();
 		currentAttack = "";
@@ -25,6 +26,7 @@ public class PoopDefender extends Character
 		attack1Hitbox = new RectangleHitbox(-100, -100, 59, 74, 10.5, 300);
 		attack2Hitbox = new RectangleHitbox(-100, -100, 59, 74, 10.5, 300);
 		attack3Hitbox = new RectangleHitbox(-100, -100, 63, 207, 5, 400);
+		attack4Hitbox = new RectangleHitbox(-100, -100, 63, 246, 7, 700);
 		specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 200);
 		
 		attack1Hitbox.setMoveLeft(true);
@@ -41,13 +43,16 @@ public class PoopDefender extends Character
 		attack3Hitbox.setMoveUp(true);
 		attack3Hitbox.setMoveRight(true);
 		attack3Hitbox.setMoveDown(true);
+
+		//makes the move only possible via spike
+		attack4Hitbox.setMoveDown(true);
 		
 		attack1Image = new ImageIcon("assets/Poop Defender/PoopDefenderLeftTilt.png");
 		attack2Image = new ImageIcon("assets/Poop Defender/PoopDefenderRightTilt.png");
 		attack3Image1 = new ImageIcon("assets/Poop Defender/PoopDefenderUpTiltFaceRight.png");
 		attack3Image2  = new ImageIcon("assets/Poop Defender/PoopDefenderUpTiltFaceLeft.png");
-		//uncomment when image is finished
-		//attack4Image = new ImageIcon("assets/Poop Defender/PoopDefenderDownTilt.png");
+		attack4Image1 = new ImageIcon("assets/Poop Defender/PoopDefenderDownTiltRight.png");
+		attack4Image2 = new ImageIcon("assets/Poop Defender/PoopDefenderDownTiltLeft.png");
 		idleRight = new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png");
 		idleLeft = new ImageIcon("assets/Poop Defender/PoopDefenderIdleLeft.png");
 		specialProjectile = new ImageIcon("assets/Poop Defender/SpecialProjectile.png");
@@ -59,6 +64,7 @@ public class PoopDefender extends Character
 	public void rightTilt()
 	{
 		//og ab is 60,121
+		attack2Hitbox.setId(name);
 		currentAttack = "rightTilt";
 		attack2Hitbox.setH(hitbox.getH()+hitbox.getA()+1);
 		attack2Hitbox.setK((hitbox.getK()+7)*-1);
@@ -70,6 +76,7 @@ public class PoopDefender extends Character
 
 	public void leftTilt()
 	{
+		attack1Hitbox.setId(name);
 		currentAttack = "leftTilt";
 		attack1Hitbox.setH(hitbox.getH()-hitbox.getA()-attack1Hitbox.getA()-1);
 		attack1Hitbox.setK((hitbox.getK()+7)*-1);
@@ -81,6 +88,7 @@ public class PoopDefender extends Character
 
 	public void upTilt()
 	{
+		attack3Hitbox.setId(name);
 		xOffPut = 76;
 		yOffPut = 158;
 		currentAttack = "upTilt";
@@ -92,7 +100,6 @@ public class PoopDefender extends Character
 			currentPlayerImage = attack3Image1;
 			tiltAttacking = true;
 			tiltTime.start();
-			stopChecker.start();
 		}
 		else
 		{
@@ -101,14 +108,33 @@ public class PoopDefender extends Character
 			currentPlayerImage = attack3Image2;
 			tiltAttacking = true;
 			tiltTime.start();
-			stopChecker.start();
 		}
 		
 	}
 
 	public void downTilt()
 	{
-		// TODO Auto-generated method stub
+		attack4Hitbox.setId(name);
+		xOffPut = 76;
+		yOffPut = 0;
+		currentAttack = "downTilt";
+		
+		if(facingRight)
+		{
+			attack4Hitbox.setH(hitbox.getH()+26);
+			attack4Hitbox.setK((hitbox.getK()-2)*-1);
+			currentPlayerImage = attack4Image1;
+			tiltAttacking = true;
+			tiltTime.start();
+		}
+		else
+		{
+			attack4Hitbox.setH(hitbox.getH()-attack4Hitbox.getA()-26);
+			attack4Hitbox.setK((hitbox.getK()-2)*-1);
+			currentPlayerImage = attack4Image2;
+			tiltAttacking = true;
+			tiltTime.start();
+		}
 		
 	}
 
@@ -153,7 +179,6 @@ public class PoopDefender extends Character
 			
 			if(source.equals(tiltTime))
 			{
-				System.out.println("stoppingtilt");
 				tiltTime.stop();
 				tiltAttacking = false;
 				attack1Hitbox.setH(-100);
@@ -162,8 +187,8 @@ public class PoopDefender extends Character
 				attack2Hitbox.setK(-100);
 				attack3Hitbox.setH(-100);
 				attack3Hitbox.setK(-100);
-				//attack4Hitbox.setH(-100);
-				//attack4Hitbox.setK(-100);
+				attack4Hitbox.setH(-100);
+				attack4Hitbox.setK(-100);
 				specialHitbox.setH(-100);
 				specialHitbox.setK(-100);
 				stopChecker.stop();
@@ -179,17 +204,15 @@ public class PoopDefender extends Character
 			
 			if(source.equals(stopChecker))
 			{
-				if(tiltAttacking && (getMoveRight() || getMoveLeft() || getMoveDown())) {
-					System.out.println("stoppingtilt");
-					if(!currentAttack.equals("upTilt"))
+				if(tiltAttacking && (getMoveRight() || getMoveLeft() || getFalling())) {
 					tiltTime.stop();
 					tiltAttacking = false;
 					attack1Hitbox.setH(-100);
 					attack1Hitbox.setK(-100);
 					attack2Hitbox.setH(-100);
 					attack2Hitbox.setK(-100);
-					//attack4Hitbox.setH(-100);
-					//attack4Hitbox.setK(-100);
+					attack4Hitbox.setH(-100);
+					attack4Hitbox.setK(-100);
 					specialHitbox.setH(-100);
 					specialHitbox.setK(-100);
 					stopChecker.stop();

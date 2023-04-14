@@ -12,7 +12,7 @@ public class Character {
     protected OvalHitbox hitbox;
     protected String name, description, attack1name, attack2name, attack3name, attack4name, specialattackname, currentAttack;
     protected double HP, Weight, attack1power, attack1knockback, attack2power, attack2knockback, attack3power, attack3knockback, attack4power, attack4knockback, specialattackpower, specialknockback;
-    protected boolean jumping, doubleJumping, facingRight, tiltAttacking, specialAttacking, tryTilt, trySpecial;
+    protected boolean jumping, doubleJumping, facingRight, tiltAttacking, specialAttacking, tryTilt, trySpecial, falling, moveDown;
     protected ImageIcon attack1Image, attack2Image, attack3Image, attack4Image, idleRight, idleLeft, currentPlayerImage;
     protected RectangleHitbox attack1Hitbox, attack2Hitbox, attack3Hitbox, attack4Hitbox;
     protected Timer tiltTime, specialTime, stopChecker;
@@ -37,39 +37,6 @@ public boolean equals(Object c)
 		return true;
 	else return false;
 }
-
-public void copy(Character c)
-{
-	this.xOffPut = c.getXOffPut();
-	this.attack1Image = c.getAttack1Image();
-	this.attack2Image = c.getAttack2Image();
-	this.attack3Image = c.getAttack3Image();
-	this.attack4Image = c.getAttack4Image();
-	this.idleRight = c.getIdleRight();
-	this.idleLeft = c.getIdleLeft();
-	this.currentPlayerImage = c.getCurrentPlayerImage();
-	this.hitbox = c.getDupeHitbox();
-	this.HP = c.getHP();
-	this.Weight = c.getWeight();
-	this.attack1power = c.getAttack1Power();
-	this.attack1knockback = c.getAttack1Knockback();
-	this.attack1name = c.getAttack1Name();
-	this.attack2power = c.getAttack2Power();
-	this.attack2knockback = c.getAttack2Knockback();
-	this.attack2name = c.getAttack2Name();
-	this.attack3power = c.getAttack3Power();
-	this.attack3knockback = c.getAttack3Knockback();
-	this.attack3name = c.getAttack3Name();
-	this.attack4power = c.getAttack4Power();
-	this.attack4knockback = c.getAttack4Knockback();
-	this.attack4name = c.getAttack4Name();
-	this.specialattackpower = c.getSpecialAttackPower();
-	this.specialknockback = c.getSpecialKnockback();
-	this.specialattackname = c.getSpecialAttackName();
-	
-}
-
-
     
 public boolean getTryTilt()
 {
@@ -170,12 +137,12 @@ public void setH(double wantedH){
     }
     
     public void setMoveDown(boolean moveDown){
-        hitbox.setMoveDown(moveDown);
+        this.moveDown = moveDown;
     }
 
     public boolean getMoveDown(){
     	
-    	return hitbox.getMoveDown();
+    	return moveDown;
     }
 
     
@@ -244,7 +211,6 @@ public void setH(double wantedH){
 
     public void setJumping(boolean jumping) {
         this.jumping = jumping;
-        hitbox.setMoveUp(jumping);
     }
 
     public Boolean getdoubleJumping() {
@@ -514,6 +480,16 @@ public void setH(double wantedH){
 	public void setSpecialProjectiles(ArrayList<Hitbox> specialProjectiles)
 	{
 		this.specialProjectiles = specialProjectiles;
+	}
+
+	public boolean getFalling()
+	{
+		return hitbox.getMoveDown();
+	}
+
+	public void setFalling(boolean falling)
+	{
+		hitbox.setMoveDown(falling);;
 	}
 
 	public void rightTilt() {System.out.println("you shouldnt be seeing this");};

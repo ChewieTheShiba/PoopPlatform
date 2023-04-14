@@ -6,33 +6,33 @@ import javax.swing.Timer;
 
 public class Stage
 {
-	private ArrayList<Hitbox> hitboxes;
+	private ArrayList<RectangleHitbox> hitboxes;
 	private ImageIcon background;
-	private ArrayList<Hitbox> pass;
-	public Stage(ImageIcon background, ArrayList<Hitbox> hitboxes, ArrayList<Hitbox> pass)
+	private ArrayList<RectangleHitbox> pass;
+	public Stage(ImageIcon background, ArrayList<RectangleHitbox> hitboxes, ArrayList<RectangleHitbox> pass)
 	{
 		this.hitboxes = hitboxes;
 		this.background = background; 
 		this.pass = pass;
 	}
 
-	public ArrayList<Hitbox> getHitboxes()
+	public ArrayList<RectangleHitbox> getHitboxes()
 	{
 		return hitboxes;
 	} 
 	
-	public ArrayList<Hitbox> getPassHB()
+	public ArrayList<RectangleHitbox> getPassHB()
 	{
 	
 		return pass; 
 	}
 
-	public void setHitboxes(ArrayList<Hitbox> hitboxes)
+	public void setHitboxes(ArrayList<RectangleHitbox> hitboxes)
 	{
 		this.hitboxes = hitboxes;
 	} 
 	
-	public void setPassHB(ArrayList<Hitbox> pass)
+	public void setPassHB(ArrayList<RectangleHitbox> pass)
 	{
 		this.pass = pass;
 	
