@@ -24,7 +24,6 @@ public class OvalHitbox extends Hitbox
 		
 		int theta = 0, thetaopp = 0, adder = 0, adderopp = 0;
 		
-		
 		if(moveRight && moveLeft && moveUp && moveDown)
 		{
 			theta = 360;
@@ -48,7 +47,7 @@ public class OvalHitbox extends Hitbox
 			thetaopp = 360;
 			adderopp = 180;
 		}
-		else if(moveDown)
+		else
 		{
 			adder = 180;
 			theta = 360;

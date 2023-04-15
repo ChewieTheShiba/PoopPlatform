@@ -400,8 +400,8 @@ public class PoopPanel extends JPanel
 				c2.setMoveRight(false);
 				c2.setJumping(false);
 				c2.setDoubleJumping(false);
-				c2.setH(300);
-				c2.setK(-1000);
+				c2.setH(900);
+				c2.setK(-200);
 				hitboxes.add(c2.attack1Hitbox);
 				hitboxes.add(c2.attack2Hitbox);
 				hitboxes.add(c2.attack3Hitbox);
@@ -424,13 +424,22 @@ public class PoopPanel extends JPanel
 			//jumping is if else is falling
 			if(c1.getJumping() || c1.getDoubleJumping())
 			{
-				if (p1YCoordIsTouching((py+ph*2-p1YVelocity)) != -1)
+				int thingy = -1;
+				int ogy = 0;
+				
+				if(c1.getFalling()) 
 				{
-					System.out.println("stop jumpinh");
+					ogy = (c1.getHitbox().getK()*-1)+c1.getHitbox().getB();
+					thingy = p1YCoordIsTouching(ogy, p1YVelocity);
+				}
+				
+				if(thingy != -1)
+				{
+					p1YVelocity = GRAVITY;
+					c1.setFalling(false);
 					c1.setJumping(false);
-					c1.setDoubleJumping(false);
-					py = p1JumpStart;
-					p1YVelocity = JUMPHEIGHT;
+					c1.setdoubleJumping(false);
+					updatePlayer1Position(px, thingy-ph*2);
 				}
 				else
 				{
@@ -451,27 +460,23 @@ public class PoopPanel extends JPanel
 			}
 			else if(!p1KnockingBack)
 			{
-				int ogy = c1.getHitbox().getK()*-1-c1.getHitbox().getB();
-				int thingy = p1YCoordIsTouching(ogy);
-				System.out.println("thingy\t" + thingy);
-				System.out.println(ogy);
+				if(p1YVelocity > 10)
+					p1YVelocity = 10;
+				else
+					p1YVelocity *= GRAVITY;
+				
+				c1.setFalling(true);
+				
+				int ogy = (c1.getHitbox().getK()*-1)+c1.getHitbox().getB();
+				int thingy = p1YCoordIsTouching(ogy, p1YVelocity);
 				if(thingy != -1)
 				{
-					System.out.println(c1.getHitbox().getK()*-1);
-					System.out.println(ogy);
 					p1YVelocity = GRAVITY;
 					c1.setFalling(false);
-					updatePlayer1Position(px, thingy);
+					updatePlayer1Position(px, thingy-ph*2);
 				}
 				else
-				{
-					if(p1YVelocity > 10)
-						p1YVelocity = 10;
-					else
-						p1YVelocity *= GRAVITY;
 					updatePlayer1Position(px, py+p1YVelocity);
-					c1.setFalling(true);
-				}
 			}
 			
 			//does while moving left or right
@@ -522,25 +527,147 @@ public class PoopPanel extends JPanel
 	}
 	
 	//checks if p1 is touching ceiling or platform or wall
-	public int p1YCoordIsTouching(int x) 
+	public int p1YCoordIsTouching(int x, int increase) 
 	{
-		//if(x+c1.getHitbox().getB()*2 >= 1080)
-			//return 1080;
-		if(x <= 0)
-		{
-			System.out.println("x\t" + x);
-			//return 0;
-		}
+		if(x >= 1080)
+			return 1080;
+		if(x-ph <= 0)
+			return 0;
+		
+		OvalHitbox t = c1.getHitbox();
+		OvalHitbox temp = new OvalHitbox(t.getH(), t.getK()*-1+Math.abs(increase)*2, t.getA(), t.getB(), t.getDamage(), t.getKB());
+		
+		temp.setMoveDown(t.getMoveDown());
+		temp.setMoveUp(t.getMoveUp());
+		temp.setMoveRight(t.getMoveRight());
+		temp.setMoveLeft(t.getMoveLeft());
 		
 		for(RectangleHitbox h : stageHitboxes)
 		{
-			if(Math.abs(h.getK()-(x+c1.getHitbox().getB()*2)) < p1YVelocity)
+			double[] d = temp.intersects(h);
+			
+			if(d[0] != -1)
 			{
-				c1.setFalling(false);
-				p1KnockingBack = false;
-				c1.setJumping(false);
-				c1.setDoubleJumping(false);
-				return x;
+				if(c1.getFalling() && t.getK()*-1+t.getB() <= h.getK()) 
+				{
+					c1.setFalling(false);
+					p1KnockingBack = false;
+					c1.setJumping(false);
+					c1.setDoubleJumping(false);
+					return h.getK();
+				}
+				else if(t.getK()*-1+t.getB() >= h.getK())
+				{
+					if(c1.getMoveLeft() && t.getK()*-1 <= h.getK()) 
+					{
+						c1.setFalling(false);
+						p1KnockingBack = false;
+						c1.setJumping(false);
+						c1.setDoubleJumping(false);
+						return h.getK();
+					}
+					else if(c1.getMoveLeft())
+					{
+						c1.setStopMoving(true);
+						updatePlayer1Position(px-pw, py);
+					}
+					if(c1.getMoveRight() && t.getK()*-1 <= h.getK()) 
+					{
+						c1.setFalling(false);
+						p1KnockingBack = false;
+						c1.setJumping(false);
+						c1.setDoubleJumping(false);
+						return h.getK();
+					}
+					else if(c1.getMoveRight())
+					{
+						c1.setStopMoving(true);
+						updatePlayer1Position(px+pw, py);
+					}	
+					if(t.getMoveUp()) 
+					{
+						c1.setMoveUp(false);
+						updatePlayer1Position(px, py+ph);
+						c1.setStopMoving(true);
+					}
+					p1KnockingBack = false;
+					p1YVelocity = GRAVITY;
+					c1.setFalling(true);
+					return t.getK()*-1+t.getB();
+				}
+			}
+		}
+		
+		return -1;
+	}
+	
+	public int p2YCoordIsTouching(int x, int increase) 
+	{
+		if(x >= 1080)
+			return 1080;
+		if(x-sh <= 0)
+			return 0;
+		
+		OvalHitbox t = c2.getHitbox();
+		OvalHitbox temp = new OvalHitbox(t.getH(), t.getK()*-1+Math.abs(increase)*2, t.getA(), t.getB(), t.getDamage(), t.getKB());
+		temp.setMoveDown(t.getMoveDown());
+		temp.setMoveUp(t.getMoveUp());
+		temp.setMoveRight(t.getMoveRight());
+		temp.setMoveLeft(t.getMoveLeft());
+		
+		for(RectangleHitbox h : stageHitboxes)
+		{
+			double[] d = temp.intersects(h);
+			
+			if(d[0] != -1)
+			{
+				if(c2.getFalling() && t.getK()*-1+t.getB() <= h.getK()) 
+				{
+					c2.setFalling(false);
+					p2KnockingBack = false;
+					c2.setJumping(false);
+					c2.setDoubleJumping(false);
+					return h.getK();
+				}
+				else if(t.getK()*-1+t.getB() >= h.getK())
+				{
+					if(c2.getMoveLeft() && t.getK()*-1 <= h.getK()) 
+					{
+						c2.setFalling(false);
+						p2KnockingBack = false;
+						c2.setJumping(false);
+						c2.setDoubleJumping(false);
+						return h.getK();
+					}
+					else if(c2.getMoveLeft())
+					{
+						c2.setStopMoving(true);
+						updatePlayer1Position(px-pw, py);
+					}
+					if(c2.getMoveRight() && t.getK()*-1 <= h.getK()) 
+					{
+						c2.setFalling(false);
+						p2KnockingBack = false;
+						c2.setJumping(false);
+						c2.setDoubleJumping(false);
+						return h.getK();
+					}
+					else if(c2.getMoveRight())
+					{
+						c2.setStopMoving(true);
+						updatePlayer1Position(px+pw, py);
+					}	
+					if(t.getMoveUp()) 
+					{
+						c2.setMoveUp(false);
+						updatePlayer1Position(px, py+ph);
+						c2.setStopMoving(true);
+					}
+					p2KnockingBack = false;
+					p2YVelocity = GRAVITY;
+					c2.setFalling(true);
+					return t.getK()*-1+t.getB();
+				}
 			}
 		}
 		
@@ -606,56 +733,61 @@ public class PoopPanel extends JPanel
 	public void updateP2()
 	{
 		if(c2.getJumping() || c2.getDoubleJumping())
+		{
+			int thingy = -1;
+			int ogy = 0;
+			
+			if(c2.getFalling()) 
 			{
-				if (p2YCoordIsTouching((sy+sh*2-p2YVelocity)) != -1)
+				ogy = (c2.getHitbox().getK()*-1)+c2.getHitbox().getB();
+				thingy = p2YCoordIsTouching(ogy, p1YVelocity);
+			}
+			
+			if(thingy != -1)
+			{
+				p2YVelocity = GRAVITY;
+				c2.setFalling(false);
+				c2.setJumping(false);
+				c2.setdoubleJumping(false);
+				updatePlayer2Position(sx, thingy-sh*2);
+			}
+			else
+			{
+				updatePlayer2Position(sx, sy-p2YVelocity);
+				p2YVelocity -= GRAVITY;
+				
+				if(p2YVelocity < 0)
 				{
-					System.out.println("stop jumpinh");
-					c2.setJumping(false);
-					c2.setDoubleJumping(false);
-					sy = p2JumpStart;
-					p2YVelocity = JUMPHEIGHT;
-				}
-				else
-				{
-					updatePlayer2Position(sx, sy-p2YVelocity);
-					p2YVelocity -= GRAVITY;
-					
-					if(p2YVelocity < 0)
-					{
-						c2.setFalling(true);
-						c2.setMoveUp(false);
-					}
-					
-					if(p2YVelocity > JUMPHEIGHT)
-						p2YVelocity = JUMPHEIGHT;
+					c2.setFalling(true);
+					c2.setMoveUp(false);
 				}
 				
-					
+				if(p2YVelocity > JUMPHEIGHT)
+					p2YVelocity = JUMPHEIGHT;
 			}
-			else if(!p2KnockingBack)
+			
+				
+		}
+		else if(!p2KnockingBack)
+		{
+			if(p2YVelocity > 10)
+				p2YVelocity = 10;
+			else
+				p2YVelocity *= GRAVITY;
+			
+			c2.setFalling(true);
+			
+			int ogy = (c2.getHitbox().getK()*-1)+c2.getHitbox().getB();
+			int thingy = p2YCoordIsTouching(ogy, p2YVelocity);
+			if(thingy != -1)
 			{
-				int ogy = c2.getHitbox().getK()*-1-c2.getHitbox().getB();
-				int thingy = p2YCoordIsTouching(ogy);
-				System.out.println("thingy\t" + thingy);
-				System.out.println(ogy);
-				if(thingy != -1)
-				{
-					System.out.println(c2.getHitbox().getK()*-1);
-					System.out.println(ogy);
-					p2YVelocity = GRAVITY;
-					c2.setFalling(false);
-					updatePlayer2Position(sx, thingy);
-				}
-				else
-				{
-					if(p2YVelocity > 10)
-						p2YVelocity = 10;
-					else
-						p2YVelocity *= GRAVITY;
-					updatePlayer2Position(sx, sy+p2YVelocity);
-					c2.setFalling(true);
-				}
+				p2YVelocity = GRAVITY;
+				c2.setFalling(false);
+				updatePlayer2Position(sx, thingy-sh*2);
 			}
+			else
+				updatePlayer2Position(sx, sy+p2YVelocity);
+		}
 			
 			//does while moving left or right
 			if(c2.getMoveRight() && !c2.getTryTilt())
@@ -747,6 +879,7 @@ public class PoopPanel extends JPanel
 				double tempXDist = p1LaunchSpeed*p1LaunchDirection;
 				double tan = Math.tan(p1KnockbackTheta);
 				double cos = Math.cos(p1KnockbackTheta);
+				c1.setFalling(true);
 				
 				//limiter so they dont get juggled into outer space
 				if (tan > 4)
@@ -765,23 +898,42 @@ public class PoopPanel extends JPanel
 				double tempYDist = Math.abs((px+tempXDist)-ogpx)*tan;
 				tempYDist -= (p1YVelocity*Math.pow(Math.abs((px+tempXDist)-ogpx), 2))/(2*p1Knockback*p1Knockback*Math.pow(cos,2));
 
-				updatePlayer1Position((int)(px+tempXDist),(int) (ogpy+tempYDist));
-				
-				p1LaunchSpeed -= 1;
-				
-				if(p1LaunchSpeed <= 0)
+				int ogy = (c1.getHitbox().getK()*-1)+c1.getHitbox().getB();
+				int thingy = p1YCoordIsTouching(ogy, (int)tempYDist);
+				if(thingy != -1)
+				{	
+					updatePlayer1Position((int)(px+tempXDist), thingy-ph*2);
+					
+					p1LaunchSpeed -= 1;
+					
+					if(p1LaunchSpeed <= 0)
+					{
+						p1KnockingBack = false;
+						p1Knockbacker.stop();
+						c1.setFalling(true);
+					}
+				}
+				else
 				{
-					p1KnockingBack = false;
-					p1Knockbacker.stop();
+					updatePlayer1Position((int)(px+tempXDist),(int) (ogpy+tempYDist));
+					
+					p1LaunchSpeed -= 1;
+					
+					if(p1LaunchSpeed <= 0)
+					{
+						p1KnockingBack = false;
+						p1Knockbacker.stop();
+						c1.setFalling(true);
+					}
 				}
 			}
 			
 			if(source.equals(p2Knockbacker))
 			{
-				
 				double tempXDist = p2LaunchSpeed*p2LaunchDirection;
 				double tan = Math.tan(p2KnockbackTheta);
 				double cos = Math.cos(p2KnockbackTheta);
+				c2.setFalling(true);
 				
 				//limiter so they dont get juggled into outer space
 				if (tan > 4)
@@ -800,14 +952,33 @@ public class PoopPanel extends JPanel
 				double tempYDist = Math.abs((sx+tempXDist)-ogsx)*tan;
 				tempYDist -= (p2YVelocity*Math.pow(Math.abs((sx+tempXDist)-ogsx), 2))/(2*p2Knockback*p2Knockback*Math.pow(cos,2));
 
-				updatePlayer2Position((int)(sx+tempXDist),(int) (ogsy+tempYDist));
-				
-				p2LaunchSpeed -= 1;
-				
-				if(p2LaunchSpeed <= 0)
+				int ogy = (c2.getHitbox().getK()*-1)+c2.getHitbox().getB();
+				int thingy = p2YCoordIsTouching(ogy, (int)tempYDist);
+				if(thingy != -1)
 				{
-					p2KnockingBack = false;
-					p2Knockbacker.stop();
+					updatePlayer2Position((int)(sx+tempXDist), thingy-sh*2);
+					
+					p2LaunchSpeed -= 1;
+					
+					if(p2LaunchSpeed <= 0)
+					{
+						p2KnockingBack = false;
+						p2Knockbacker.stop();
+						c2.setFalling(true);
+					}
+				}
+				else
+				{
+					updatePlayer2Position((int)(sx+tempXDist),(int) (ogsy+tempYDist));
+					
+					p2LaunchSpeed -= 1;
+					
+					if(p2LaunchSpeed <= 0)
+					{
+						p2KnockingBack = false;
+						p2Knockbacker.stop();
+						c2.setFalling(true);
+					}
 				}
 			}
 			
@@ -833,14 +1004,14 @@ public class PoopPanel extends JPanel
 				{
 				case KeyEvent.VK_A:
 					c1.setMoveLeft(true);
-					if(p1KnockingBack)
+					if(p1KnockingBack || c1.getStopMoving())
 						p1MoveSpeed = 0;
 					else
 						p1MoveSpeed = 10;
 					break;
 				case KeyEvent.VK_D:
 					c1.setMoveRight(true);
-					if(p1KnockingBack)
+					if(p1KnockingBack || c1.getStopMoving())
 						p1MoveSpeed = 0;
 					else
 						p1MoveSpeed = 10;
@@ -871,13 +1042,31 @@ public class PoopPanel extends JPanel
 				
 				case KeyEvent.VK_SEMICOLON:
 					c2.setMoveRight(true);
+					if(p2KnockingBack || c2.getStopMoving())
+						p2MoveSpeed = 0;
+					else
+						p2MoveSpeed = 10;
 					break;
 				case KeyEvent.VK_K:
 					c2.setMoveLeft(true);
+					if(p2KnockingBack || c2.getStopMoving())
+						p2MoveSpeed = 0;
+					else
+						p2MoveSpeed = 10;
 					break;
 				case KeyEvent.VK_O:
-					updatePlayer2Position(sx, sy-10);
 					c2.setMoveUp(true);
+					if(!c2.getJumping() && !c2.getTryTilt())
+					{
+						p2JumpStart = sy;
+						p2YVelocity = JUMPHEIGHT;
+						c2.setJumping(true);
+					}
+					else if(c2.getJumping() && !c2.getDoubleJumping() && !c2.getTryTilt())
+					{
+						p2YVelocity = JUMPHEIGHT;
+						c2.setDoubleJumping(true);
+					}
 					break;
 				case KeyEvent.VK_L:
 					updatePlayer2Position(sx, sy+10);

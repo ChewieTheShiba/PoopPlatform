@@ -12,7 +12,7 @@ public class Character {
     protected OvalHitbox hitbox;
     protected String name, description, attack1name, attack2name, attack3name, attack4name, specialattackname, currentAttack;
     protected double HP, Weight, attack1power, attack1knockback, attack2power, attack2knockback, attack3power, attack3knockback, attack4power, attack4knockback, specialattackpower, specialknockback;
-    protected boolean jumping, doubleJumping, facingRight, tiltAttacking, specialAttacking, tryTilt, trySpecial, falling, moveDown;
+    protected boolean jumping, doubleJumping, facingRight, tiltAttacking, specialAttacking, tryTilt, trySpecial, falling, moveDown, stopMoving;
     protected ImageIcon attack1Image, attack2Image, attack3Image, attack4Image, idleRight, idleLeft, currentPlayerImage;
     protected RectangleHitbox attack1Hitbox, attack2Hitbox, attack3Hitbox, attack4Hitbox;
     protected Timer tiltTime, specialTime, stopChecker;
@@ -490,6 +490,16 @@ public void setH(double wantedH){
 	public void setFalling(boolean falling)
 	{
 		hitbox.setMoveDown(falling);;
+	}
+
+	public boolean getStopMoving()
+	{
+		return stopMoving;
+	}
+
+	public void setStopMoving(boolean stopMoving)
+	{
+		this.stopMoving = stopMoving;
 	}
 
 	public void rightTilt() {System.out.println("you shouldnt be seeing this");};

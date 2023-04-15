@@ -124,6 +124,10 @@ public abstract class Hitbox {
 	{
 		KB = kB;
 	}
+	public String toString()
+	{
+		return "H:\t" + getH() + "\nK:\t" + getK() + "\nA:\t" + getA() + "\nB:\t" + getB();
+	}
 	
   
 }
