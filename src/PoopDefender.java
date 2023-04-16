@@ -13,8 +13,8 @@ public class PoopDefender extends Character
 	public PoopDefender()
 	{
 		tiltTime = new Timer(500, new actionListener());
-		lives = 3;
 		stopMoving = false;
+		Weight = 100;
 		name = "";
 		stopChecker = new Timer(20, new actionListener());
 		specialProjectiles = new ArrayList<Hitbox>();
