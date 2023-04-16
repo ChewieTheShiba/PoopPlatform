@@ -26,9 +26,9 @@ public class PoopDefender extends Character
 		hitbox = new OvalHitbox(60, 121, 60, 121, 00, 10);
 		attack1Hitbox = new RectangleHitbox(-100, -100, 59, 74, 10.5, 300);
 		attack2Hitbox = new RectangleHitbox(-100, -100, 59, 74, 10.5, 300);
-		attack3Hitbox = new RectangleHitbox(-100, -100, 63, 207, 5, 400);
-		attack4Hitbox = new RectangleHitbox(-100, -100, 63, 246, 7, 700);
-		specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 200);
+		attack3Hitbox = new RectangleHitbox(-100, -100, 63, 207, 5, 350);
+		attack4Hitbox = new RectangleHitbox(-100, -100, 63, 246, 7, 500);
+		specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 300);
 		
 		attack1Hitbox.setMoveLeft(true);
 		attack1Hitbox.setMoveUp(true);
@@ -143,7 +143,7 @@ public class PoopDefender extends Character
 	{
 		if(facingRight)
 		{
-			specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 200);
+			specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 300);
 			specialHitbox.setId("Projectile");
 			specialHitbox.setH(hitbox.getH()+hitbox.getA()+36);
 			specialHitbox.setK((hitbox.getK()+3)*-1);
@@ -154,7 +154,7 @@ public class PoopDefender extends Character
 		}
 		else
 		{
-			specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 200);
+			specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 300);
 			specialHitbox.setId("Projectile");
 			specialHitbox.setH(hitbox.getH()-hitbox.getA()-52);
 			specialHitbox.setK((hitbox.getK()+3)*-1);
