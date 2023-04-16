@@ -154,6 +154,10 @@ public class PoopPanel extends JPanel
 			g.setColor(Color.black);
 			g.drawOval(px, py, pw * 2, ph * 2);
 			g.drawOval(sx, sy, sw * 2, sh * 2);
+			g.setFont(new Font("Comic Sans", Font.PLAIN, 30));
+			g.drawString("Player 1 Lives: " + c1.getLives(), 400, 1050);
+			g.drawString("Player 2 Lives: " + c2.getLives(), 1520, 1050);
+			
 
 			if (c1.getAttack4Hitbox() != null)
 			{
@@ -547,9 +551,19 @@ public class PoopPanel extends JPanel
 		
 		if(c1.getHitbox().getK()*-1-c1.getHitbox().getB() >= 1080 || c1.getHitbox().getK()*-1+c1.getHitbox().getB() <= 0 || c1.getHitbox().getH()+c1.getHitbox().getA() <= 0|| c1.getHitbox().getH()-c1.getHitbox().getA() >= 1920)
 		{
-			started = false;
-			readyToPlay = true;
-			startUpWait.start();
+			if (c1.getLives() == 1)
+			{
+				started = false;
+				readyToPlay = true;
+				startUpWait.start();
+			}
+			else
+			{
+				c1.setLives(c1.getLives()-1);
+				c1.setH(700);
+				c1.setK(-200);
+			}
+			
 		}
 	}
 
@@ -878,9 +892,18 @@ public class PoopPanel extends JPanel
 		
 		if(c2.getHitbox().getK()*-1-c2.getHitbox().getB() >= 1080 || c2.getHitbox().getK()*-1+c2.getHitbox().getB() <= 0 || c2.getHitbox().getH()+c2.getHitbox().getA() <= 0|| c2.getHitbox().getH()-c2.getHitbox().getA() >= 1920)
 		{
-			started = false;
-			readyToPlay = true;
-			startUpWait.start();
+			if (c2.getLives() == 1)
+			{
+				started = false;
+				readyToPlay = true;
+				startUpWait.start();
+			}
+			else
+			{
+				c2.setLives(c2.getLives()-1);
+				c2.setH(900);
+				c2.setK(-200);
+			}
 		}
 	}
 
@@ -1135,7 +1158,6 @@ public class PoopPanel extends JPanel
 					}
 					break;
 				case KeyEvent.VK_L:
-					updatePlayer2Position(sx, sy + 10);
 					c2.setMoveDown(true);
 					break;
 				case KeyEvent.VK_PERIOD:

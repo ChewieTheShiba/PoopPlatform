@@ -16,7 +16,7 @@ public class Character {
     protected ImageIcon attack1Image, attack2Image, attack3Image, attack4Image, idleRight, idleLeft, currentPlayerImage;
     protected RectangleHitbox attack1Hitbox, attack2Hitbox, attack3Hitbox, attack4Hitbox;
     protected Timer tiltTime, specialTime, stopChecker;
-    protected int xOffPut, yOffPut;
+    protected int xOffPut, yOffPut, lives;
     protected ArrayList<Hitbox> specialProjectiles;
     
     //For Charlie
@@ -59,6 +59,16 @@ public void setTrySpecial(boolean trySpecial)
 }
 
 
+
+public int getLives()
+{
+	return lives;
+}
+
+public void setLives(int lives)
+{
+	this.lives = lives;
+}
 
 public int getXOffPut()
 {
