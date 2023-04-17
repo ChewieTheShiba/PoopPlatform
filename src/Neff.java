@@ -5,13 +5,13 @@ import javax.swing.*;
 import java.util.*;
 import javax.swing.Timer;
 
-public class Neff extends Character
+public class Neff extends Character 
 {
 	
 	private ImageIcon specialProjectileLeft, specialProjectileRight, specialLeft, specialRight;
 	private RectangleHitbox specialHitbox;
 
-	public Neff()
+	public Neff () throws IOException
 	{
 		hitbox = new OvalHitbox(8, 19, 8, 19, 0, 10);
 		tiltTime = new Timer(500, new actionListener());
@@ -50,7 +50,7 @@ public class Neff extends Character
 		//makes the move only possible via spike
 		attack4Hitbox.setMoveDown(true);
 		
-		attack1Image = new ImageIcon("assets/Neff/NeffLeftTilt.png");
+		attack1Image = new ImageIcon(ImageIO.read(getClass().getResource("NeffLeftTilt.png")));
 		attack2Image = new ImageIcon("assets/Neff/NeffRightTilt.png");
 		attack3Image = new ImageIcon("assets/Neff/NeffUpTilt.png");
 		attack4Image = new ImageIcon("assets/Neff/NeffDownTilt.png");
