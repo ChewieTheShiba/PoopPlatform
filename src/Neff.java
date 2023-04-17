@@ -51,12 +51,12 @@ public class Neff extends Character
 		attack4Hitbox.setMoveDown(true);
 		
 		attack1Image = new ImageIcon(ImageIO.read(getClass().getResource("NeffLeftTilt.png")));
-		attack2Image = new ImageIcon("assets/Neff/NeffRightTilt.png");
-		attack3Image = new ImageIcon("assets/Neff/NeffUpTilt.png");
-		attack4Image = new ImageIcon("assets/Neff/NeffDownTilt.png");
-		idleRight = new ImageIcon("assets/Neff/NeffIdleLeft.png");
-		idleLeft = new ImageIcon("assets/Neff/NeffIdleRight.png");
-		specialProjectileRight = new ImageIcon("assets/Neff/HighlanderRight.png");
+		attack2Image = new ImageIcon(ImageIO.read(getClass().getResource("NeffRigtTilt.png")));
+		attack3Image = new ImageIcon(ImageIO.read(getClass().getResource("NeffUpTilt.png")));
+		attack4Image = new ImageIcon(ImageIO.read(getClass().getResource("NeffDownTilt.png")));
+		idleRight = new ImageIcon(ImageIO.read(getClass().getResource("NeffIdleRight.png")));
+		idleLeft = new ImageIcon(ImageIO.read(getClass().getResource("NeffIdleLeft.png")));
+		specialProjectileRight = new ImageIcon(ImageIO.read(getClass().getResource("HighlanderRight")));
 		specialProjectileLeft = new ImageIcon("assets/Neff/HighlanderLeft.png");
 		specialRight = new ImageIcon("assets/Neff/NeffIdleRight.png");
 		specialLeft = new ImageIcon("assets/Neff/NeffIdleLeft.png");
