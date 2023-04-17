@@ -145,7 +145,7 @@ public class PoopDefender extends Character
 		if(facingRight)
 		{
 			specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 300);
-			specialHitbox.setId("Projectile");
+			specialHitbox.setId("PoopProjectile");
 			specialHitbox.setH(hitbox.getH()+hitbox.getA()+36);
 			specialHitbox.setK((hitbox.getK()+3)*-1);
 			specialHitbox.setMoveRight(true);
@@ -156,7 +156,7 @@ public class PoopDefender extends Character
 		else
 		{
 			specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 300);
-			specialHitbox.setId("Projectile");
+			specialHitbox.setId("PoopProjectile");
 			specialHitbox.setH(hitbox.getH()-hitbox.getA()-52);
 			specialHitbox.setK((hitbox.getK()+3)*-1);
 			specialHitbox.setMoveLeft(true);

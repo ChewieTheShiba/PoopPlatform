@@ -8,7 +8,7 @@ import javax.swing.Timer;
 public class Neff extends Character
 {
 	
-	private ImageIcon specialProjectile, specialLeft, specialRight, attack3Image1, attack3Image2, attack4Image1, attack4Image2;
+	private ImageIcon specialProjectileLeft, specialProjectileRight, specialLeft, specialRight;
 	private RectangleHitbox specialHitbox;
 
 	public Neff()
@@ -28,9 +28,9 @@ public class Neff extends Character
 		tiltAttacking = false;
 		attack1Hitbox = new RectangleHitbox(-100, -100, 11, 2, 10.5, 300);
 		attack2Hitbox = new RectangleHitbox(-100, -100, 11, 2, 10.5, 300);
-		attack3Hitbox = new RectangleHitbox(-100, -100, 63, 207, 5, 350);
-		attack4Hitbox = new RectangleHitbox(-100, -100, 63, 246, 7, 500);
-		specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 300);
+		attack3Hitbox = new RectangleHitbox(-100, -100, 20, 4, 5, 200);
+		attack4Hitbox = new RectangleHitbox(-100, -100, 20, 4, 7, 200);
+		specialHitbox = new RectangleHitbox(-100, -100, 64, 32, 3.5, 300);
 		
 		attack1Hitbox.setMoveLeft(true);
 		attack1Hitbox.setMoveUp(true);
@@ -52,15 +52,14 @@ public class Neff extends Character
 		
 		attack1Image = new ImageIcon("assets/Neff/NeffLeftTilt.png");
 		attack2Image = new ImageIcon("assets/Neff/NeffRightTilt.png");
-		attack3Image1 = new ImageIcon("assets/Poop Defender/PoopDefenderUpTiltFaceRight.png");
-		attack3Image2  = new ImageIcon("assets/Poop Defender/PoopDefenderUpTiltFaceLeft.png");
-		attack4Image1 = new ImageIcon("assets/Poop Defender/PoopDefenderDownTiltRight.png");
-		attack4Image2 = new ImageIcon("assets/Poop Defender/PoopDefenderDownTiltLeft.png");
+		attack3Image = new ImageIcon("assets/Neff/NeffUpTilt.png");
+		attack4Image = new ImageIcon("assets/Neff/NeffDownTilt.png");
 		idleRight = new ImageIcon("assets/Neff/NeffIdleLeft.png");
 		idleLeft = new ImageIcon("assets/Neff/NeffIdleRight.png");
-		specialProjectile = new ImageIcon("assets/Poop Defender/SpecialProjectile.png");
-		specialRight = new ImageIcon("assets/Poop Defender/PoopDefenderSpecialRight.png");
-		specialLeft = new ImageIcon("assets/Poop Defender/PoopDefenderSpecialLeft.png");
+		specialProjectileRight = new ImageIcon("assets/Neff/HighlanderRight.png");
+		specialProjectileLeft = new ImageIcon("assets/Neff/HighlanderLeft.png");
+		specialRight = new ImageIcon("assets/Neff/NeffIdleRight.png");
+		specialLeft = new ImageIcon("assets/Neff/NeffIdleLeft.png");
 		currentPlayerImage = idleRight;
 	}
 	
@@ -92,52 +91,26 @@ public class Neff extends Character
 	public void upTilt()
 	{
 		attack3Hitbox.setId(name);
-		xOffPut = 76;
-		yOffPut = 158;
 		currentAttack = "upTilt";
 		
-		if(facingRight)
-		{
-			attack3Hitbox.setH(hitbox.getH()+hitbox.getA()-22);
-			attack3Hitbox.setK((hitbox.getK()+attack3Hitbox.getB()-22)*-1);
-			currentPlayerImage = attack3Image1;
+		attack4Hitbox.setH(hitbox.getH()+5);
+		attack4Hitbox.setK((hitbox.getK()-9)*-1);
+			currentPlayerImage = attack3Image;
 			tiltAttacking = true;
 			tiltTime.start();
-		}
-		else
-		{
-			attack3Hitbox.setH(hitbox.getH()-hitbox.getA()-40);
-			attack3Hitbox.setK((hitbox.getK()+attack3Hitbox.getB()-22)*-1);
-			currentPlayerImage = attack3Image2;
-			tiltAttacking = true;
-			tiltTime.start();
-		}
 		
 	}
 
 	public void downTilt()
 	{
 		attack4Hitbox.setId(name);
-		xOffPut = 76;
-		yOffPut = 0;
 		currentAttack = "downTilt";
-		
-		if(facingRight)
-		{
-			attack4Hitbox.setH(hitbox.getH()+26);
-			attack4Hitbox.setK((hitbox.getK()-2)*-1);
-			currentPlayerImage = attack4Image1;
+			
+		attack3Hitbox.setH(hitbox.getH()+hitbox.getA()-12);
+		attack3Hitbox.setK((hitbox.getK()+attack3Hitbox.getB()-9)*-1);
+			currentPlayerImage = attack4Image;
 			tiltAttacking = true;
 			tiltTime.start();
-		}
-		else
-		{
-			attack4Hitbox.setH(hitbox.getH()-attack4Hitbox.getA()-26);
-			attack4Hitbox.setK((hitbox.getK()-2)*-1);
-			currentPlayerImage = attack4Image2;
-			tiltAttacking = true;
-			tiltTime.start();
-		}
 		
 	}
 
@@ -145,10 +118,10 @@ public class Neff extends Character
 	{
 		if(facingRight)
 		{
-			specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 300);
-			specialHitbox.setId("Projectile");
-			specialHitbox.setH(hitbox.getH()+hitbox.getA()+36);
-			specialHitbox.setK((hitbox.getK()+3)*-1);
+			specialHitbox = new RectangleHitbox(-100, -100, 64, 32, 3.5, 300);
+			specialHitbox.setId("HighProjectileRight");
+			specialHitbox.setH(hitbox.getH()+hitbox.getA()+16);
+			specialHitbox.setK((hitbox.getK()+30)*-1);
 			specialHitbox.setMoveRight(true);
 			specialProjectiles.add(specialHitbox);
 			currentPlayerImage = specialRight;
@@ -156,10 +129,10 @@ public class Neff extends Character
 		}
 		else
 		{
-			specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 300);
-			specialHitbox.setId("Projectile");
-			specialHitbox.setH(hitbox.getH()-hitbox.getA()-52);
-			specialHitbox.setK((hitbox.getK()+3)*-1);
+			specialHitbox = new RectangleHitbox(-100, -100, 64, 32, 3.5, 300);
+			specialHitbox.setId("HighProjectileLeft");
+			specialHitbox.setH(hitbox.getH()-hitbox.getA()-60);
+			specialHitbox.setK((hitbox.getK()+30)*-1);
 			specialHitbox.setMoveLeft(true);
 			specialProjectiles.add(specialHitbox);
 			currentPlayerImage = specialLeft;

@@ -14,7 +14,7 @@ public class PoopPanel extends JPanel
 			p1SelectY, p2SelectX, p2SelectY, p1Thingy, p2Thingy, c1Lives, c2Lives;
 	private double p1Knockback, p2Knockback, p1LaunchSpeed, p2LaunchSpeed, p1EndXTraj, p2EndXTraj, p1KnockbackTheta,
 			p2KnockbackTheta;
-	private ImageIcon startUpAnimation, startUpScreen, c1Image, c2Image, projectile;
+	private ImageIcon startUpAnimation, startUpScreen, c1Image, c2Image, projectile, projectileLeft, projectileRight;
 	private Timer startUpWait, ticker, p1Knockbacker, p2Knockbacker;
 	private boolean started, gettingReadyToPlay, readyToPlay, p1KnockingBack, p2KnockingBack, stageSelectReady,
 			characterSelectReady, p1StageSelected, p2StageSelected, p1CharacterSelected, p2CharacterSelected,
@@ -78,12 +78,6 @@ public class PoopPanel extends JPanel
 		p2Knockbacker = new Timer(20, new actionListener());
 		JUMPHEIGHT = 20;
 
-		// sets up the object for each character you can select
-		/*
-		 * PoopDefender = new PoopDefender(); Neff = new Neff(); Kuma = new Kuma(); Mob
-		 * = new Mob();
-		 */
-
 		characterSelect = new Character[2][2];
 		stageSelect = new Stage[2];
 
@@ -102,6 +96,9 @@ public class PoopPanel extends JPanel
 		c1 = new Character();
 		c2 = new Character();
 		projectile = new ImageIcon("assets/Poop Defender/SpecialProjectile.png");
+		projectileLeft = new ImageIcon("assets/Neff/HighlanderLeft.png");
+		projectileRight = new ImageIcon("assets/Neff/HighlanderRight.png");
+		
 
 		//Sets up hitboxes for battlefields
 		ArrayList<RectangleHitbox> Battlefields = new ArrayList<RectangleHitbox>();
@@ -162,8 +159,6 @@ public class PoopPanel extends JPanel
 			ticker.start();
 			// all drawings below here:
 			g.setColor(Color.black);
-			g.drawOval(px, py, pw * 2, ph * 2);
-			g.drawOval(sx, sy, sw * 2, sh * 2);
 			g.setFont(new Font("Comic Sans", Font.PLAIN, 30));
 			g.drawString("Player 1 Lives: " + c1Lives, 200, 1050);
 			g.drawString("Player 2 Lives: " + c2Lives, 1520, 1050);
@@ -180,8 +175,15 @@ public class PoopPanel extends JPanel
 				
 				Hitbox h = hitboxes.get(i);
 
-				if (h != null && h.getId().equals("Projectile"))
+				if (h != null && h.getId().equals("PoopProjectile"))
 					projectile.paintIcon(this, g, h.getH(), h.getK());
+				if (h != null && h.getId().equals("HighProjectileLeft"))
+					projectileLeft.paintIcon(this, g, h.getH(), h.getK());
+				if (h != null && h.getId().equals("HighProjectileRight"))
+				{
+					projectileRight.paintIcon(this, g, h.getH(), h.getK());
+					System.out.println(h.getH());
+				}
 
 				if (h != null && !h.equals(c1.getHitbox()) && !h.getId().equals((c1.getName())))
 				{
@@ -194,11 +196,16 @@ public class PoopPanel extends JPanel
 					p2Intersection = h.intersects(c2.getHitbox());
 					p2OppIntersection = h.getOppositeIntersection();
 				}
+				
 
 				if (p1Intersection[0] != -1 && h.getDamage() != 0 && !h.getId().equals("Player 1"))
 				{
-					if(h.getId().equals("Projectile"))
+
+					if((h.getId()).equals("PoopProjectile") || (h.getId()).equals("HighProjectileLeft") || (h.getId()).equals("HighProjectileRight"))
+					{
 						toDelete.add(h);
+						System.out.println(h.getId());
+					}
 					
 					System.out.println(h.getId());
 					
