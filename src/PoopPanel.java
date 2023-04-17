@@ -23,8 +23,8 @@ public class PoopPanel extends JPanel
 	private Character c1, c2;
 	private final Character PoopDefender, Neff, Kuma, Mob;
 	private final Character[][] characterSelect;
-	private final Stage[][] stageSelect;
-	private Stage stageSelected, Battlefield;
+	private final Stage[]stageSelect;
+	private Stage stageSelected, Battlefield, Dreamland;
 	private ArrayList<Hitbox> hitboxes;
 	private ArrayList<RectangleHitbox> stageHitboxes;
 	private ArrayList<Hitbox> toDelete;
@@ -85,7 +85,7 @@ public class PoopPanel extends JPanel
 		 */
 
 		characterSelect = new Character[2][2];
-		stageSelect = new Stage[2][2];
+		stageSelect = new Stage[2];
 
 		// temporary instansiations
 		PoopDefender = new PoopDefender();
@@ -110,13 +110,20 @@ public class PoopPanel extends JPanel
 		Battlefields.add(new RectangleHitbox(824, 155, 286, 32, 0, 0));
 		Battlefields.add(new RectangleHitbox(1133, 328, 286, 32, 0, 0));
 		
+		ArrayList<RectangleHitbox> Dreamlands = new ArrayList<RectangleHitbox>();
+		Dreamlands.add(new RectangleHitbox(463, 817, 998, 263, 0, 0));
+		Dreamlands.add(new RectangleHitbox(572, 596, 200, 32, 0, 0));
+		Dreamlands.add(new RectangleHitbox(839, 449, 200, 32, 0, 0));
+		Dreamlands.add(new RectangleHitbox(1157, 597, 200, 32, 0, 0));
+		
 		Battlefield = new Stage(new ImageIcon("assets/Battlefield.png"), Battlefields);
+		
+		Dreamland = new Stage(new ImageIcon("assets/Dreamland.png"), Dreamlands);
+		
 		stageHitboxes = new ArrayList<RectangleHitbox>();
 		
-		stageSelect[0][0] = Battlefield;
-		stageSelect[0][1] = Battlefield;
-		stageSelect[1][0] = Battlefield;
-		stageSelect[1][1] = Battlefield;
+		stageSelect[0] = Battlefield;
+		stageSelect[1] = Dreamland;
 		
 		toDelete = new ArrayList<Hitbox>();
 	}
@@ -127,10 +134,6 @@ public class PoopPanel extends JPanel
 	{
 		// this line sets up the graphics - always needed
 		super.paintComponent(g);
-		
-		System.out.println("rrrr\t" + started);
-		System.out.println(stageSelectReady);
-		System.out.println(readyToPlay);
 
 		if (started)
 		{	
@@ -342,31 +345,25 @@ public class PoopPanel extends JPanel
 			hitboxes = new ArrayList<Hitbox>();
 			hitboxes.add(new OvalHitbox(-100, -100, 1, 1, 0, 0));
 			
-			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, 0, 0);
-			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, w / 2, 0);
-			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, 0, h / 2);
-			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, w / 2, h / 2);
+			new ImageIcon("assets/BattlefieldSelect.png").paintIcon(this, g, 0, 0);
+			new ImageIcon("assets/DreamlandSelect.png").paintIcon(this, g, w / 2, 0);
 
 			g.setColor(Color.GREEN);
-			g.drawRect(p1SelectX * w / 2, p1SelectY * h / 2, w / 2, h / 2);
+			g.drawRect(p1SelectX * w / 2, p1SelectY * h / 2, w / 2, h);
 			g.setFont(new Font("Comic Sans", Font.PLAIN, 15));
-			g.setColor(Color.BLACK);
-			g.drawString("Player 1", p1SelectX * w / 2, p1SelectY * h / 2 + 15);
+			g.setColor(Color.WHITE);
+			g.drawString("Player 1", p1SelectX * w / 2, p1SelectY * h + 15);
 
 			g.setColor(Color.BLUE);
-			g.drawRect(p2SelectX * w / 2, p2SelectY * h / 2, w / 2, h / 2);
-			g.setColor(Color.BLACK);
-			g.drawString("Player 2", p2SelectX * w / 2, p2SelectY * h / 2 + 15);
+			g.drawRect(p2SelectX * w / 2, p2SelectY * h / 2, w / 2, h);
+			g.setColor(Color.WHITE);
+			g.drawString("Player 2", p2SelectX * w / 2, p2SelectY * h + 15);
 
 			if (p1StageSelected && p2StageSelected)
 			{
 				 Random rand = new Random(); 
-				 //if(rand.nextInt(2) == 0) stageSelected = stageSelect[p1SelectY][p1SelectX]; 
-				 //else stageSelected = stageSelect[p2SelectY][p2SelectX];
-				 
-				 System.out.println(p2SelectX);
-				 System.out.println(p2SelectY);
-				 stageSelected = stageSelect[p2SelectY][p2SelectX];;
+				 if(rand.nextInt(2) == 0) stageSelected = stageSelect[p1SelectX]; 
+				 else stageSelected = stageSelect[p2SelectX];
 				 
 				stageHitboxes = stageSelected.getHitboxes();
 
@@ -664,30 +661,31 @@ public class PoopPanel extends JPanel
 		if (x <= 0)
 			return 0;
 
-		OvalHitbox t2 = c2.getHitbox();
-		OvalHitbox temp2 = new OvalHitbox(t2.getH(), t2.getK() * -1 + increase * 2, t2.getA(), t2.getB(),
-				t2.getDamage(), t2.getKB());
-		temp2.setMoveDown(t2.getMoveDown());
-		temp2.setMoveUp(t2.getMoveUp());
-		temp2.setMoveRight(t2.getMoveRight());
-		temp2.setMoveLeft(t2.getMoveLeft());
+		OvalHitbox t = c2.getHitbox();
+		OvalHitbox temp = new OvalHitbox(t.getH(), t.getK() * -1 + increase * 2, t.getA(), t.getB(),
+				t.getDamage(), t.getKB());
+
+		temp.setMoveDown(t.getMoveDown());
+		temp.setMoveUp(t.getMoveUp());
+		temp.setMoveRight(t.getMoveRight());
+		temp.setMoveLeft(t.getMoveLeft());
 
 		for (RectangleHitbox h : stageHitboxes)
 		{
-			double[] d = temp2.intersects(h);
+			double[] d = temp.intersects(h);
 
 			if (d[0] != -1)
 			{
-				if (c2.getFalling() && t2.getK() * -1 + t2.getB() <= h.getK())
+				if (c2.getFalling() && t.getK() * -1 + t.getB() <= h.getK())
 				{
 					c2.setFalling(false);
 					p2KnockingBack = false;
 					c2.setJumping(false);
 					c2.setDoubleJumping(false);
 					return h.getK();
-				} else if (t2.getK() * -1 + t2.getB() >= h.getK())
+				} else if (t.getK() * -1 + t.getB() >= h.getK())
 				{
-					if (c2.getMoveLeft() && t2.getK() * -1 <= h.getK())
+					if (c2.getMoveLeft() && t.getK() * -1 <= h.getK())
 					{
 						c2.setFalling(false);
 						p2KnockingBack = false;
@@ -696,9 +694,9 @@ public class PoopPanel extends JPanel
 						return h.getK();
 					} else if (c2.getMoveLeft() && !c2.getJumping())
 					{
-						updatePlayer2Position(sx + sw, sy);
+						updatePlayer1Position(sx + sw, sy);
 					}
-					if (c2.getMoveRight() && t2.getK() * -1 <= h.getK())
+					if (c2.getMoveRight() && t.getK() * -1 <= h.getK())
 					{
 						c2.setFalling(false);
 						p2KnockingBack = false;
@@ -707,17 +705,17 @@ public class PoopPanel extends JPanel
 						return h.getK();
 					} else if (c2.getMoveRight() && !c2.getJumping())
 					{
-						updatePlayer2Position(sx - sw, sy);
+						updatePlayer1Position(sx - sw, sy);
 					}
-					if (t2.getMoveUp())
+					if (c2.getJumping())
 					{
 						c2.setMoveUp(false);
-						updatePlayer2Position(sx, sy + sh);
+						updatePlayer1Position(sx, sy + sh);
 					}
 					p2KnockingBack = false;
 					p2YVelocity = GRAVITY;
 					c2.setFalling(true);
-					return t2.getK() * -1 + t2.getB();
+					return t.getK() * -1 + t.getB();
 				}
 			}
 		}
@@ -1056,26 +1054,22 @@ public class PoopPanel extends JPanel
 				tempYDist -= (p2YVelocity * Math.pow(Math.abs((sx + tempXDist) - ogsx), 2))
 						/ (2 * p2Knockback * p2Knockback * Math.pow(cos, 2));
 
-				int thingy = p2YCoordIsTouching(ogsy+sh*2, (int) tempYDist);
-				
+				int thingy = p2YCoordIsTouching(ogsy, (int) tempYDist);
 				if(thingy != -1 && !p2Stopper)
 				{
 					p2Stopper = true;
 					p2Thingy = thingy;
 				}
-					
-				System.out.println(sy);
-				System.out.println(thingy);
-				if (p2Stopper)
+				if (thingy != -1 || p2Stopper)
 				{
+					p2Stopper = true;
+					
 					updatePlayer2Position((int) (sx + tempXDist), p2Thingy - sh * 2);
 
 					p2LaunchSpeed -= 1;
 
 					if (p2LaunchSpeed <= 0)
 					{
-						p2Stopper = false;
-						p2Thingy = -1;
 						p2KnockingBack = false;
 						p2Knockbacker.stop();
 						c2.setFalling(true);
@@ -1089,6 +1083,8 @@ public class PoopPanel extends JPanel
 
 					if (p2LaunchSpeed <= 0)
 					{
+						p2Stopper = false;
+						p2Thingy = -1;
 						p2KnockingBack = false;
 						p2Knockbacker.stop();
 						c2.setFalling(true);
@@ -1251,18 +1247,6 @@ public class PoopPanel extends JPanel
 						else
 							p1SelectX--;
 						break;
-					case KeyEvent.VK_W:
-						if (p1SelectY == 0)
-							;
-						else
-							p1SelectY--;
-						break;
-					case KeyEvent.VK_S:
-						if (p1SelectY == 1)
-							;
-						else
-							p1SelectY++;
-						break;
 					case KeyEvent.VK_X:
 						p1StageSelected = true;
 						break;
@@ -1283,18 +1267,6 @@ public class PoopPanel extends JPanel
 							;
 						else
 							p2SelectX--;
-						break;
-					case KeyEvent.VK_O:
-						if (p2SelectY == 0)
-							;
-						else
-							p2SelectY--;
-						break;
-					case KeyEvent.VK_L:
-						if (p2SelectY == 1)
-							;
-						else
-							p2SelectY++;
 						break;
 					case KeyEvent.VK_PERIOD:
 						p2StageSelected = true;

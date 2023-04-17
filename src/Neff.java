@@ -26,8 +26,8 @@ public class Neff extends Character
 		tryTilt = false;
 		trySpecial = false;
 		tiltAttacking = false;
-		attack1Hitbox = new RectangleHitbox(-100, -100, 59, 74, 10.5, 300);
-		attack2Hitbox = new RectangleHitbox(-100, -100, 59, 74, 10.5, 300);
+		attack1Hitbox = new RectangleHitbox(-100, -100, 11, 2, 10.5, 300);
+		attack2Hitbox = new RectangleHitbox(-100, -100, 11, 2, 10.5, 300);
 		attack3Hitbox = new RectangleHitbox(-100, -100, 63, 207, 5, 350);
 		attack4Hitbox = new RectangleHitbox(-100, -100, 63, 246, 7, 500);
 		specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 300);
@@ -50,8 +50,8 @@ public class Neff extends Character
 		//makes the move only possible via spike
 		attack4Hitbox.setMoveDown(true);
 		
-		attack1Image = new ImageIcon("assets/Poop Defender/PoopDefenderLeftTilt.png");
-		attack2Image = new ImageIcon("assets/Poop Defender/PoopDefenderRightTilt.png");
+		attack1Image = new ImageIcon("assets/Neff/NeffLeftTilt.png");
+		attack2Image = new ImageIcon("assets/Neff/NeffRightTilt.png");
 		attack3Image1 = new ImageIcon("assets/Poop Defender/PoopDefenderUpTiltFaceRight.png");
 		attack3Image2  = new ImageIcon("assets/Poop Defender/PoopDefenderUpTiltFaceLeft.png");
 		attack4Image1 = new ImageIcon("assets/Poop Defender/PoopDefenderDownTiltRight.png");
@@ -66,35 +66,106 @@ public class Neff extends Character
 	
 	public void rightTilt()
 	{
-		// TODO Auto-generated method stub
-		
+		//og ab is 60,121
+		attack2Hitbox.setId(name);
+		currentAttack = "rightTilt";
+		attack2Hitbox.setH(hitbox.getH()+hitbox.getA()-2);
+		attack2Hitbox.setK((hitbox.getK()+7)*-1);
+		currentPlayerImage = attack2Image;
+		tiltAttacking = true;
+		tiltTime.start();
+		stopChecker.start();
 	}
 
 	public void leftTilt()
 	{
-		// TODO Auto-generated method stub
-		
+		attack1Hitbox.setId(name);
+		currentAttack = "leftTilt";
+		attack1Hitbox.setH(hitbox.getH()-hitbox.getA()-attack1Hitbox.getA()+2);
+		attack1Hitbox.setK((hitbox.getK()+7)*-1);
+		currentPlayerImage = attack1Image;
+		tiltAttacking = true;
+		tiltTime.start();
+		stopChecker.start();
 	}
 
-	
 	public void upTilt()
 	{
-		// TODO Auto-generated method stub
+		attack3Hitbox.setId(name);
+		xOffPut = 76;
+		yOffPut = 158;
+		currentAttack = "upTilt";
+		
+		if(facingRight)
+		{
+			attack3Hitbox.setH(hitbox.getH()+hitbox.getA()-22);
+			attack3Hitbox.setK((hitbox.getK()+attack3Hitbox.getB()-22)*-1);
+			currentPlayerImage = attack3Image1;
+			tiltAttacking = true;
+			tiltTime.start();
+		}
+		else
+		{
+			attack3Hitbox.setH(hitbox.getH()-hitbox.getA()-40);
+			attack3Hitbox.setK((hitbox.getK()+attack3Hitbox.getB()-22)*-1);
+			currentPlayerImage = attack3Image2;
+			tiltAttacking = true;
+			tiltTime.start();
+		}
 		
 	}
 
-	
 	public void downTilt()
 	{
-		// TODO Auto-generated method stub
+		attack4Hitbox.setId(name);
+		xOffPut = 76;
+		yOffPut = 0;
+		currentAttack = "downTilt";
+		
+		if(facingRight)
+		{
+			attack4Hitbox.setH(hitbox.getH()+26);
+			attack4Hitbox.setK((hitbox.getK()-2)*-1);
+			currentPlayerImage = attack4Image1;
+			tiltAttacking = true;
+			tiltTime.start();
+		}
+		else
+		{
+			attack4Hitbox.setH(hitbox.getH()-attack4Hitbox.getA()-26);
+			attack4Hitbox.setK((hitbox.getK()-2)*-1);
+			currentPlayerImage = attack4Image2;
+			tiltAttacking = true;
+			tiltTime.start();
+		}
 		
 	}
 
-	
 	public void special()
 	{
-		// TODO Auto-generated method stub
-		
+		if(facingRight)
+		{
+			specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 300);
+			specialHitbox.setId("Projectile");
+			specialHitbox.setH(hitbox.getH()+hitbox.getA()+36);
+			specialHitbox.setK((hitbox.getK()+3)*-1);
+			specialHitbox.setMoveRight(true);
+			specialProjectiles.add(specialHitbox);
+			currentPlayerImage = specialRight;
+			stopChecker.start();
+		}
+		else
+		{
+			specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 300);
+			specialHitbox.setId("Projectile");
+			specialHitbox.setH(hitbox.getH()-hitbox.getA()-52);
+			specialHitbox.setK((hitbox.getK()+3)*-1);
+			specialHitbox.setMoveLeft(true);
+			specialProjectiles.add(specialHitbox);
+			currentPlayerImage = specialLeft;
+			stopChecker.start();
+
+		}
 	}
 	
 	public class actionListener implements ActionListener
