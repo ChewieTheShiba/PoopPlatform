@@ -11,7 +11,7 @@ public class PoopPanel extends JPanel
 	// variables for the overall width and height
 	private int bruh, w, h, px, py, pw, ph, sx, sy, sw, sh, p1YVelocity, p2YVelocity, p1MoveSpeed, p2MoveSpeed,
 			p1LaunchDirection, p2LaunchDirection, ogpx, ogpy, ogsx, ogsy, p1JumpStart, p2JumpStart, p1SelectX,
-			p1SelectY, p2SelectX, p2SelectY, p1Thingy, p2Thingy;
+			p1SelectY, p2SelectX, p2SelectY, p1Thingy, p2Thingy, c1Lives, c2Lives;
 	private double p1Knockback, p2Knockback, p1LaunchSpeed, p2LaunchSpeed, p1EndXTraj, p2EndXTraj, p1KnockbackTheta,
 			p2KnockbackTheta;
 	private ImageIcon startUpAnimation, startUpScreen, c1Image, c2Image, projectile;
@@ -24,7 +24,7 @@ public class PoopPanel extends JPanel
 	private final Character PoopDefender, Neff, Kuma, Mob;
 	private final Character[][] characterSelect;
 	private final Stage[][] stageSelect;
-	private Stage stageSelected;
+	private Stage stageSelected, Battlefield;
 	private ArrayList<Hitbox> hitboxes;
 	private ArrayList<RectangleHitbox> stageHitboxes;
 	private ArrayList<Hitbox> toDelete;
@@ -103,19 +103,20 @@ public class PoopPanel extends JPanel
 		c2 = new Character();
 		projectile = new ImageIcon("assets/Poop Defender/SpecialProjectile.png");
 
-		// filler stage objects for test runs while we dont have a stage
-		stageSelect[0][0] = new Stage(new ImageIcon("t"), null, null);
-		stageSelect[0][1] = new Stage(new ImageIcon("t"), null, null);
-		stageSelect[1][0] = new Stage(new ImageIcon("t"), null, null);
-		stageSelect[1][1] = new Stage(new ImageIcon("t"), null, null);
-		// stageSelected = null;
-		// temporary stageDeclaration
+		//Sets up hitboxes for battlefields
+		ArrayList<RectangleHitbox> Battlefields = new ArrayList<RectangleHitbox>();
+		Battlefields.add(new RectangleHitbox(366, 524, 1194, 70, 0, 0));
+		Battlefields.add(new RectangleHitbox(506, 328, 286, 32, 0, 0));
+		Battlefields.add(new RectangleHitbox(824, 155, 286, 32, 0, 0));
+		Battlefields.add(new RectangleHitbox(1133, 328, 286, 32, 0, 0));
+		
+		Battlefield = new Stage(new ImageIcon("assets/Battlefield.png"), Battlefields);
 		stageHitboxes = new ArrayList<RectangleHitbox>();
-		stageHitboxes.add(new RectangleHitbox(600, 700, 700, 30, 0, 0));
-		stageSelected = new Stage(projectile, stageHitboxes, null);
-
-		hitboxes = new ArrayList<Hitbox>();
-		hitboxes.add(new OvalHitbox(-100, -100, 1, 1, 0, 0));
+		
+		stageSelect[0][0] = Battlefield;
+		stageSelect[0][1] = Battlefield;
+		stageSelect[1][0] = Battlefield;
+		stageSelect[1][1] = Battlefield;
 		
 		toDelete = new ArrayList<Hitbox>();
 	}
@@ -126,9 +127,15 @@ public class PoopPanel extends JPanel
 	{
 		// this line sets up the graphics - always needed
 		super.paintComponent(g);
+		
+		System.out.println("rrrr\t" + started);
+		System.out.println(stageSelectReady);
+		System.out.println(readyToPlay);
 
 		if (started)
-		{
+		{	
+			stageSelected.getBackground().paintIcon(this, g, 0, 0);
+			
 			double[] p1Intersection =
 			{ -1, -1 }, p2Intersection =
 			{ -1, -1 }, p1OppIntersection =
@@ -155,8 +162,8 @@ public class PoopPanel extends JPanel
 			g.drawOval(px, py, pw * 2, ph * 2);
 			g.drawOval(sx, sy, sw * 2, sh * 2);
 			g.setFont(new Font("Comic Sans", Font.PLAIN, 30));
-			g.drawString("Player 1 Lives: " + c1.getLives(), 400, 1050);
-			g.drawString("Player 2 Lives: " + c2.getLives(), 1520, 1050);
+			g.drawString("Player 1 Lives: " + c1Lives, 200, 1050);
+			g.drawString("Player 2 Lives: " + c2Lives, 1520, 1050);
 			
 
 			if (c1.getAttack4Hitbox() != null)
@@ -169,12 +176,6 @@ public class PoopPanel extends JPanel
 			{
 				
 				Hitbox h = hitboxes.get(i);
-
-				if (((PoopDefender) c1).getSpecialHitbox() != null)
-				{
-					g.drawRect(c1.getAttack2Hitbox().getH(), c1.getAttack2Hitbox().getK(), c1.getAttack2Hitbox().getA(),
-							c1.getAttack2Hitbox().getB());
-				}
 
 				if (h != null && h.getId().equals("Projectile"))
 					projectile.paintIcon(this, g, h.getH(), h.getK());
@@ -191,10 +192,12 @@ public class PoopPanel extends JPanel
 					p2OppIntersection = h.getOppositeIntersection();
 				}
 
-				if (p1Intersection[0] != -1 && h.getDamage() != 0)
+				if (p1Intersection[0] != -1 && h.getDamage() != 0 && !h.getId().equals("Player 1"))
 				{
 					if(h.getId().equals("Projectile"))
 						toDelete.add(h);
+					
+					System.out.println(h.getId());
 					
 					g.setColor(Color.red);
 					g.drawOval((int) p1Intersection[0], (int) p1Intersection[1], 20, 20);
@@ -258,7 +261,7 @@ public class PoopPanel extends JPanel
 					}
 				}
 
-				if (h != null && p2Intersection[0] != -1 && h.getDamage() != 0)
+				if (h != null && p2Intersection[0] != -1 && h.getDamage() != 0 &&  !h.getId().equals("Player 2"))
 				{
 					if(h.getId().equals("Projectile"))
 						toDelete.add(h);
@@ -303,6 +306,8 @@ public class PoopPanel extends JPanel
 				else if (h != null && p2Intersection[0] != -1)
 				{
 					double xkb = h.getKB();
+					
+					System.out.println(xkb);
 
 					if (xkb >= sw)
 						xkb = sw - 1;
@@ -320,23 +325,23 @@ public class PoopPanel extends JPanel
 					}
 				}
 
-				for (RectangleHitbox rh : stageHitboxes)
+				if(stageHitboxes != null)
 				{
-					g.setColor(Color.BLACK);
-					g.fillRect(rh.getH(), rh.getK(), rh.getA(), rh.getB());
+					for(int z = 0; z < toDelete.size(); z++)
+					{
+						hitboxes.remove(toDelete.get(z));
+					}
+					
 				}
-				
-				for(int z = 0; z < toDelete.size(); z++)
-				{
-					hitboxes.remove(toDelete.get(z));
-				}
-				
 			}
 		} else if (readyToPlay || gettingReadyToPlay)
 		{
 			startUpScreen.paintIcon(this, g, 0, 0);
 		} else if (stageSelectReady)
 		{
+			hitboxes = new ArrayList<Hitbox>();
+			hitboxes.add(new OvalHitbox(-100, -100, 1, 1, 0, 0));
+			
 			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, 0, 0);
 			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, w / 2, 0);
 			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, 0, h / 2);
@@ -355,11 +360,15 @@ public class PoopPanel extends JPanel
 
 			if (p1StageSelected && p2StageSelected)
 			{
-				/*
-				 * Random rand = new Random(); if(rand.nextInt(2) == 0) stageSelected =
-				 * stageSelect[p1SelectY][p1SelectX]; else stageSelected =
-				 * stageSelect[p2SelectY][p2SelectX];
-				 */
+				 Random rand = new Random(); 
+				 //if(rand.nextInt(2) == 0) stageSelected = stageSelect[p1SelectY][p1SelectX]; 
+				 //else stageSelected = stageSelect[p2SelectY][p2SelectX];
+				 
+				 System.out.println(p2SelectX);
+				 System.out.println(p2SelectY);
+				 stageSelected = stageSelect[p2SelectY][p2SelectX];;
+				 
+				stageHitboxes = stageSelected.getHitboxes();
 
 				p1StageSelected = false;
 				p2StageSelected = false;
@@ -393,6 +402,9 @@ public class PoopPanel extends JPanel
 			g.drawRect(p2SelectX * w / 2, p2SelectY * h / 2, w / 2, h / 2);
 			g.setColor(Color.BLACK);
 			g.drawString("Player 2", p2SelectX * w / 2, p2SelectY * h / 2 + 15);
+			
+			c1Lives = 3;
+			c2Lives = 3;
 
 			if (p1CharacterSelected && p2CharacterSelected)
 			{
@@ -428,7 +440,7 @@ public class PoopPanel extends JPanel
 				c2.setMoveRight(false);
 				c2.setJumping(false);
 				c2.setDoubleJumping(false);
-				c2.setH(900);
+				c2.setH(1300);
 				c2.setK(-200);
 				hitboxes.add(c2.attack1Hitbox);
 				hitboxes.add(c2.attack2Hitbox);
@@ -551,17 +563,25 @@ public class PoopPanel extends JPanel
 		
 		if(c1.getHitbox().getK()*-1-c1.getHitbox().getB() >= 1080 || c1.getHitbox().getK()*-1+c1.getHitbox().getB() <= 0 || c1.getHitbox().getH()+c1.getHitbox().getA() <= 0|| c1.getHitbox().getH()-c1.getHitbox().getA() >= 1920)
 		{
-			if (c1.getLives() == 1)
+			c1Lives--;
+			
+			if (c1Lives == 0)
 			{
+				c1Lives--;
 				started = false;
 				readyToPlay = true;
 				startUpWait.start();
 			}
 			else
 			{
-				c1.setLives(c1.getLives()-1);
+				c1.setMoveLeft(false);
+				c1.setMoveRight(false);
+				c1.setJumping(false);
+				c1.setDoubleJumping(false);
 				c1.setH(700);
 				c1.setK(-200);
+				c1.setHP(0);
+				c1.setStopMoving(false);
 			}
 			
 		}
@@ -606,9 +626,8 @@ public class PoopPanel extends JPanel
 						c1.setJumping(false);
 						c1.setDoubleJumping(false);
 						return h.getK();
-					} else if (c1.getMoveLeft())
+					} else if (c1.getMoveLeft() && !c1.getJumping())
 					{
-						c1.setStopMoving(true);
 						updatePlayer1Position(px + pw, py);
 					}
 					if (c1.getMoveRight() && t.getK() * -1 <= h.getK())
@@ -618,16 +637,14 @@ public class PoopPanel extends JPanel
 						c1.setJumping(false);
 						c1.setDoubleJumping(false);
 						return h.getK();
-					} else if (c1.getMoveRight())
+					} else if (c1.getMoveRight() && !c1.getJumping())
 					{
-						c1.setStopMoving(true);
 						updatePlayer1Position(px - pw, py);
 					}
 					if (c1.getJumping())
 					{
 						c1.setMoveUp(false);
 						updatePlayer1Position(px, py + ph);
-						c1.setStopMoving(true);
 					}
 					p1KnockingBack = false;
 					p1YVelocity = GRAVITY;
@@ -677,9 +694,8 @@ public class PoopPanel extends JPanel
 						c2.setJumping(false);
 						c2.setDoubleJumping(false);
 						return h.getK();
-					} else if (c2.getMoveLeft())
+					} else if (c2.getMoveLeft() && !c2.getJumping())
 					{
-						c2.setStopMoving(true);
 						updatePlayer2Position(sx + sw, sy);
 					}
 					if (c2.getMoveRight() && t2.getK() * -1 <= h.getK())
@@ -689,16 +705,14 @@ public class PoopPanel extends JPanel
 						c2.setJumping(false);
 						c2.setDoubleJumping(false);
 						return h.getK();
-					} else if (c2.getMoveRight())
+					} else if (c2.getMoveRight() && !c2.getJumping())
 					{
-						c2.setStopMoving(true);
 						updatePlayer2Position(sx - sw, sy);
 					}
 					if (t2.getMoveUp())
 					{
 						c2.setMoveUp(false);
 						updatePlayer2Position(sx, sy + sh);
-						c2.setStopMoving(true);
 					}
 					p2KnockingBack = false;
 					p2YVelocity = GRAVITY;
@@ -892,18 +906,26 @@ public class PoopPanel extends JPanel
 		
 		if(c2.getHitbox().getK()*-1-c2.getHitbox().getB() >= 1080 || c2.getHitbox().getK()*-1+c2.getHitbox().getB() <= 0 || c2.getHitbox().getH()+c2.getHitbox().getA() <= 0|| c2.getHitbox().getH()-c2.getHitbox().getA() >= 1920)
 		{
-			if (c2.getLives() == 1)
-			{
-				started = false;
-				readyToPlay = true;
-				startUpWait.start();
-			}
-			else
-			{
-				c2.setLives(c2.getLives()-1);
-				c2.setH(900);
-				c2.setK(-200);
-			}
+				c2Lives--;
+			
+				if (c2Lives == 0)
+				{
+					c2Lives--;
+					started = false;
+					readyToPlay = true;
+					startUpWait.start();
+				}
+				else
+				{
+					c2.setMoveLeft(false);
+					c2.setMoveRight(false);
+					c2.setJumping(false);
+					c2.setDoubleJumping(false);
+					c2.setH(1300);
+					c2.setK(-200);
+					c2.setHP(0);
+					c2.setStopMoving(false);
+				}
 		}
 	}
 

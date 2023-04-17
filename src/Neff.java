@@ -7,10 +7,61 @@ import javax.swing.Timer;
 
 public class Neff extends Character
 {
+	
+	private ImageIcon specialProjectile, specialLeft, specialRight, attack3Image1, attack3Image2, attack4Image1, attack4Image2;
+	private RectangleHitbox specialHitbox;
 
 	public Neff()
 	{
-		//hitbox = new OvalHitbox(200, 200, 100, 200, 0, 0);
+		hitbox = new OvalHitbox(8, 19, 8, 19, 0, 10);
+		tiltTime = new Timer(500, new actionListener());
+		stopMoving = false;
+		Weight = 50;
+		name = "";
+		stopChecker = new Timer(20, new actionListener());
+		specialProjectiles = new ArrayList<Hitbox>();
+		currentAttack = "";
+		xOffPut = 10;
+		yOffPut = 2;
+		tryTilt = false;
+		trySpecial = false;
+		tiltAttacking = false;
+		attack1Hitbox = new RectangleHitbox(-100, -100, 59, 74, 10.5, 300);
+		attack2Hitbox = new RectangleHitbox(-100, -100, 59, 74, 10.5, 300);
+		attack3Hitbox = new RectangleHitbox(-100, -100, 63, 207, 5, 350);
+		attack4Hitbox = new RectangleHitbox(-100, -100, 63, 246, 7, 500);
+		specialHitbox = new RectangleHitbox(-100, -100, 20, 12, 3.5, 300);
+		
+		attack1Hitbox.setMoveLeft(true);
+		attack1Hitbox.setMoveUp(true);
+		attack1Hitbox.setMoveDown(true);
+		attack1Hitbox.setMoveRight(true);
+		
+		attack2Hitbox.setMoveRight(true);
+		attack2Hitbox.setMoveUp(true);
+		attack2Hitbox.setMoveDown(true);
+		attack2Hitbox.setMoveLeft(true);
+		
+		attack3Hitbox.setMoveLeft(true);
+		attack3Hitbox.setMoveUp(true);
+		attack3Hitbox.setMoveRight(true);
+		attack3Hitbox.setMoveDown(true);
+
+		//makes the move only possible via spike
+		attack4Hitbox.setMoveDown(true);
+		
+		attack1Image = new ImageIcon("assets/Poop Defender/PoopDefenderLeftTilt.png");
+		attack2Image = new ImageIcon("assets/Poop Defender/PoopDefenderRightTilt.png");
+		attack3Image1 = new ImageIcon("assets/Poop Defender/PoopDefenderUpTiltFaceRight.png");
+		attack3Image2  = new ImageIcon("assets/Poop Defender/PoopDefenderUpTiltFaceLeft.png");
+		attack4Image1 = new ImageIcon("assets/Poop Defender/PoopDefenderDownTiltRight.png");
+		attack4Image2 = new ImageIcon("assets/Poop Defender/PoopDefenderDownTiltLeft.png");
+		idleRight = new ImageIcon("assets/Neff/NeffIdleLeft.png");
+		idleLeft = new ImageIcon("assets/Neff/NeffIdleRight.png");
+		specialProjectile = new ImageIcon("assets/Poop Defender/SpecialProjectile.png");
+		specialRight = new ImageIcon("assets/Poop Defender/PoopDefenderSpecialRight.png");
+		specialLeft = new ImageIcon("assets/Poop Defender/PoopDefenderSpecialLeft.png");
+		currentPlayerImage = idleRight;
 	}
 	
 	public void rightTilt()
@@ -45,5 +96,74 @@ public class Neff extends Character
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public class actionListener implements ActionListener
+	{
+
+		public void actionPerformed(ActionEvent e)
+		{
+			Object source = e.getSource();
+			
+			if(source.equals(tiltTime))
+			{
+				tiltTime.stop();
+				tiltAttacking = false;
+				attack1Hitbox.setH(-100);
+				attack1Hitbox.setK(-100);
+				attack2Hitbox.setH(-100);
+				attack2Hitbox.setK(-100);
+				attack3Hitbox.setH(-100);
+				attack3Hitbox.setK(-100);
+				attack4Hitbox.setH(-100);
+				attack4Hitbox.setK(-100);
+				specialHitbox.setH(-100);
+				specialHitbox.setK(-100);
+				stopChecker.stop();
+				
+				xOffPut = 10;
+				yOffPut = 2;
+				
+				if(facingRight)
+					currentPlayerImage = idleRight;
+				else
+					currentPlayerImage = idleLeft;
+			}
+			
+			if(source.equals(stopChecker))
+			{
+				if(tiltAttacking && (getMoveRight() || getMoveLeft() || getFalling())) {
+					tiltTime.stop();
+					tiltAttacking = false;
+					attack1Hitbox.setH(-100);
+					attack1Hitbox.setK(-100);
+					attack2Hitbox.setH(-100);
+					attack2Hitbox.setK(-100);
+					attack4Hitbox.setH(-100);
+					attack4Hitbox.setK(-100);
+					specialHitbox.setH(-100);
+					specialHitbox.setK(-100);
+					stopChecker.stop();
+					
+					xOffPut = 10;
+					yOffPut = 2;
+					
+					if(facingRight)
+						currentPlayerImage = idleRight;
+					else
+						currentPlayerImage = idleLeft;
+				}
+				for(Hitbox h : specialProjectiles)
+				{
+					if(h.getMoveRight())
+						h.setH(h.getH() + 20);
+					if(h.getMoveLeft())
+						h.setH(h.getH() - 20);
+				}
+			}
+			
+		}
+		
+	}
+
 	
 }
