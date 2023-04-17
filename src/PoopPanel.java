@@ -22,7 +22,7 @@ public class PoopPanel extends JPanel
 	private final int GRAVITY, JUMPHEIGHT;
 	private Character c1, c2;
 	private final Character PoopDefender, Neff, Kuma, Mob;
-	private final Character[][] characterSelect;
+	private final Character[] characterSelect;
 	private final Stage[]stageSelect;
 	private Stage stageSelected, Battlefield, Dreamland;
 	private ArrayList<Hitbox> hitboxes;
@@ -78,7 +78,7 @@ public class PoopPanel extends JPanel
 		p2Knockbacker = new Timer(20, new actionListener());
 		JUMPHEIGHT = 20;
 
-		characterSelect = new Character[2][2];
+		characterSelect = new Character[2];
 		stageSelect = new Stage[2];
 
 		// temporary instansiations
@@ -87,10 +87,8 @@ public class PoopPanel extends JPanel
 		Kuma = new Neff();
 		Mob = new Neff();
 
-		characterSelect[0][0] = PoopDefender;
-		characterSelect[0][1] = Neff;
-		characterSelect[1][0] = Kuma;
-		characterSelect[1][1] = Mob;
+		characterSelect[0] = PoopDefender;
+		characterSelect[1] = Neff;
 
 		// instantiates characters
 		c1 = new Character();
@@ -164,12 +162,6 @@ public class PoopPanel extends JPanel
 			g.drawString("Player 2 Lives: " + c2Lives, 1520, 1050);
 			
 
-			if (c1.getAttack4Hitbox() != null)
-			{
-				Hitbox l = c1.getAttack4Hitbox();
-				g.drawRect(l.getH(), l.getK(), l.getA(), l.getB());
-			}
-
 			for (int i = 0; i < hitboxes.size(); i++)
 			{
 				
@@ -180,10 +172,7 @@ public class PoopPanel extends JPanel
 				if (h != null && h.getId().equals("HighProjectileLeft"))
 					projectileLeft.paintIcon(this, g, h.getH(), h.getK());
 				if (h != null && h.getId().equals("HighProjectileRight"))
-				{
 					projectileRight.paintIcon(this, g, h.getH(), h.getK());
-					System.out.println(h.getH());
-				}
 
 				if (h != null && !h.equals(c1.getHitbox()) && !h.getId().equals((c1.getName())))
 				{
@@ -202,20 +191,9 @@ public class PoopPanel extends JPanel
 				{
 
 					if((h.getId()).equals("PoopProjectile") || (h.getId()).equals("HighProjectileLeft") || (h.getId()).equals("HighProjectileRight"))
-					{
 						toDelete.add(h);
-						System.out.println(h.getId());
-					}
-					
-					System.out.println(h.getId());
-					
-					g.setColor(Color.red);
-					g.drawOval((int) p1Intersection[0], (int) p1Intersection[1], 20, 20);
-					g.drawOval((int) p1OppIntersection[0], (int) p1OppIntersection[1], 20, 20);
 					
 					c1.setHP(c1.getHP()+h.getDamage());
-					
-					System.out.println("damage " + h.getKB());
 
 					p1Knockback = getp1Knockback(h.getDamage(), h.getKB());
 
@@ -275,10 +253,6 @@ public class PoopPanel extends JPanel
 				{
 					if(h.getId().equals("Projectile"))
 						toDelete.add(h);
-					
-					g.setColor(Color.red);
-					g.drawOval((int) p2Intersection[0], (int) p2Intersection[1], 20, 20);
-					g.drawOval((int) p2OppIntersection[0], (int) p2OppIntersection[1], 20, 20);
 
 					c2.setHP(c2.getHP()+h.getDamage());
 
@@ -316,8 +290,6 @@ public class PoopPanel extends JPanel
 				else if (h != null && p2Intersection[0] != -1)
 				{
 					double xkb = h.getKB();
-					
-					System.out.println(xkb);
 
 					if (xkb >= sw)
 						xkb = sw - 1;
@@ -386,39 +358,32 @@ public class PoopPanel extends JPanel
 			}
 		} else if (characterSelectReady)
 		{
-			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, 0, 0);
-			g.setFont(new Font("Comic Sans", Font.PLAIN, 40));
-			g.setColor(Color.ORANGE);
-			g.fillRect(0, h / 2 - 200, w / 2, 200);
-			g.setColor(Color.BLACK);
-			g.drawString("Poop Defender", w / 4 - 135, 2 * h / 5);
-			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, w / 2, 0);
-			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, 0, h / 2);
-			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, w / 2, h / 2);
+			new ImageIcon("assets/Poop Defender/PoopDefenderIdleRight.png").paintIcon(this, g, 0, h/2);
+			new ImageIcon("assets/Neff/NeffIdleRight.png").paintIcon(this, g, w / 2, h/2);
 
 			g.setColor(Color.GREEN);
-			g.drawRect(p1SelectX * w / 2, p1SelectY * h / 2, w / 2, h / 2);
+			g.drawRect(p1SelectX * w / 2, p1SelectY * h / 2, w / 2, h);
 			g.setFont(new Font("Comic Sans", Font.PLAIN, 15));
 			g.setColor(Color.BLACK);
-			g.drawString("Player 1", p1SelectX * w / 2, p1SelectY * h / 2 + 15);
+			g.drawString("Player 1", p1SelectX * w / 2, p1SelectY * h + 15);
 
 			g.setColor(Color.BLUE);
-			g.drawRect(p2SelectX * w / 2, p2SelectY * h / 2, w / 2, h / 2);
+			g.drawRect(p2SelectX * w / 2, p2SelectY * h / 2, w / 2, h );
 			g.setColor(Color.BLACK);
-			g.drawString("Player 2", p2SelectX * w / 2, p2SelectY * h / 2 + 15);
+			g.drawString("Player 2", p2SelectX * w / 2, p2SelectY * h + 15);
 			
 			c1Lives = 3;
 			c2Lives = 3;
 
 			if (p1CharacterSelected && p2CharacterSelected)
 			{
-				if (characterSelect[p1SelectY][p1SelectX].getClass().equals(PoopDefender.class))
+				if (characterSelect[p1SelectX].getClass().equals(PoopDefender.class))
 					c1 = new PoopDefender();
-				if (characterSelect[p1SelectY][p1SelectX].getClass().equals(Neff.class))
+				if (characterSelect[p1SelectX].getClass().equals(Neff.class))
 					c1 = new Neff();
-				if (characterSelect[p1SelectY][p1SelectX].getClass().equals(PoopDefender.class))
+				if (characterSelect[p1SelectX].getClass().equals(PoopDefender.class))
 					c1 = new PoopDefender();
-				if (characterSelect[p1SelectY][p1SelectX].getClass().equals(PoopDefender.class))
+				if (characterSelect[p1SelectX].getClass().equals(PoopDefender.class))
 					c1 = new PoopDefender();
 				c1.setName("Player 1");
 				c1.setMoveLeft(false);
@@ -431,13 +396,13 @@ public class PoopPanel extends JPanel
 				hitboxes.add(c1.attack2Hitbox);
 				hitboxes.add(c1.attack3Hitbox);
 				hitboxes.add(c1.attack4Hitbox);
-				if (characterSelect[p2SelectY][p2SelectX].getClass().equals(PoopDefender.class))
+				if (characterSelect[p2SelectX].getClass().equals(PoopDefender.class))
 					c2 = new PoopDefender();
-				if (characterSelect[p2SelectY][p2SelectX].getClass().equals(Neff.class))
+				if (characterSelect[p2SelectX].getClass().equals(Neff.class))
 					c2 = new Neff();
-				if (characterSelect[p2SelectY][p2SelectX].getClass().equals(PoopDefender.class))
+				if (characterSelect[p2SelectX].getClass().equals(PoopDefender.class))
 					c2 = new PoopDefender();
-				if (characterSelect[p2SelectY][p2SelectX].getClass().equals(PoopDefender.class))
+				if (characterSelect[p2SelectX].getClass().equals(PoopDefender.class))
 					c2 = new PoopDefender();
 				c2.setName("Player 2");
 				c2.setMoveLeft(false);
@@ -770,17 +735,10 @@ public class PoopPanel extends JPanel
 		double weight = c1.getWeight();
 
 		double knockBack = (percentage / 10) + (percentage * attackPower / 20);
-		System.out.println("1\t" + knockBack);
 		knockBack *= 200 / (weight + 100);
-		System.out.println("2\t" + knockBack);
 		knockBack *= 1.4;
-		System.out.println("3\t" + knockBack);
 		knockBack += 18;
-		System.out.println("4\t" + knockBack);
 		knockBack += baseKnockBack;
-		System.out.println("5\t" + knockBack);
-
-		System.out.println("Knockback" + knockBack);
 
 		return knockBack;
 
@@ -792,17 +750,10 @@ public class PoopPanel extends JPanel
 		double weight = c2.getWeight();
 
 		double knockBack = (percentage / 10) + (percentage * attackPower / 20);
-		System.out.println("1\t" + knockBack);
 		knockBack *= 200 / (weight + 100);
-		System.out.println("2\t" + knockBack);
 		knockBack *= 1.4;
-		System.out.println("3\t" + knockBack);
 		knockBack += 18;
-		System.out.println("4\t" + knockBack);
 		knockBack += baseKnockBack;
-		System.out.println("5\t" + knockBack);
-
-		System.out.println("Knockback" + knockBack);
 
 		return knockBack;
 
@@ -1299,18 +1250,6 @@ public class PoopPanel extends JPanel
 						else
 							p1SelectX--;
 						break;
-					case KeyEvent.VK_W:
-						if (p1SelectY == 0)
-							;
-						else
-							p1SelectY--;
-						break;
-					case KeyEvent.VK_S:
-						if (p1SelectY == 1)
-							;
-						else
-							p1SelectY++;
-						break;
 					case KeyEvent.VK_X:
 						p1CharacterSelected = true;
 						break;
@@ -1331,18 +1270,6 @@ public class PoopPanel extends JPanel
 							;
 						else
 							p2SelectX--;
-						break;
-					case KeyEvent.VK_O:
-						if (p2SelectY == 0)
-							;
-						else
-							p2SelectY--;
-						break;
-					case KeyEvent.VK_L:
-						if (p2SelectY == 1)
-							;
-						else
-							p2SelectY++;
 						break;
 					case KeyEvent.VK_PERIOD:
 						p2CharacterSelected = true;
